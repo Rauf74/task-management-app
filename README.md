@@ -1,40 +1,40 @@
 # Task Management App
 
-A full-stack Kanban-style task management application with real-time collaboration.
+Aplikasi manajemen tugas bergaya Kanban dengan fitur kolaborasi real-time.
 
 ## Tech Stack
 
 ### Frontend
-- **Next.js 16** - React framework with App Router
+- **Next.js 16** - Framework React dengan App Router
 - **TypeScript** - Type safety
-- **Tailwind CSS 4** - Utility-first styling
-- **Shadcn/ui** - Modern UI components
+- **Tailwind CSS 4** - Styling utility-first
+- **Shadcn/ui** - Komponen UI modern
 
 ### Backend
 - **Express.js** - REST API server
-- **Socket.io** - Real-time collaboration
-- **Prisma** - Type-safe ORM
-- **PostgreSQL** - Relational database
-- **JWT** - Authentication with HttpOnly cookies
+- **Socket.io** - Kolaborasi real-time
+- **Prisma** - ORM type-safe
+- **PostgreSQL** - Database relasional
+- **JWT** - Autentikasi dengan HttpOnly cookies
 
-## Project Structure
+## Struktur Proyek
 
 ```
 task-management-app/
-├── frontend/     # Next.js application
-├── backend/      # Express.js API server
+├── frontend/     # Aplikasi Next.js
+├── backend/      # Server API Express.js
 └── README.md
 ```
 
-## Getting Started
+## Cara Menjalankan
 
-### Prerequisites
+### Prasyarat
 - Node.js 20+
-- PostgreSQL database (or Neon)
+- Database PostgreSQL (atau Neon)
 
-### Installation
+### Instalasi
 
-1. Clone the repository
+1. Clone repository
 ```bash
 git clone https://github.com/Rauf74/task-management-app.git
 cd task-management-app
@@ -45,7 +45,7 @@ cd task-management-app
 cd backend
 npm install
 cp .env.example .env
-# Edit .env with your database credentials
+# Edit .env dengan kredensial database Anda
 npx prisma migrate dev
 npm run dev
 ```
@@ -58,16 +58,16 @@ cp .env.example .env.local
 npm run dev
 ```
 
-## Features
+## Fitur
 
-- [ ] User authentication (register, login)
-- [ ] Workspace management
-- [ ] Board management with columns
-- [ ] Task cards with drag & drop
-- [ ] Real-time collaboration (Socket.io)
-- [ ] Priority and due date management
+- [ ] Autentikasi pengguna (register, login)
+- [ ] Manajemen workspace
+- [ ] Manajemen board dengan kolom
+- [ ] Kartu tugas dengan drag & drop
+- [ ] Kolaborasi real-time (Socket.io)
+- [ ] Manajemen prioritas dan deadline
 
-## Author
+## Penulis
 
 **Abdur Rauf Al Farras**
 - GitHub: [@Rauf74](https://github.com/Rauf74)
