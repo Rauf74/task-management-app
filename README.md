@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Task Management App
+
+A full-stack Kanban-style task management application with real-time collaboration.
+
+## Tech Stack
+
+### Frontend
+- **Next.js 16** - React framework with App Router
+- **TypeScript** - Type safety
+- **Tailwind CSS 4** - Utility-first styling
+- **Shadcn/ui** - Modern UI components
+
+### Backend
+- **Express.js** - REST API server
+- **Socket.io** - Real-time collaboration
+- **Prisma** - Type-safe ORM
+- **PostgreSQL** - Relational database
+- **JWT** - Authentication with HttpOnly cookies
+
+## Project Structure
+
+```
+task-management-app/
+├── frontend/     # Next.js application
+├── backend/      # Express.js API server
+└── README.md
+```
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- Node.js 20+
+- PostgreSQL database (or Neon)
 
+### Installation
+
+1. Clone the repository
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/Rauf74/task-management-app.git
+cd task-management-app
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Setup Backend
+```bash
+cd backend
+npm install
+cp .env.example .env
+# Edit .env with your database credentials
+npx prisma migrate dev
+npm run dev
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Setup Frontend
+```bash
+cd frontend
+npm install
+cp .env.example .env.local
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Features
 
-## Learn More
+- [ ] User authentication (register, login)
+- [ ] Workspace management
+- [ ] Board management with columns
+- [ ] Task cards with drag & drop
+- [ ] Real-time collaboration (Socket.io)
+- [ ] Priority and due date management
 
-To learn more about Next.js, take a look at the following resources:
+## Author
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Abdur Rauf Al Farras**
+- GitHub: [@Rauf74](https://github.com/Rauf74)

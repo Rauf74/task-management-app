@@ -1,0 +1,152 @@
+// ============================================
+// Prisma Schema untuk Task Management App
+// ============================================
+// 
+// Schema ini mendefinisikan struktur database:
+// - User: pengguna yang bisa login
+// - Workspace: wadah untuk boards (seperti "team" di Trello)
+// - Board: papan kanban (seperti "project" di Trello)
+// - Column: kolom dalam board (To Do, In Progress, Done)
+// - Task: kartu/tugas yang bisa dipindah-pindah
+// - Label: tag untuk kategorisasi task
+//
+// ============================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// User Model
+// ============================================
+// Menyimpan data pengguna untuk authentication
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  image     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  workspaces Workspace[]
+  tasks      Task[]      @relation("TaskCreator")
+
+  @@map("users")
+}
+
+// ============================================
+// Workspace Model
+// ============================================
+// Workspace adalah wadah tertinggi, berisi banyak boards
+// Contoh: "Personal", "Work", "Side Project"
+model Workspace {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  userId String
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  boards Board[]
+
+  @@map("workspaces")
+}
+
+// ============================================
+// Board Model
+// ============================================
+// Board adalah papan kanban, berisi columns
+// Contoh: "Website Redesign", "Mobile App Development"
+model Board {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  columns     Column[]
+
+  @@map("boards")
+}
+
+// ============================================
+// Column Model
+// ============================================
+// Column adalah kolom dalam board, berisi tasks
+// Contoh: "To Do", "In Progress", "Review", "Done"
+model Column {
+  id        String   @id @default(cuid())
+  title     String
+  order     Int      // Urutan kolom (0, 1, 2, ...)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  boardId String
+  board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  tasks   Task[]
+
+  @@map("columns")
+}
+
+// ============================================
+// Task Model
+// ============================================
+// Task adalah kartu/tugas yang bisa dipindah antar column
+model Task {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  order       Int       // Urutan dalam column (0, 1, 2, ...)
+  priority    Priority  @default(MEDIUM)
+  dueDate     DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  columnId  String
+  column    Column  @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  creatorId String
+  creator   User    @relation("TaskCreator", fields: [creatorId], references: [id], onDelete: Cascade)
+  labels    Label[]
+
+  @@map("tasks")
+}
+
+// ============================================
+// Label Model
+// ============================================
+// Label untuk kategorisasi task (warna + nama)
+model Label {
+  id        String   @id @default(cuid())
+  name      String
+  color     String   // Hex color code, e.g. "#FF5733"
+  createdAt DateTime @default(now())
+
+  // Relations
+  tasks Task[]
+
+  @@map("labels")
+}
+
+// ============================================
+// Enums
+// ============================================
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
