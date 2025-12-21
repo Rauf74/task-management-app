@@ -20,6 +20,9 @@ import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.routes.js";
 // import workspaceRoutes from "./routes/workspace.routes.js";
 
+// Import Swagger
+import { setupSwagger } from "./lib/swagger.js";
+
 const app = express();
 
 // ==============================================
@@ -54,6 +57,9 @@ app.get("/api/health", (_req, res) => {
 // API routes
 app.use("/api/auth", authRoutes);
 // app.use("/api/workspaces", workspaceRoutes);
+
+// Swagger documentation
+setupSwagger(app);
 
 // ==============================================
 // Error Handling

@@ -15,8 +15,13 @@ import { Pool } from "pg";
 // Get database URL from environment
 const connectionString = process.env.DATABASE_URL || "";
 
-// Create PostgreSQL connection pool
-const pool = new Pool({ connectionString });
+// Create PostgreSQL connection pool with SSL
+const pool = new Pool({
+    connectionString,
+    ssl: {
+        rejectUnauthorized: false, // Required for Supabase/cloud databases
+    },
+});
 
 // Create Prisma adapter
 const adapter = new PrismaPg(pool);
