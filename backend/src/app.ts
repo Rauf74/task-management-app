@@ -16,8 +16,8 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
-// Import routes (akan dibuat nanti)
-// import authRoutes from "./routes/auth.routes.js";
+// Import routes
+import authRoutes from "./routes/auth.routes.js";
 // import workspaceRoutes from "./routes/workspace.routes.js";
 
 const app = express();
@@ -51,8 +51,8 @@ app.get("/api/health", (_req, res) => {
     });
 });
 
-// API routes (akan di-uncomment saat routes dibuat)
-// app.use("/api/auth", authRoutes);
+// API routes
+app.use("/api/auth", authRoutes);
 // app.use("/api/workspaces", workspaceRoutes);
 
 // ==============================================
