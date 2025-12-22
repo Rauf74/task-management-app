@@ -12,6 +12,7 @@ Aplikasi manajemen tugas bergaya Kanban dengan fitur kolaborasi real-time.
 
 ### Backend
 - **Express.js** - REST API server
+- **Clean Architecture** - Layered architecture (routes → controllers → services → repositories)
 - **Socket.io** - Kolaborasi real-time
 - **Prisma 7** - ORM type-safe dengan driver adapter
 - **PostgreSQL** - Database (Supabase)
