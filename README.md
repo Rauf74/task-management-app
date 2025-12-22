@@ -112,22 +112,25 @@ npm run dev
 
 ## Progress
 
-- [x] Monorepo structure (frontend + backend)
-- [x] Express.js + TypeScript + Socket.io setup
-- [x] Prisma 7 dengan Supabase PostgreSQL
-- [x] JWT Authentication (register, login, logout)
-- [x] Swagger API documentation
-- [x] Workspace CRUD API
-- [x] Board CRUD API
-- [x] Column CRUD API + reorder
-- [x] Task CRUD API + move
-- [x] Socket.io real-time events
-- [ ] Frontend dengan Next.js + Shadcn/ui
-- [ ] Drag & drop tasks
-- [ ] Docker + CI/CD
-- [ ] Deploy ke AWS
+| Feature | Status |
+|---------|--------|
+| Monorepo structure (frontend + backend) | ✅ |
+| Express.js + TypeScript + Socket.io setup | ✅ |
+| Prisma 7 dengan Supabase PostgreSQL | ✅ |
+| JWT Authentication (register, login, logout) | ✅ |
+| Swagger API documentation | ✅ |
+| Workspace CRUD API | ✅ |
+| Board CRUD API | ✅ |
+| Column CRUD API + reorder | ✅ |
+| Task CRUD API + move | ✅ |
+| Socket.io real-time events | ✅ |
+| Frontend dengan Next.js + Shadcn/ui | 🔜 |
+| Drag & drop tasks | 🔜 |
+| Docker + CI/CD | 🔜 |
+| Deploy ke AWS | 🔜 |
 
-## Penulis
+## Creator
 
 **Abdur Rauf Al Farras**
 - GitHub: [@Rauf74](https://github.com/Rauf74)
+
