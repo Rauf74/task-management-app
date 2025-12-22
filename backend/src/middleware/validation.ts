@@ -40,6 +40,73 @@ export const loginSchema = z.object({
 });
 
 // ==============================================
+// Workspace Schemas
+// ==============================================
+
+export const workspaceSchema = z.object({
+    name: z.string().min(1, "Nama workspace wajib diisi").max(100),
+    description: z.string().max(500).optional(),
+});
+
+export const updateWorkspaceSchema = z.object({
+    name: z.string().min(1).max(100).optional(),
+    description: z.string().max(500).optional(),
+});
+
+// ==============================================
+// Board Schemas
+// ==============================================
+
+export const boardSchema = z.object({
+    name: z.string().min(1, "Nama board wajib diisi").max(100),
+    description: z.string().max(500).optional(),
+});
+
+export const updateBoardSchema = z.object({
+    name: z.string().min(1).max(100).optional(),
+    description: z.string().max(500).optional(),
+});
+
+// ==============================================
+// Column Schemas
+// ==============================================
+
+export const columnSchema = z.object({
+    title: z.string().min(1, "Judul column wajib diisi").max(100),
+});
+
+export const updateColumnSchema = z.object({
+    title: z.string().min(1).max(100).optional(),
+});
+
+export const reorderColumnsSchema = z.object({
+    columnIds: z.array(z.string()),
+});
+
+// ==============================================
+// Task Schemas
+// ==============================================
+
+export const taskSchema = z.object({
+    title: z.string().min(1, "Judul task wajib diisi").max(200),
+    description: z.string().max(1000).optional(),
+    priority: z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"]).optional(),
+    dueDate: z.string().datetime().optional(),
+});
+
+export const updateTaskSchema = z.object({
+    title: z.string().min(1).max(200).optional(),
+    description: z.string().max(1000).optional(),
+    priority: z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"]).optional(),
+    dueDate: z.string().datetime().nullable().optional(),
+});
+
+export const moveTaskSchema = z.object({
+    columnId: z.string(),
+    order: z.number().int().min(0),
+});
+
+// ==============================================
 // Validation Middleware Factory
 // ==============================================
 

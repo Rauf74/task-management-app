@@ -18,7 +18,10 @@ import cookieParser from "cookie-parser";
 
 // Import routes
 import authRoutes from "./routes/auth.routes.js";
-// import workspaceRoutes from "./routes/workspace.routes.js";
+import workspaceRoutes from "./routes/workspace.routes.js";
+import boardRoutes from "./routes/board.routes.js";
+import columnRoutes from "./routes/column.routes.js";
+import taskRoutes from "./routes/task.routes.js";
 
 // Import Swagger
 import { setupSwagger } from "./lib/swagger.js";
@@ -56,7 +59,10 @@ app.get("/api/health", (_req, res) => {
 
 // API routes
 app.use("/api/auth", authRoutes);
-// app.use("/api/workspaces", workspaceRoutes);
+app.use("/api/workspaces", workspaceRoutes);
+app.use("/api/boards", boardRoutes);
+app.use("/api/columns", columnRoutes);
+app.use("/api/tasks", taskRoutes);
 
 // Swagger documentation
 setupSwagger(app);
