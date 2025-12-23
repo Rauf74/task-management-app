@@ -24,6 +24,11 @@ async function fetcher<T>(endpoint: string, options: FetchOptions = {}): Promise
     const data = await response.json();
 
     if (!response.ok) {
+        // Auth errors: don't throw, just log silently
+        if (response.status === 401) {
+            console.log("Auth required, redirecting...");
+            return data;
+        }
         throw new Error(data.error || "Something went wrong");
     }
 

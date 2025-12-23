@@ -36,10 +36,15 @@ export default function DashboardPage() {
     async function loadWorkspaces() {
         try {
             const response = await workspaceApi.list();
-            setWorkspaces(response.data.workspaces);
+            // Check if response has valid data (401 returns different structure)
+            if (response?.data?.workspaces) {
+                setWorkspaces(response.data.workspaces);
+            }
         } catch (error) {
-            toast.error("Gagal memuat workspace");
-            console.error(error);
+            const message = error instanceof Error ? error.message : "";
+            if (!message.includes("login")) {
+                toast.error("Gagal memuat workspace");
+            }
         } finally {
             setIsLoading(false);
         }
