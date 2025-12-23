@@ -24,17 +24,21 @@ Aplikasi manajemen tugas bergaya Kanban dengan fitur kolaborasi real-time.
 
 ```
 task-management/
-├── frontend/          # Aplikasi Next.js
-├── backend/           # Server API Express.js
-│   ├── src/
-│   │   ├── controllers/   # HTTP request handlers
-│   │   ├── services/      # Business logic
-│   │   ├── repositories/  # Database queries
-│   │   ├── routes/        # API endpoints
-│   │   ├── middleware/    # Auth, validation
-│   │   ├── socket/        # Real-time events
-│   │   └── lib/           # Prisma, Swagger
-│   └── prisma/            # Database schema
+├── frontend/
+│   └── src/
+│       ├── app/
+│       │   ├── (auth)/        # Auth pages
+│       │   └── (dashboard)/   # Protected pages
+│       ├── components/ui/     # Shadcn components
+│       └── lib/               # API client, auth context
+├── backend/
+│   └── src/
+│       ├── controllers/       # HTTP handlers
+│       ├── services/          # Business logic
+│       ├── repositories/      # Database queries
+│       ├── routes/            # API endpoints
+│       ├── middleware/        # Auth, validation
+│       └── socket/            # Real-time events
 └── README.md
 ```
 
@@ -99,38 +103,52 @@ npx prisma db push
 npm run dev
 ```
 
-Server berjalan di: http://localhost:4000
+Server: http://localhost:4000 | API Docs: http://localhost:4000/api/docs
 
-API Docs: http://localhost:4000/api/docs
-
-### Frontend (Coming Soon)
+### Frontend
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
+Frontend: http://localhost:3000
+
 ## Progress
 
+### Backend
 | Feature | Status |
 |---------|--------|
-| Monorepo structure (frontend + backend) | ✅ |
-| Express.js + TypeScript + Socket.io setup | ✅ |
-| Prisma 7 dengan Supabase PostgreSQL | ✅ |
-| JWT Authentication (register, login, logout) | ✅ |
+| Express.js + TypeScript + Socket.io | ✅ |
+| Clean Architecture | ✅ |
+| Prisma 7 + Supabase PostgreSQL | ✅ |
+| JWT Authentication | ✅ |
 | Swagger API documentation | ✅ |
 | Workspace CRUD API | ✅ |
 | Board CRUD API | ✅ |
 | Column CRUD API + reorder | ✅ |
 | Task CRUD API + move | ✅ |
 | Socket.io real-time events | ✅ |
-| Frontend dengan Next.js + Shadcn/ui | 🔜 |
-| Drag & drop tasks | 🔜 |
-| Docker + CI/CD | 🔜 |
+
+### Frontend Pages
+| Page | Route | Status |
+|------|-------|--------|
+| Login | `/login` | ✅ |
+| Register | `/register` | ✅ |
+| Dashboard (Workspace List) | `/` | ✅ |
+| Workspace Detail | `/workspaces/:id` | 🔜 |
+| Board View | `/boards/:id` | 🔜 |
+| Drag & Drop Tasks | - | 🔜 |
+| Real-time Updates | - | 🔜 |
+
+### DevOps
+| Feature | Status |
+|---------|--------|
+| Docker | 🔜 |
+| CI/CD (GitHub Actions) | 🔜 |
 | Deploy ke AWS | 🔜 |
 
 ## Creator
 
 **Abdur Rauf Al Farras**
 - GitHub: [@Rauf74](https://github.com/Rauf74)
-
