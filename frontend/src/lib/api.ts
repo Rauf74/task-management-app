@@ -4,8 +4,8 @@
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
-type FetchOptions = RequestInit & {
-    body?: unknown;
+type FetchOptions = Omit<RequestInit, 'body'> & {
+    body?: Record<string, unknown>;
 };
 
 async function fetcher<T>(endpoint: string, options: FetchOptions = {}): Promise<T> {
