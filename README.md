@@ -141,12 +141,13 @@ Frontend: http://localhost:3000
 | Drag & Drop Tasks | - | 🔜 |
 | Real-time Updates | - | 🔜 |
 
-### DevOps
+### DevOps & Testing
 | Feature | Status |
 |---------|--------|
 | Docker | 🔜 |
 | CI/CD (GitHub Actions) | 🔜 |
 | Deploy ke AWS | 🔜 |
+| E2E Testing (Playwright) | 🔜 |
 
 ## Creator
 
