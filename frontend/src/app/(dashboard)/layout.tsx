@@ -58,7 +58,7 @@ export default function DashboardLayout({
             <header className="border-b border-slate-700 bg-slate-800">
                 <div className="flex h-16 items-center justify-between px-6">
                     <Link href="/" className="flex items-center space-x-2">
-                        <span className="text-xl font-bold text-white">TaskBoard</span>
+                        <span className="text-xl font-bold text-white">TaskScale</span>
                     </Link>
 
                     <DropdownMenu>
