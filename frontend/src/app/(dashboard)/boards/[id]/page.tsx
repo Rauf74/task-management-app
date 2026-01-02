@@ -1,15 +1,27 @@
 "use client";
 
 // ==============================================
-// Board View Page - Kanban Board
+// Board View Page - Kanban Board with Drag & Drop
 // ==============================================
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import {
+    DndContext,
+    DragEndEvent,
+    DragOverEvent,
+    DragStartEvent,
+    PointerSensor,
+    useSensor,
+    useSensors,
+    closestCorners,
+    DragOverlay,
+} from "@dnd-kit/core";
+import { arrayMove } from "@dnd-kit/sortable";
 import { boardApi, columnApi, taskApi, BoardWithDetails, Column, Task } from "@/lib/api";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -21,6 +33,8 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { KanbanColumn } from "@/components/board/kanban-column";
+import { TaskCard } from "@/components/board/task-card";
 
 export default function BoardViewPage() {
     const params = useParams();
@@ -29,6 +43,7 @@ export default function BoardViewPage() {
 
     const [board, setBoard] = useState<BoardWithDetails | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [activeTask, setActiveTask] = useState<Task | null>(null);
 
     // Dialog states
     const [columnDialogOpen, setColumnDialogOpen] = useState(false);
@@ -37,6 +52,15 @@ export default function BoardViewPage() {
     const [newColumn, setNewColumn] = useState({ title: "" });
     const [newTask, setNewTask] = useState({ title: "", description: "" });
     const [isCreating, setIsCreating] = useState(false);
+
+    // DnD sensors
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 10,
+            },
+        })
+    );
 
     useEffect(() => {
         loadBoard();
@@ -53,6 +77,135 @@ export default function BoardViewPage() {
             console.error(error);
         } finally {
             setIsLoading(false);
+        }
+    }
+
+    // Drag handlers
+    function handleDragStart(event: DragStartEvent) {
+        const { active } = event;
+        const taskId = active.id as string;
+
+        // Find the task
+        for (const column of board?.columns || []) {
+            const task = column.tasks.find((t) => t.id === taskId);
+            if (task) {
+                setActiveTask(task);
+                break;
+            }
+        }
+    }
+
+    function handleDragOver(event: DragOverEvent) {
+        const { active, over } = event;
+        if (!over || !board) return;
+
+        const activeId = active.id as string;
+        const overId = over.id as string;
+
+        // Find source column
+        let sourceColumn: Column | null = null;
+        let sourceTask: Task | null = null;
+        for (const col of board.columns) {
+            const task = col.tasks.find((t) => t.id === activeId);
+            if (task) {
+                sourceColumn = col;
+                sourceTask = task;
+                break;
+            }
+        }
+
+        if (!sourceColumn || !sourceTask) return;
+
+        // Find target column (could be over a column or a task)
+        let targetColumn: Column | null = null;
+        for (const col of board.columns) {
+            if (col.id === overId) {
+                targetColumn = col;
+                break;
+            }
+            const task = col.tasks.find((t) => t.id === overId);
+            if (task) {
+                targetColumn = col;
+                break;
+            }
+        }
+
+        if (!targetColumn || sourceColumn.id === targetColumn.id) return;
+
+        // Move task to new column (optimistic update)
+        setBoard((prev) => {
+            if (!prev) return prev;
+
+            const newColumns = prev.columns.map((col) => {
+                if (col.id === sourceColumn!.id) {
+                    return {
+                        ...col,
+                        tasks: col.tasks.filter((t) => t.id !== activeId),
+                    };
+                }
+                if (col.id === targetColumn!.id) {
+                    return {
+                        ...col,
+                        tasks: [...col.tasks, { ...sourceTask!, columnId: targetColumn!.id }],
+                    };
+                }
+                return col;
+            });
+
+            return { ...prev, columns: newColumns };
+        });
+    }
+
+    async function handleDragEnd(event: DragEndEvent) {
+        const { active, over } = event;
+        setActiveTask(null);
+
+        if (!over || !board) return;
+
+        const activeId = active.id as string;
+        const overId = over.id as string;
+
+        // Find the task and its column
+        let taskColumn: Column | null = null;
+        let taskIndex = -1;
+        for (const col of board.columns) {
+            const idx = col.tasks.findIndex((t) => t.id === activeId);
+            if (idx !== -1) {
+                taskColumn = col;
+                taskIndex = idx;
+                break;
+            }
+        }
+
+        if (!taskColumn) return;
+
+        // If dropped over another task in the same column, reorder
+        const overTaskIndex = taskColumn.tasks.findIndex((t) => t.id === overId);
+        if (overTaskIndex !== -1 && overTaskIndex !== taskIndex) {
+            setBoard((prev) => {
+                if (!prev) return prev;
+
+                const newColumns = prev.columns.map((col) => {
+                    if (col.id === taskColumn!.id) {
+                        const newTasks = arrayMove(col.tasks, taskIndex, overTaskIndex);
+                        return { ...col, tasks: newTasks };
+                    }
+                    return col;
+                });
+
+                return { ...prev, columns: newColumns };
+            });
+        }
+
+        // Call API to save the move
+        try {
+            await taskApi.move(activeId, {
+                columnId: taskColumn.id,
+                order: taskIndex,
+            });
+        } catch (error) {
+            toast.error("Gagal memindahkan task");
+            loadBoard(); // Reload to sync state
         }
     }
 
@@ -122,18 +275,17 @@ export default function BoardViewPage() {
         }
     }
 
-    async function handleDeleteTask(taskId: string, columnId: string) {
+    async function handleDeleteTask(taskId: string) {
         try {
             await taskApi.delete(taskId);
             setBoard((prev) => {
                 if (!prev) return prev;
                 return {
                     ...prev,
-                    columns: prev.columns.map((col) =>
-                        col.id === columnId
-                            ? { ...col, tasks: col.tasks.filter((t) => t.id !== taskId) }
-                            : col
-                    ),
+                    columns: prev.columns.map((col) => ({
+                        ...col,
+                        tasks: col.tasks.filter((t) => t.id !== taskId),
+                    })),
                 };
             });
             toast.success("Task berhasil dihapus");
@@ -210,82 +362,44 @@ export default function BoardViewPage() {
                 </Dialog>
             </div>
 
-            {/* Kanban Board */}
-            <div className="flex gap-4 overflow-x-auto pb-4">
-                {board.columns.length === 0 ? (
-                    <Card className="border-slate-700 bg-slate-800/50 min-w-[300px]">
-                        <CardContent className="flex flex-col items-center justify-center py-12">
-                            <p className="text-slate-400 mb-4">Belum ada column</p>
-                            <Button onClick={() => setColumnDialogOpen(true)}>Buat Column Pertama</Button>
-                        </CardContent>
-                    </Card>
-                ) : (
-                    board.columns.map((column: Column) => (
-                        <div key={column.id} className="min-w-[300px] max-w-[300px]">
-                            <Card className="border-slate-700 bg-slate-800 h-full">
-                                <CardHeader className="pb-3">
-                                    <div className="flex items-center justify-between">
-                                        <CardTitle className="text-white text-sm font-medium">
-                                            {column.title}
-                                            <span className="ml-2 text-slate-400">({column.tasks.length})</span>
-                                        </CardTitle>
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            onClick={() => handleDeleteColumn(column.id)}
-                                            className="text-slate-400 hover:text-red-400 h-6 w-6 p-0"
-                                        >
-                                            ×
-                                        </Button>
-                                    </div>
-                                </CardHeader>
-                                <CardContent className="space-y-2">
-                                    {column.tasks.map((task: Task) => (
-                                        <Card key={task.id} className="border-slate-600 bg-slate-700 cursor-pointer hover:bg-slate-650">
-                                            <CardContent className="p-3">
-                                                <div className="flex items-start justify-between gap-2">
-                                                    <div>
-                                                        <p className="text-white text-sm font-medium">{task.title}</p>
-                                                        {task.description && (
-                                                            <p className="text-slate-400 text-xs mt-1 line-clamp-2">
-                                                                {task.description}
-                                                            </p>
-                                                        )}
-                                                        <div className="flex gap-2 mt-2">
-                                                            <span className={`text-xs px-2 py-0.5 rounded ${task.priority === "URGENT" ? "bg-red-500/20 text-red-400" :
-                                                                    task.priority === "HIGH" ? "bg-orange-500/20 text-orange-400" :
-                                                                        task.priority === "MEDIUM" ? "bg-yellow-500/20 text-yellow-400" :
-                                                                            "bg-blue-500/20 text-blue-400"
-                                                                }`}>
-                                                                {task.priority}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        onClick={() => handleDeleteTask(task.id, column.id)}
-                                                        className="text-slate-400 hover:text-red-400 h-5 w-5 p-0"
-                                                    >
-                                                        ×
-                                                    </Button>
-                                                </div>
-                                            </CardContent>
-                                        </Card>
-                                    ))}
-                                    <Button
-                                        variant="ghost"
-                                        className="w-full text-slate-400 hover:text-white hover:bg-slate-700"
-                                        onClick={() => openTaskDialog(column.id)}
-                                    >
-                                        + Tambah Task
-                                    </Button>
-                                </CardContent>
-                            </Card>
+            {/* Kanban Board with DnD */}
+            <DndContext
+                sensors={sensors}
+                collisionDetection={closestCorners}
+                onDragStart={handleDragStart}
+                onDragOver={handleDragOver}
+                onDragEnd={handleDragEnd}
+            >
+                <div className="flex gap-4 overflow-x-auto pb-4">
+                    {board.columns.length === 0 ? (
+                        <Card className="border-slate-700 bg-slate-800/50 min-w-[300px]">
+                            <CardContent className="flex flex-col items-center justify-center py-12">
+                                <p className="text-slate-400 mb-4">Belum ada column</p>
+                                <Button onClick={() => setColumnDialogOpen(true)}>Buat Column Pertama</Button>
+                            </CardContent>
+                        </Card>
+                    ) : (
+                        board.columns.map((column: Column) => (
+                            <KanbanColumn
+                                key={column.id}
+                                column={column}
+                                onDeleteColumn={handleDeleteColumn}
+                                onDeleteTask={handleDeleteTask}
+                                onAddTask={openTaskDialog}
+                            />
+                        ))
+                    )}
+                </div>
+
+                {/* Drag Overlay */}
+                <DragOverlay>
+                    {activeTask ? (
+                        <div className="opacity-80">
+                            <TaskCard task={activeTask} onDelete={() => { }} />
                         </div>
-                    ))
-                )}
-            </div>
+                    ) : null}
+                </DragOverlay>
+            </DndContext>
 
             {/* Task Dialog */}
             <Dialog open={taskDialogOpen} onOpenChange={setTaskDialogOpen}>
