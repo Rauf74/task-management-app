@@ -13,9 +13,10 @@ import { Button } from "@/components/ui/button";
 interface TaskCardProps {
     task: Task;
     onDelete: (taskId: string) => void;
+    onEdit?: (task: Task) => void;
 }
 
-export function TaskCard({ task, onDelete }: TaskCardProps) {
+export function TaskCard({ task, onDelete, onEdit }: TaskCardProps) {
     const {
         attributes,
         listeners,
@@ -31,6 +32,13 @@ export function TaskCard({ task, onDelete }: TaskCardProps) {
         opacity: isDragging ? 0.5 : 1,
     };
 
+    function handleCardClick(e: React.MouseEvent) {
+        // Only open edit if not dragging and onEdit is provided
+        if (!isDragging && onEdit) {
+            onEdit(task);
+        }
+    }
+
     return (
         <Card
             ref={setNodeRef}
@@ -40,9 +48,9 @@ export function TaskCard({ task, onDelete }: TaskCardProps) {
             {...attributes}
             {...listeners}
         >
-            <CardContent className="p-3">
+            <CardContent className="p-3" onClick={handleCardClick}>
                 <div className="flex items-start justify-between gap-2">
-                    <div className="flex-1">
+                    <div className="flex-1 cursor-pointer" onClick={handleCardClick}>
                         <p className="text-foreground text-sm font-medium">{task.title}</p>
                         {task.description && (
                             <p className="text-muted-foreground text-xs mt-1 line-clamp-2">

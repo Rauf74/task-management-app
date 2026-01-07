@@ -35,6 +35,7 @@ import {
 import { toast } from "sonner";
 import { KanbanColumn } from "@/components/board/kanban-column";
 import { TaskCard } from "@/components/board/task-card";
+import { EditTaskDialog } from "@/components/board/edit-task-dialog";
 
 export default function BoardViewPage() {
     const params = useParams();
@@ -52,6 +53,10 @@ export default function BoardViewPage() {
     const [newColumn, setNewColumn] = useState({ title: "" });
     const [newTask, setNewTask] = useState({ title: "", description: "" });
     const [isCreating, setIsCreating] = useState(false);
+
+    // Edit task state
+    const [editDialogOpen, setEditDialogOpen] = useState(false);
+    const [editingTask, setEditingTask] = useState<Task | null>(null);
 
     // DnD sensors
     const sensors = useSensors(
@@ -292,6 +297,32 @@ export default function BoardViewPage() {
         setTaskDialogOpen(true);
     }
 
+    function openEditDialog(task: Task) {
+        setEditingTask(task);
+        setEditDialogOpen(true);
+    }
+
+    async function handleUpdateTask(taskId: string, data: { title: string; description: string; priority: string }) {
+        try {
+            await taskApi.update(taskId, data);
+            setBoard((prev) => {
+                if (!prev) return prev;
+                return {
+                    ...prev,
+                    columns: prev.columns.map((col) => ({
+                        ...col,
+                        tasks: col.tasks.map((t) =>
+                            t.id === taskId ? { ...t, title: data.title, description: data.description, priority: data.priority as Task["priority"] } : t
+                        ),
+                    })),
+                };
+            });
+            toast.success("Task berhasil diupdate!");
+        } catch (error) {
+            toast.error("Gagal mengupdate task");
+        }
+    }
+
     if (isLoading) {
         return (
             <div className="flex items-center justify-center h-64">
@@ -379,6 +410,7 @@ export default function BoardViewPage() {
                                 onDeleteColumn={handleDeleteColumn}
                                 onDeleteTask={handleDeleteTask}
                                 onAddTask={openTaskDialog}
+                                onEditTask={openEditDialog}
                             />
                         ))
                     )}
@@ -432,6 +464,14 @@ export default function BoardViewPage() {
                     </form>
                 </DialogContent>
             </Dialog>
+
+            {/* Edit Task Dialog */}
+            <EditTaskDialog
+                task={editingTask}
+                open={editDialogOpen}
+                onOpenChange={setEditDialogOpen}
+                onSave={handleUpdateTask}
+            />
         </div>
     );
 }
