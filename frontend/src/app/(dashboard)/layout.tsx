@@ -1,7 +1,7 @@
 "use client";
 
 // ==============================================
-// Dashboard Layout with Sidebar
+// Dashboard Layout with Header & Theme Toggle
 // ==============================================
 
 import { useEffect } from "react";
@@ -17,6 +17,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function DashboardLayout({
     children,
@@ -41,8 +42,8 @@ export default function DashboardLayout({
     // Show loading while checking auth
     if (isLoading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-slate-900">
-                <div className="text-white">Loading...</div>
+            <div className="min-h-screen flex items-center justify-center bg-background">
+                <div className="text-foreground">Loading...</div>
             </div>
         );
     }
@@ -53,40 +54,46 @@ export default function DashboardLayout({
     }
 
     return (
-        <div className="min-h-screen bg-slate-900">
+        <div className="min-h-screen bg-background">
             {/* Header */}
-            <header className="border-b border-slate-700 bg-slate-800">
+            <header className="border-b border-border bg-card">
                 <div className="flex h-16 items-center justify-between px-6">
                     <Link href="/" className="flex items-center space-x-2">
-                        <span className="text-xl font-bold text-white">TaskScale</span>
+                        <span className="text-xl font-bold text-foreground">TaskScale</span>
                     </Link>
 
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                                <Avatar className="h-10 w-10">
-                                    <AvatarFallback className="bg-blue-600 text-white">
-                                        {user.name.charAt(0).toUpperCase()}
-                                    </AvatarFallback>
-                                </Avatar>
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-56 bg-slate-800 border-slate-700">
-                            <div className="flex items-center gap-2 p-2">
-                                <div className="flex flex-col space-y-1">
-                                    <p className="text-sm font-medium text-white">{user.name}</p>
-                                    <p className="text-xs text-slate-400">{user.email}</p>
+                    <div className="flex items-center gap-2">
+                        {/* Theme Toggle */}
+                        <ThemeToggle />
+
+                        {/* User Dropdown */}
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                                    <Avatar className="h-10 w-10">
+                                        <AvatarFallback className="bg-primary text-primary-foreground">
+                                            {user.name.charAt(0).toUpperCase()}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-56 bg-card border-border">
+                                <div className="flex items-center gap-2 p-2">
+                                    <div className="flex flex-col space-y-1">
+                                        <p className="text-sm font-medium text-foreground">{user.name}</p>
+                                        <p className="text-xs text-muted-foreground">{user.email}</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <Separator className="bg-slate-700" />
-                            <DropdownMenuItem
-                                onClick={handleLogout}
-                                className="text-red-400 cursor-pointer focus:text-red-400 focus:bg-slate-700"
-                            >
-                                Logout
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                                <Separator className="bg-border" />
+                                <DropdownMenuItem
+                                    onClick={handleLogout}
+                                    className="text-destructive cursor-pointer focus:text-destructive focus:bg-accent"
+                                >
+                                    Logout
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
                 </div>
             </header>
 
@@ -97,3 +104,4 @@ export default function DashboardLayout({
         </div>
     );
 }
+
