@@ -21,6 +21,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { toast } from "sonner";
 
 export default function WorkspaceDetailPage() {
@@ -33,6 +34,7 @@ export default function WorkspaceDetailPage() {
     const [isCreating, setIsCreating] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [newBoard, setNewBoard] = useState({ name: "", description: "" });
+    const [deleteWorkspaceDialog, setDeleteWorkspaceDialog] = useState(false);
 
     useEffect(() => {
         loadWorkspace();
@@ -75,14 +77,14 @@ export default function WorkspaceDetailPage() {
     }
 
     async function handleDeleteWorkspace() {
-        if (!confirm("Yakin ingin menghapus workspace ini?")) return;
-
         try {
             await workspaceApi.delete(workspaceId);
             toast.success("Workspace berhasil dihapus");
             router.push("/");
         } catch (error) {
             toast.error("Gagal menghapus workspace");
+        } finally {
+            setDeleteWorkspaceDialog(false);
         }
     }
 
@@ -162,7 +164,7 @@ export default function WorkspaceDetailPage() {
                             </form>
                         </DialogContent>
                     </Dialog>
-                    <Button variant="destructive" onClick={handleDeleteWorkspace}>
+                    <Button variant="destructive" onClick={() => setDeleteWorkspaceDialog(true)}>
                         Hapus Workspace
                     </Button>
                 </div>
@@ -192,6 +194,15 @@ export default function WorkspaceDetailPage() {
                     ))}
                 </div>
             )}
+
+            {/* Delete Workspace Confirmation */}
+            <ConfirmDialog
+                open={deleteWorkspaceDialog}
+                onOpenChange={setDeleteWorkspaceDialog}
+                title="Hapus Workspace"
+                description="Yakin ingin menghapus workspace ini? Semua board dan task di dalamnya juga akan terhapus."
+                onConfirm={handleDeleteWorkspace}
+            />
         </div>
     );
 }

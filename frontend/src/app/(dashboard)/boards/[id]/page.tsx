@@ -43,6 +43,7 @@ import { toast } from "sonner";
 import { KanbanColumn } from "@/components/board/kanban-column";
 import { TaskCard } from "@/components/board/task-card";
 import { EditTaskDialog } from "@/components/board/edit-task-dialog";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 export default function BoardViewPage() {
     const params = useParams();
@@ -64,6 +65,12 @@ export default function BoardViewPage() {
     // Edit task state
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [editingTask, setEditingTask] = useState<Task | null>(null);
+
+    // Delete confirmation state
+    const [deleteColumnDialog, setDeleteColumnDialog] = useState(false);
+    const [deletingColumnId, setDeletingColumnId] = useState<string | null>(null);
+    const [deleteTaskDialog, setDeleteTaskDialog] = useState(false);
+    const [deletingTaskId, setDeletingTaskId] = useState<string | null>(null);
 
     // DnD sensors
     const sensors = useSensors(
@@ -266,36 +273,54 @@ export default function BoardViewPage() {
         }
     }
 
-    async function handleDeleteColumn(columnId: string) {
-        if (!confirm("Yakin ingin menghapus column ini?")) return;
+    function confirmDeleteColumn(columnId: string) {
+        setDeletingColumnId(columnId);
+        setDeleteColumnDialog(true);
+    }
+
+    async function handleDeleteColumn() {
+        if (!deletingColumnId) return;
 
         try {
-            await columnApi.delete(columnId);
+            await columnApi.delete(deletingColumnId);
             setBoard((prev) =>
-                prev ? { ...prev, columns: prev.columns.filter((c) => c.id !== columnId) } : prev
+                prev ? { ...prev, columns: prev.columns.filter((c) => c.id !== deletingColumnId) } : prev
             );
             toast.success("Column berhasil dihapus");
         } catch (error) {
             toast.error("Gagal menghapus column");
+        } finally {
+            setDeleteColumnDialog(false);
+            setDeletingColumnId(null);
         }
     }
 
-    async function handleDeleteTask(taskId: string) {
+    function confirmDeleteTask(taskId: string) {
+        setDeletingTaskId(taskId);
+        setDeleteTaskDialog(true);
+    }
+
+    async function handleDeleteTask() {
+        if (!deletingTaskId) return;
+
         try {
-            await taskApi.delete(taskId);
+            await taskApi.delete(deletingTaskId);
             setBoard((prev) => {
                 if (!prev) return prev;
                 return {
                     ...prev,
                     columns: prev.columns.map((col) => ({
                         ...col,
-                        tasks: col.tasks.filter((t) => t.id !== taskId),
+                        tasks: col.tasks.filter((t) => t.id !== deletingTaskId),
                     })),
                 };
             });
             toast.success("Task berhasil dihapus");
         } catch (error) {
             toast.error("Gagal menghapus task");
+        } finally {
+            setDeleteTaskDialog(false);
+            setDeletingTaskId(null);
         }
     }
 
@@ -414,8 +439,8 @@ export default function BoardViewPage() {
                             <KanbanColumn
                                 key={column.id}
                                 column={column}
-                                onDeleteColumn={handleDeleteColumn}
-                                onDeleteTask={handleDeleteTask}
+                                onDeleteColumn={confirmDeleteColumn}
+                                onDeleteTask={confirmDeleteTask}
                                 onAddTask={openTaskDialog}
                                 onEditTask={openEditDialog}
                             />
@@ -495,6 +520,24 @@ export default function BoardViewPage() {
                 open={editDialogOpen}
                 onOpenChange={setEditDialogOpen}
                 onSave={handleUpdateTask}
+            />
+
+            {/* Delete Column Confirmation */}
+            <ConfirmDialog
+                open={deleteColumnDialog}
+                onOpenChange={setDeleteColumnDialog}
+                title="Hapus Column"
+                description="Yakin ingin menghapus column ini? Semua task di dalamnya juga akan terhapus."
+                onConfirm={handleDeleteColumn}
+            />
+
+            {/* Delete Task Confirmation */}
+            <ConfirmDialog
+                open={deleteTaskDialog}
+                onOpenChange={setDeleteTaskDialog}
+                title="Hapus Task"
+                description="Yakin ingin menghapus task ini?"
+                onConfirm={handleDeleteTask}
             />
         </div>
     );
