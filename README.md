@@ -2,13 +2,16 @@
 
 Aplikasi manajemen tugas bergaya Kanban dengan fitur kolaborasi real-time.
 
-## Tech Stack
+## 🚀 Tech Stack
 
 ### Frontend
-- **Next.js 16** - Framework React dengan App Router
+- **Next.js 15** - Framework React dengan App Router
 - **TypeScript** - Type safety
-- **Tailwind CSS** - Styling utility-first
+- **Tailwind CSS v4** - Styling utility-first
 - **Shadcn/ui** - Komponen UI modern
+- **@dnd-kit** - Drag & Drop
+- **Socket.io Client** - Real-time updates
+- **next-themes** - Dark/Light mode
 
 ### Backend
 - **Express.js** - REST API server
@@ -20,29 +23,43 @@ Aplikasi manajemen tugas bergaya Kanban dengan fitur kolaborasi real-time.
 - **Zod** - Validasi input
 - **Swagger** - API documentation
 
-## Struktur Proyek
+## 📁 Struktur Proyek
 
 ```
 task-management/
 ├── frontend/
 │   └── src/
 │       ├── app/
-│       │   ├── (auth)/        # Auth pages
-│       │   └── (dashboard)/   # Protected pages
-│       ├── components/ui/     # Shadcn components
-│       └── lib/               # API client, auth context
+│       │   ├── (auth)/           # Login, Register
+│       │   └── (dashboard)/      # Workspace, Board pages
+│       ├── components/
+│       │   ├── ui/               # Shadcn components
+│       │   └── board/            # Kanban components
+│       └── lib/                  # API, contexts, utils
 ├── backend/
 │   └── src/
-│       ├── controllers/       # HTTP handlers
-│       ├── services/          # Business logic
-│       ├── repositories/      # Database queries
-│       ├── routes/            # API endpoints
-│       ├── middleware/        # Auth, validation
-│       └── socket/            # Real-time events
+│       ├── controllers/          # HTTP handlers
+│       ├── services/             # Business logic
+│       ├── repositories/         # Database queries
+│       ├── routes/               # API endpoints
+│       ├── middleware/           # Auth, validation
+│       └── socket/               # Real-time events
 └── README.md
 ```
 
-## API Endpoints
+## 🎨 Features
+
+- ✅ **Authentication** - Register, Login, Logout dengan JWT
+- ✅ **Workspace Management** - Buat, edit, hapus workspace
+- ✅ **Board Management** - Kanban boards dalam workspace
+- ✅ **Column Management** - Kolom untuk mengorganisir task
+- ✅ **Task Management** - CRUD task dengan priority
+- ✅ **Drag & Drop** - Pindahkan task antar kolom
+- ✅ **Real-time Updates** - Socket.io untuk kolaborasi
+- ✅ **Dark/Light Mode** - Theme toggle dengan ColorHunt palette
+- ✅ **Delete Confirmation** - Dialog konfirmasi sebelum hapus
+
+## 📡 API Endpoints
 
 ### Authentication
 | Method | Endpoint | Description |
@@ -86,7 +103,7 @@ task-management/
 | DELETE | `/api/tasks/:id` | Delete task |
 | PATCH | `/api/tasks/:id/move` | Move task |
 
-## Cara Menjalankan
+## 🛠️ Cara Menjalankan
 
 ### Prasyarat
 - Node.js 20+
@@ -114,7 +131,7 @@ npm run dev
 
 Frontend: http://localhost:3000
 
-## Progress
+## 📊 Progress
 
 ### Backend
 | Feature | Status |
@@ -130,26 +147,35 @@ Frontend: http://localhost:3000
 | Task CRUD API + move | ✅ |
 | Socket.io real-time events | ✅ |
 
-### Frontend Pages
-| Page | Route | Status |
-|------|-------|--------|
-| Login | `/login` | ✅ |
-| Register | `/register` | ✅ |
-| Dashboard (Workspace List) | `/` | ✅ |
-| Workspace Detail | `/workspaces/:id` | 🔜 |
-| Board View | `/boards/:id` | 🔜 |
-| Drag & Drop Tasks | - | 🔜 |
-| Real-time Updates | - | 🔜 |
-
-### DevOps & Testing
+### Frontend
 | Feature | Status |
 |---------|--------|
-| Docker | 🔜 |
-| CI/CD (GitHub Actions) | 🔜 |
-| Deploy ke AWS | 🔜 |
+| Login & Register Pages | ✅ |
+| Dashboard (Workspace List) | ✅ |
+| Workspace Detail Page | ✅ |
+| Board View (Kanban) | ✅ |
+| Drag & Drop Tasks | ✅ |
+| Real-time Updates (Socket.io) | ✅ |
+| Dark/Light Mode Toggle | ✅ |
+| Edit Task Dialog | ✅ |
+| Delete Confirmation Dialogs | ✅ |
+| Priority Select (Create & Edit) | ✅ |
+
+### Phase 5: DevOps & Testing (Next)
+| Feature | Status |
+|---------|--------|
+| Dockerfile frontend | 🔜 |
+| Dockerfile backend | 🔜 |
+| docker-compose.yml | 🔜 |
+| GitHub Actions CI/CD | 🔜 |
+| Deploy ke Railway/Render | 🔜 |
 | E2E Testing (Playwright) | 🔜 |
 
-## Creator
+## 📸 Screenshots
+
+*Coming soon*
+
+## 👤 Creator
 
 **Abdur Rauf Al Farras**
 - GitHub: [@Rauf74](https://github.com/Rauf74)
