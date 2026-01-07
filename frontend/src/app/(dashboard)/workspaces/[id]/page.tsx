@@ -89,7 +89,7 @@ export default function WorkspaceDetailPage() {
     if (isLoading) {
         return (
             <div className="flex items-center justify-center h-64">
-                <div className="text-slate-400">Memuat workspace...</div>
+                <div className="text-muted-foreground">Memuat workspace...</div>
             </div>
         );
     }
@@ -97,7 +97,7 @@ export default function WorkspaceDetailPage() {
     if (!workspace) {
         return (
             <div className="flex flex-col items-center justify-center h-64">
-                <p className="text-slate-400 mb-4">Workspace tidak ditemukan</p>
+                <p className="text-muted-foreground mb-4">Workspace tidak ditemukan</p>
                 <Button onClick={() => router.push("/")}>Kembali ke Dashboard</Button>
             </div>
         );
@@ -108,14 +108,14 @@ export default function WorkspaceDetailPage() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <div className="flex items-center gap-2 text-sm text-slate-400 mb-2">
-                        <Link href="/" className="hover:text-white">Dashboard</Link>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+                        <Link href="/" className="hover:text-foreground">Dashboard</Link>
                         <span>/</span>
-                        <span className="text-white">{workspace.name}</span>
+                        <span className="text-foreground">{workspace.name}</span>
                     </div>
-                    <h1 className="text-2xl font-bold text-white">{workspace.name}</h1>
+                    <h1 className="text-2xl font-bold text-foreground">{workspace.name}</h1>
                     {workspace.description && (
-                        <p className="text-slate-400">{workspace.description}</p>
+                        <p className="text-muted-foreground">{workspace.description}</p>
                     )}
                 </div>
                 <div className="flex gap-2">
@@ -123,34 +123,34 @@ export default function WorkspaceDetailPage() {
                         <DialogTrigger asChild>
                             <Button>+ Buat Board</Button>
                         </DialogTrigger>
-                        <DialogContent className="bg-slate-800 border-slate-700">
+                        <DialogContent className="bg-card border-border">
                             <form onSubmit={handleCreateBoard}>
                                 <DialogHeader>
-                                    <DialogTitle className="text-white">Buat Board Baru</DialogTitle>
-                                    <DialogDescription className="text-slate-400">
+                                    <DialogTitle className="text-foreground">Buat Board Baru</DialogTitle>
+                                    <DialogDescription className="text-muted-foreground">
                                         Board adalah papan Kanban untuk mengelola tugas.
                                     </DialogDescription>
                                 </DialogHeader>
                                 <div className="space-y-4 py-4">
                                     <div className="space-y-2">
-                                        <Label htmlFor="name" className="text-slate-200">Nama Board</Label>
+                                        <Label htmlFor="name" className="text-foreground">Nama Board</Label>
                                         <Input
                                             id="name"
                                             placeholder="Contoh: Sprint 1, Project ABC"
                                             value={newBoard.name}
                                             onChange={(e) => setNewBoard({ ...newBoard, name: e.target.value })}
                                             required
-                                            className="bg-slate-900 border-slate-600 text-white"
+                                            className="bg-background border-input text-foreground"
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label htmlFor="description" className="text-slate-200">Deskripsi (opsional)</Label>
+                                        <Label htmlFor="description" className="text-foreground">Deskripsi (opsional)</Label>
                                         <Input
                                             id="description"
                                             placeholder="Deskripsi singkat..."
                                             value={newBoard.description}
                                             onChange={(e) => setNewBoard({ ...newBoard, description: e.target.value })}
-                                            className="bg-slate-900 border-slate-600 text-white"
+                                            className="bg-background border-input text-foreground"
                                         />
                                     </div>
                                 </div>
@@ -170,9 +170,9 @@ export default function WorkspaceDetailPage() {
 
             {/* Board Grid */}
             {workspace.boards.length === 0 ? (
-                <Card className="border-slate-700 bg-slate-800/50">
+                <Card className="border-border bg-card/50">
                     <CardContent className="flex flex-col items-center justify-center py-12">
-                        <p className="text-slate-400 mb-4">Belum ada board di workspace ini</p>
+                        <p className="text-muted-foreground mb-4">Belum ada board di workspace ini</p>
                         <Button onClick={() => setDialogOpen(true)}>Buat Board Pertama</Button>
                     </CardContent>
                 </Card>
@@ -180,10 +180,10 @@ export default function WorkspaceDetailPage() {
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {workspace.boards.map((board: Board) => (
                         <Link key={board.id} href={`/boards/${board.id}`}>
-                            <Card className="border-slate-700 bg-slate-800 hover:bg-slate-750 transition-colors cursor-pointer h-full">
+                            <Card className="border-border bg-card hover:bg-accent transition-colors cursor-pointer h-full">
                                 <CardHeader>
-                                    <CardTitle className="text-white">{board.name}</CardTitle>
-                                    <CardDescription className="text-slate-400">
+                                    <CardTitle className="text-foreground">{board.name}</CardTitle>
+                                    <CardDescription className="text-muted-foreground">
                                         {board.description || "Tidak ada deskripsi"}
                                     </CardDescription>
                                 </CardHeader>

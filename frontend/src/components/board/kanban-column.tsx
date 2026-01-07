@@ -26,19 +26,19 @@ export function KanbanColumn({ column, onDeleteColumn, onDeleteTask, onAddTask }
 
     return (
         <div className="min-w-[300px] max-w-[300px]">
-            <Card className={`border-slate-700 bg-slate-800 h-full transition-colors ${isOver ? "border-blue-500 bg-slate-750" : ""
+            <Card className={`border-border bg-card h-full transition-colors ${isOver ? "border-primary bg-accent" : ""
                 }`}>
                 <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
-                        <CardTitle className="text-white text-sm font-medium">
+                        <CardTitle className="text-foreground text-sm font-medium">
                             {column.title}
-                            <span className="ml-2 text-slate-400">({column.tasks.length})</span>
+                            <span className="ml-2 text-muted-foreground">({column.tasks.length})</span>
                         </CardTitle>
                         <Button
                             variant="ghost"
                             size="sm"
                             onClick={() => onDeleteColumn(column.id)}
-                            className="text-slate-400 hover:text-red-400 h-6 w-6 p-0"
+                            className="text-muted-foreground hover:text-destructive h-6 w-6 p-0"
                         >
                             ×
                         </Button>
@@ -59,7 +59,7 @@ export function KanbanColumn({ column, onDeleteColumn, onDeleteTask, onAddTask }
                     </SortableContext>
                     <Button
                         variant="ghost"
-                        className="w-full text-slate-400 hover:text-white hover:bg-slate-700"
+                        className="w-full text-muted-foreground hover:text-foreground hover:bg-accent"
                         onClick={() => onAddTask(column.id)}
                     >
                         + Tambah Task

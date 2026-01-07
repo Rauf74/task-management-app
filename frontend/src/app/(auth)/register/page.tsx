@@ -47,17 +47,17 @@ export default function RegisterPage() {
     }
 
     return (
-        <Card className="border-slate-700 bg-slate-800/50 backdrop-blur">
+        <Card className="border-border bg-card/80 backdrop-blur">
             <CardHeader className="space-y-1">
-                <CardTitle className="text-2xl font-bold text-white">Daftar</CardTitle>
-                <CardDescription className="text-slate-400">
+                <CardTitle className="text-2xl font-bold text-foreground">Daftar</CardTitle>
+                <CardDescription className="text-muted-foreground">
                     Buat akun baru untuk mulai menggunakan aplikasi
                 </CardDescription>
             </CardHeader>
             <form onSubmit={handleSubmit}>
                 <CardContent className="space-y-4">
                     <div className="space-y-2">
-                        <Label htmlFor="name" className="text-slate-200">Nama</Label>
+                        <Label htmlFor="name" className="text-foreground">Nama</Label>
                         <Input
                             id="name"
                             type="text"
@@ -65,11 +65,11 @@ export default function RegisterPage() {
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                             required
-                            className="bg-slate-900 border-slate-600 text-white placeholder:text-slate-500"
+                            className="bg-background border-input text-foreground placeholder:text-muted-foreground"
                         />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="email" className="text-slate-200">Email</Label>
+                        <Label htmlFor="email" className="text-foreground">Email</Label>
                         <Input
                             id="email"
                             type="email"
@@ -77,11 +77,11 @@ export default function RegisterPage() {
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                             required
-                            className="bg-slate-900 border-slate-600 text-white placeholder:text-slate-500"
+                            className="bg-background border-input text-foreground placeholder:text-muted-foreground"
                         />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="password" className="text-slate-200">Password</Label>
+                        <Label htmlFor="password" className="text-foreground">Password</Label>
                         <Input
                             id="password"
                             type="password"
@@ -90,11 +90,11 @@ export default function RegisterPage() {
                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                             required
                             minLength={6}
-                            className="bg-slate-900 border-slate-600 text-white placeholder:text-slate-500"
+                            className="bg-background border-input text-foreground placeholder:text-muted-foreground"
                         />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="confirmPassword" className="text-slate-200">Konfirmasi Password</Label>
+                        <Label htmlFor="confirmPassword" className="text-foreground">Konfirmasi Password</Label>
                         <Input
                             id="confirmPassword"
                             type="password"
@@ -102,7 +102,7 @@ export default function RegisterPage() {
                             value={formData.confirmPassword}
                             onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                             required
-                            className="bg-slate-900 border-slate-600 text-white placeholder:text-slate-500"
+                            className="bg-background border-input text-foreground placeholder:text-muted-foreground"
                         />
                     </div>
                 </CardContent>
@@ -110,9 +110,9 @@ export default function RegisterPage() {
                     <Button type="submit" className="w-full" disabled={isLoading}>
                         {isLoading ? "Loading..." : "Daftar"}
                     </Button>
-                    <p className="text-sm text-slate-400">
+                    <p className="text-sm text-muted-foreground">
                         Sudah punya akun?{" "}
-                        <Link href="/login" className="text-blue-400 hover:underline">
+                        <Link href="/login" className="text-primary hover:underline">
                             Login
                         </Link>
                     </p>

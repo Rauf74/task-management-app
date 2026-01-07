@@ -35,7 +35,7 @@ export function TaskCard({ task, onDelete }: TaskCardProps) {
         <Card
             ref={setNodeRef}
             style={style}
-            className={`border-slate-600 bg-slate-700 cursor-grab hover:bg-slate-650 ${isDragging ? "shadow-lg" : ""
+            className={`border-border bg-secondary cursor-grab hover:bg-accent ${isDragging ? "shadow-lg" : ""
                 }`}
             {...attributes}
             {...listeners}
@@ -43,21 +43,21 @@ export function TaskCard({ task, onDelete }: TaskCardProps) {
             <CardContent className="p-3">
                 <div className="flex items-start justify-between gap-2">
                     <div className="flex-1">
-                        <p className="text-white text-sm font-medium">{task.title}</p>
+                        <p className="text-foreground text-sm font-medium">{task.title}</p>
                         {task.description && (
-                            <p className="text-slate-400 text-xs mt-1 line-clamp-2">
+                            <p className="text-muted-foreground text-xs mt-1 line-clamp-2">
                                 {task.description}
                             </p>
                         )}
                         <div className="flex gap-2 mt-2">
                             <span
                                 className={`text-xs px-2 py-0.5 rounded ${task.priority === "URGENT"
-                                        ? "bg-red-500/20 text-red-400"
-                                        : task.priority === "HIGH"
-                                            ? "bg-orange-500/20 text-orange-400"
-                                            : task.priority === "MEDIUM"
-                                                ? "bg-yellow-500/20 text-yellow-400"
-                                                : "bg-blue-500/20 text-blue-400"
+                                    ? "bg-red-500/20 text-red-600 dark:text-red-400"
+                                    : task.priority === "HIGH"
+                                        ? "bg-orange-500/20 text-orange-600 dark:text-orange-400"
+                                        : task.priority === "MEDIUM"
+                                            ? "bg-yellow-500/20 text-yellow-600 dark:text-yellow-400"
+                                            : "bg-blue-500/20 text-blue-600 dark:text-blue-400"
                                     }`}
                             >
                                 {task.priority}
@@ -71,7 +71,7 @@ export function TaskCard({ task, onDelete }: TaskCardProps) {
                             e.stopPropagation();
                             onDelete(task.id);
                         }}
-                        className="text-slate-400 hover:text-red-400 h-5 w-5 p-0"
+                        className="text-muted-foreground hover:text-destructive h-5 w-5 p-0"
                     >
                         ×
                     </Button>

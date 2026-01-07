@@ -36,7 +36,6 @@ export default function DashboardPage() {
     async function loadWorkspaces() {
         try {
             const response = await workspaceApi.list();
-            // Check if response has valid data (401 returns different structure)
             if (response?.data?.workspaces) {
                 setWorkspaces(response.data.workspaces);
             }
@@ -71,7 +70,7 @@ export default function DashboardPage() {
     if (isLoading) {
         return (
             <div className="flex items-center justify-center h-64">
-                <div className="text-slate-400">Memuat workspace...</div>
+                <div className="text-muted-foreground">Memuat workspace...</div>
             </div>
         );
     }
@@ -81,41 +80,41 @@ export default function DashboardPage() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-white">Workspace</h1>
-                    <p className="text-slate-400">Kelola semua workspace Anda</p>
+                    <h1 className="text-2xl font-bold text-foreground">Workspace</h1>
+                    <p className="text-muted-foreground">Kelola semua workspace Anda</p>
                 </div>
                 <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                     <DialogTrigger asChild>
                         <Button>+ Buat Workspace</Button>
                     </DialogTrigger>
-                    <DialogContent className="bg-slate-800 border-slate-700">
+                    <DialogContent className="bg-card border-border">
                         <form onSubmit={handleCreateWorkspace}>
                             <DialogHeader>
-                                <DialogTitle className="text-white">Buat Workspace Baru</DialogTitle>
-                                <DialogDescription className="text-slate-400">
+                                <DialogTitle className="text-foreground">Buat Workspace Baru</DialogTitle>
+                                <DialogDescription className="text-muted-foreground">
                                     Workspace adalah wadah untuk mengelompokkan board-board Anda.
                                 </DialogDescription>
                             </DialogHeader>
                             <div className="space-y-4 py-4">
                                 <div className="space-y-2">
-                                    <Label htmlFor="name" className="text-slate-200">Nama Workspace</Label>
+                                    <Label htmlFor="name" className="text-foreground">Nama Workspace</Label>
                                     <Input
                                         id="name"
                                         placeholder="Contoh: Personal, Kantor"
                                         value={newWorkspace.name}
                                         onChange={(e) => setNewWorkspace({ ...newWorkspace, name: e.target.value })}
                                         required
-                                        className="bg-slate-900 border-slate-600 text-white"
+                                        className="bg-background border-input text-foreground"
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="description" className="text-slate-200">Deskripsi (opsional)</Label>
+                                    <Label htmlFor="description" className="text-foreground">Deskripsi (opsional)</Label>
                                     <Input
                                         id="description"
                                         placeholder="Deskripsi singkat..."
                                         value={newWorkspace.description}
                                         onChange={(e) => setNewWorkspace({ ...newWorkspace, description: e.target.value })}
-                                        className="bg-slate-900 border-slate-600 text-white"
+                                        className="bg-background border-input text-foreground"
                                     />
                                 </div>
                             </div>
@@ -131,9 +130,9 @@ export default function DashboardPage() {
 
             {/* Workspace Grid */}
             {workspaces.length === 0 ? (
-                <Card className="border-slate-700 bg-slate-800/50">
+                <Card className="border-border bg-card/50">
                     <CardContent className="flex flex-col items-center justify-center py-12">
-                        <p className="text-slate-400 mb-4">Belum ada workspace</p>
+                        <p className="text-muted-foreground mb-4">Belum ada workspace</p>
                         <Button onClick={() => setDialogOpen(true)}>Buat Workspace Pertama</Button>
                     </CardContent>
                 </Card>
@@ -141,15 +140,15 @@ export default function DashboardPage() {
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {workspaces.map((workspace) => (
                         <Link key={workspace.id} href={`/workspaces/${workspace.id}`}>
-                            <Card className="border-slate-700 bg-slate-800 hover:bg-slate-750 transition-colors cursor-pointer h-full">
+                            <Card className="border-border bg-card hover:bg-accent transition-colors cursor-pointer h-full">
                                 <CardHeader>
-                                    <CardTitle className="text-white">{workspace.name}</CardTitle>
-                                    <CardDescription className="text-slate-400">
+                                    <CardTitle className="text-foreground">{workspace.name}</CardTitle>
+                                    <CardDescription className="text-muted-foreground">
                                         {workspace.description || "Tidak ada deskripsi"}
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent>
-                                    <p className="text-sm text-slate-500">
+                                    <p className="text-sm text-muted-foreground">
                                         {workspace._count?.boards || 0} board
                                     </p>
                                 </CardContent>

@@ -85,7 +85,6 @@ export default function BoardViewPage() {
         const { active } = event;
         const taskId = active.id as string;
 
-        // Find the task
         for (const column of board?.columns || []) {
             const task = column.tasks.find((t) => t.id === taskId);
             if (task) {
@@ -102,7 +101,6 @@ export default function BoardViewPage() {
         const activeId = active.id as string;
         const overId = over.id as string;
 
-        // Find source column
         let sourceColumn: Column | null = null;
         let sourceTask: Task | null = null;
         for (const col of board.columns) {
@@ -116,7 +114,6 @@ export default function BoardViewPage() {
 
         if (!sourceColumn || !sourceTask) return;
 
-        // Find target column (could be over a column or a task)
         let targetColumn: Column | null = null;
         for (const col of board.columns) {
             if (col.id === overId) {
@@ -132,7 +129,6 @@ export default function BoardViewPage() {
 
         if (!targetColumn || sourceColumn.id === targetColumn.id) return;
 
-        // Move task to new column (optimistic update)
         setBoard((prev) => {
             if (!prev) return prev;
 
@@ -165,7 +161,6 @@ export default function BoardViewPage() {
         const activeId = active.id as string;
         const overId = over.id as string;
 
-        // Find the task and its column
         let taskColumn: Column | null = null;
         let taskIndex = -1;
         for (const col of board.columns) {
@@ -179,7 +174,6 @@ export default function BoardViewPage() {
 
         if (!taskColumn) return;
 
-        // If dropped over another task in the same column, reorder
         const overTaskIndex = taskColumn.tasks.findIndex((t) => t.id === overId);
         if (overTaskIndex !== -1 && overTaskIndex !== taskIndex) {
             setBoard((prev) => {
@@ -197,7 +191,6 @@ export default function BoardViewPage() {
             });
         }
 
-        // Call API to save the move
         try {
             await taskApi.move(activeId, {
                 columnId: taskColumn.id,
@@ -205,7 +198,7 @@ export default function BoardViewPage() {
             });
         } catch (error) {
             toast.error("Gagal memindahkan task");
-            loadBoard(); // Reload to sync state
+            loadBoard();
         }
     }
 
@@ -302,7 +295,7 @@ export default function BoardViewPage() {
     if (isLoading) {
         return (
             <div className="flex items-center justify-center h-64">
-                <div className="text-slate-400">Memuat board...</div>
+                <div className="text-muted-foreground">Memuat board...</div>
             </div>
         );
     }
@@ -310,7 +303,7 @@ export default function BoardViewPage() {
     if (!board) {
         return (
             <div className="flex flex-col items-center justify-center h-64">
-                <p className="text-slate-400 mb-4">Board tidak ditemukan</p>
+                <p className="text-muted-foreground mb-4">Board tidak ditemukan</p>
                 <Button onClick={() => router.push("/")}>Kembali ke Dashboard</Button>
             </div>
         );
@@ -321,34 +314,34 @@ export default function BoardViewPage() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <div className="flex items-center gap-2 text-sm text-slate-400 mb-2">
-                        <Link href="/" className="hover:text-white">Dashboard</Link>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+                        <Link href="/" className="hover:text-foreground">Dashboard</Link>
                         <span>/</span>
-                        <Link href={`/workspaces/${board.workspaceId}`} className="hover:text-white">Workspace</Link>
+                        <Link href={`/workspaces/${board.workspaceId}`} className="hover:text-foreground">Workspace</Link>
                         <span>/</span>
-                        <span className="text-white">{board.name}</span>
+                        <span className="text-foreground">{board.name}</span>
                     </div>
-                    <h1 className="text-2xl font-bold text-white">{board.name}</h1>
+                    <h1 className="text-2xl font-bold text-foreground">{board.name}</h1>
                 </div>
                 <Dialog open={columnDialogOpen} onOpenChange={setColumnDialogOpen}>
                     <DialogTrigger asChild>
                         <Button>+ Tambah Column</Button>
                     </DialogTrigger>
-                    <DialogContent className="bg-slate-800 border-slate-700">
+                    <DialogContent className="bg-card border-border">
                         <form onSubmit={handleCreateColumn}>
                             <DialogHeader>
-                                <DialogTitle className="text-white">Tambah Column</DialogTitle>
+                                <DialogTitle className="text-foreground">Tambah Column</DialogTitle>
                             </DialogHeader>
                             <div className="space-y-4 py-4">
                                 <div className="space-y-2">
-                                    <Label htmlFor="title" className="text-slate-200">Nama Column</Label>
+                                    <Label htmlFor="title" className="text-foreground">Nama Column</Label>
                                     <Input
                                         id="title"
                                         placeholder="Contoh: To Do, In Progress, Done"
                                         value={newColumn.title}
                                         onChange={(e) => setNewColumn({ title: e.target.value })}
                                         required
-                                        className="bg-slate-900 border-slate-600 text-white"
+                                        className="bg-background border-input text-foreground"
                                     />
                                 </div>
                             </div>
@@ -372,9 +365,9 @@ export default function BoardViewPage() {
             >
                 <div className="flex gap-4 overflow-x-auto pb-4">
                     {board.columns.length === 0 ? (
-                        <Card className="border-slate-700 bg-slate-800/50 min-w-[300px]">
+                        <Card className="border-border bg-card/50 min-w-[300px]">
                             <CardContent className="flex flex-col items-center justify-center py-12">
-                                <p className="text-slate-400 mb-4">Belum ada column</p>
+                                <p className="text-muted-foreground mb-4">Belum ada column</p>
                                 <Button onClick={() => setColumnDialogOpen(true)}>Buat Column Pertama</Button>
                             </CardContent>
                         </Card>
@@ -403,31 +396,31 @@ export default function BoardViewPage() {
 
             {/* Task Dialog */}
             <Dialog open={taskDialogOpen} onOpenChange={setTaskDialogOpen}>
-                <DialogContent className="bg-slate-800 border-slate-700">
+                <DialogContent className="bg-card border-border">
                     <form onSubmit={handleCreateTask}>
                         <DialogHeader>
-                            <DialogTitle className="text-white">Tambah Task</DialogTitle>
+                            <DialogTitle className="text-foreground">Tambah Task</DialogTitle>
                         </DialogHeader>
                         <div className="space-y-4 py-4">
                             <div className="space-y-2">
-                                <Label htmlFor="taskTitle" className="text-slate-200">Judul Task</Label>
+                                <Label htmlFor="taskTitle" className="text-foreground">Judul Task</Label>
                                 <Input
                                     id="taskTitle"
                                     placeholder="Apa yang perlu dikerjakan?"
                                     value={newTask.title}
                                     onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
                                     required
-                                    className="bg-slate-900 border-slate-600 text-white"
+                                    className="bg-background border-input text-foreground"
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="taskDescription" className="text-slate-200">Deskripsi (opsional)</Label>
+                                <Label htmlFor="taskDescription" className="text-foreground">Deskripsi (opsional)</Label>
                                 <Input
                                     id="taskDescription"
                                     placeholder="Detail tambahan..."
                                     value={newTask.description}
                                     onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
-                                    className="bg-slate-900 border-slate-600 text-white"
+                                    className="bg-background border-input text-foreground"
                                 />
                             </div>
                         </div>

@@ -39,17 +39,17 @@ export default function LoginPage() {
     }
 
     return (
-        <Card className="border-slate-700 bg-slate-800/50 backdrop-blur">
+        <Card className="border-border bg-card/80 backdrop-blur">
             <CardHeader className="space-y-1">
-                <CardTitle className="text-2xl font-bold text-white">Login</CardTitle>
-                <CardDescription className="text-slate-400">
+                <CardTitle className="text-2xl font-bold text-foreground">Login</CardTitle>
+                <CardDescription className="text-muted-foreground">
                     Masukkan email dan password Anda
                 </CardDescription>
             </CardHeader>
             <form onSubmit={handleSubmit}>
                 <CardContent className="space-y-4">
                     <div className="space-y-2">
-                        <Label htmlFor="email" className="text-slate-200">Email</Label>
+                        <Label htmlFor="email" className="text-foreground">Email</Label>
                         <Input
                             id="email"
                             type="email"
@@ -57,11 +57,11 @@ export default function LoginPage() {
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                             required
-                            className="bg-slate-900 border-slate-600 text-white placeholder:text-slate-500"
+                            className="bg-background border-input text-foreground placeholder:text-muted-foreground"
                         />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="password" className="text-slate-200">Password</Label>
+                        <Label htmlFor="password" className="text-foreground">Password</Label>
                         <Input
                             id="password"
                             type="password"
@@ -69,7 +69,7 @@ export default function LoginPage() {
                             value={formData.password}
                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                             required
-                            className="bg-slate-900 border-slate-600 text-white placeholder:text-slate-500"
+                            className="bg-background border-input text-foreground placeholder:text-muted-foreground"
                         />
                     </div>
                 </CardContent>
@@ -77,9 +77,9 @@ export default function LoginPage() {
                     <Button type="submit" className="w-full" disabled={isLoading}>
                         {isLoading ? "Loading..." : "Login"}
                     </Button>
-                    <p className="text-sm text-slate-400">
+                    <p className="text-sm text-muted-foreground">
                         Belum punya akun?{" "}
-                        <Link href="/register" className="text-blue-400 hover:underline">
+                        <Link href="/register" className="text-primary hover:underline">
                             Daftar
                         </Link>
                     </p>
