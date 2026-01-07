@@ -32,6 +32,13 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 import { KanbanColumn } from "@/components/board/kanban-column";
 import { TaskCard } from "@/components/board/task-card";
@@ -51,7 +58,7 @@ export default function BoardViewPage() {
     const [taskDialogOpen, setTaskDialogOpen] = useState(false);
     const [selectedColumnId, setSelectedColumnId] = useState<string | null>(null);
     const [newColumn, setNewColumn] = useState({ title: "" });
-    const [newTask, setNewTask] = useState({ title: "", description: "" });
+    const [newTask, setNewTask] = useState({ title: "", description: "", priority: "LOW" });
     const [isCreating, setIsCreating] = useState(false);
 
     // Edit task state
@@ -248,7 +255,7 @@ export default function BoardViewPage() {
                         ),
                     };
                 });
-                setNewTask({ title: "", description: "" });
+                setNewTask({ title: "", description: "", priority: "LOW" });
                 setTaskDialogOpen(false);
                 toast.success("Task berhasil dibuat!");
             }
@@ -454,6 +461,23 @@ export default function BoardViewPage() {
                                     onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
                                     className="bg-background border-input text-foreground"
                                 />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="taskPriority" className="text-foreground">Priority</Label>
+                                <Select
+                                    value={newTask.priority}
+                                    onValueChange={(value) => setNewTask({ ...newTask, priority: value })}
+                                >
+                                    <SelectTrigger className="bg-background border-input text-foreground">
+                                        <SelectValue placeholder="Pilih priority" />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-card border-border">
+                                        <SelectItem value="LOW">Low</SelectItem>
+                                        <SelectItem value="MEDIUM">Medium</SelectItem>
+                                        <SelectItem value="HIGH">High</SelectItem>
+                                        <SelectItem value="URGENT">Urgent</SelectItem>
+                                    </SelectContent>
+                                </Select>
                             </div>
                         </div>
                         <DialogFooter>
