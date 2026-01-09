@@ -49,7 +49,7 @@ task-management/
 
 ## 🎨 Features
 
-- ✅ **Authentication** - Register, Login, Logout dengan JWT
+- ✅ **Authentication** - Register, Login with Email/Username, Logout (JWT)
 - ✅ **Workspace Management** - Buat, edit, hapus workspace
 - ✅ **Board Management** - Kanban boards dalam workspace
 - ✅ **Column Management** - Kolom untuk mengorganisir task
@@ -58,6 +58,8 @@ task-management/
 - ✅ **Real-time Updates** - Socket.io untuk kolaborasi
 - ✅ **Dark/Light Mode** - Theme toggle dengan ColorHunt palette
 - ✅ **Delete Confirmation** - Dialog konfirmasi sebelum hapus
+- ✅ **Responsive UI** - Mobile-friendly layout
+- ✅ **Glassmorphism Auth** - Modern login/register pages
 
 ## 📡 API Endpoints
 
@@ -65,7 +67,7 @@ task-management/
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | POST | `/api/auth/register` | Register user baru |
-| POST | `/api/auth/login` | Login user |
+| POST | `/api/auth/login` | Login dengan email/username |
 | POST | `/api/auth/logout` | Logout user |
 | GET | `/api/auth/me` | Get current user |
 
@@ -108,8 +110,23 @@ task-management/
 ### Prasyarat
 - Node.js 20+
 - Database PostgreSQL (Supabase/Neon)
+- Docker (optional)
 
-### Backend
+### Dengan Docker (Recommended)
+```bash
+# Copy environment file
+cp .env.example .env
+# Edit .env dengan DATABASE_URL dan JWT_SECRET
+
+# Jalankan semua services
+docker-compose up --build
+```
+
+App: http://localhost | API Docs: http://localhost/api/docs
+
+### Tanpa Docker
+
+#### Backend
 ```bash
 cd backend
 npm install
@@ -122,7 +139,7 @@ npm run dev
 
 Server: http://localhost:4000 | API Docs: http://localhost:4000/api/docs
 
-### Frontend
+#### Frontend
 ```bash
 cd frontend
 npm install
@@ -140,6 +157,7 @@ Frontend: http://localhost:3000
 | Clean Architecture | ✅ |
 | Prisma 7 + Supabase PostgreSQL | ✅ |
 | JWT Authentication | ✅ |
+| Login with Email/Username | ✅ |
 | Swagger API documentation | ✅ |
 | Workspace CRUD API | ✅ |
 | Board CRUD API | ✅ |
@@ -150,7 +168,7 @@ Frontend: http://localhost:3000
 ### Frontend
 | Feature | Status |
 |---------|--------|
-| Login & Register Pages | ✅ |
+| Login & Register (Glassmorphism) | ✅ |
 | Dashboard (Workspace List) | ✅ |
 | Workspace Detail Page | ✅ |
 | Board View (Kanban) | ✅ |
@@ -160,16 +178,18 @@ Frontend: http://localhost:3000
 | Edit Task Dialog | ✅ |
 | Delete Confirmation Dialogs | ✅ |
 | Priority Select (Create & Edit) | ✅ |
+| Responsive Mobile Layout | ✅ |
 
-### Phase 5: DevOps & Testing (Next)
+### DevOps
 | Feature | Status |
 |---------|--------|
-| Dockerfile frontend | 🔜 |
-| Dockerfile backend | 🔜 |
-| docker-compose.yml | 🔜 |
+| Dockerfile frontend | ✅ |
+| Dockerfile backend | ✅ |
+| docker-compose.yml | ✅ |
+| Nginx reverse proxy | ✅ |
 | GitHub Actions CI/CD | 🔜 |
-| Deploy ke Railway/Render | 🔜 |
 | E2E Testing (Playwright) | 🔜 |
+| Deploy ke AWS EC2 | 🔜 |
 
 ## 📸 Screenshots
 
@@ -179,3 +199,4 @@ Frontend: http://localhost:3000
 
 **Abdur Rauf Al Farras**
 - GitHub: [@Rauf74](https://github.com/Rauf74)
+
