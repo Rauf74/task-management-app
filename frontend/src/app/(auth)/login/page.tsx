@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { toast } from "sonner";
 
 export default function LoginPage() {
@@ -39,8 +40,13 @@ export default function LoginPage() {
     }
 
     return (
-        <Card className="backdrop-blur-xl bg-white/90 dark:bg-slate-900/90 border border-white/20 dark:border-slate-700/50 shadow-2xl">
-            <CardHeader className="space-y-1 text-center">
+        <Card className="backdrop-blur-xl bg-white/90 dark:bg-slate-900/90 border border-white/20 dark:border-slate-700/50 shadow-2xl relative">
+            {/* Theme Toggle - Top Right of Card */}
+            <div className="absolute top-3 right-3 z-10">
+                <ThemeToggle />
+            </div>
+
+            <CardHeader className="space-y-1 text-center pt-10">
                 {/* Logo/Icon */}
                 <div className="mx-auto mb-4 w-16 h-16 bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
                     <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">

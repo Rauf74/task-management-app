@@ -26,7 +26,7 @@ export function KanbanColumn({ column, onDeleteColumn, onDeleteTask, onAddTask, 
     });
 
     return (
-        <div className="min-w-[300px] max-w-[300px]">
+        <div className="w-full sm:min-w-[300px] sm:max-w-[300px]">
             <Card className={`border-border bg-card h-full transition-colors ${isOver ? "border-primary bg-accent" : ""
                 }`}>
                 <CardHeader className="pb-3">

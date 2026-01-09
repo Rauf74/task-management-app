@@ -107,23 +107,25 @@ export default function WorkspaceDetailPage() {
 
     return (
         <div className="space-y-6">
+            {/* Breadcrumb */}
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Link href="/" className="hover:text-foreground">Dashboard</Link>
+                <span>/</span>
+                <span className="text-foreground truncate max-w-[200px]">{workspace.name}</span>
+            </div>
+
             {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-                        <Link href="/" className="hover:text-foreground">Dashboard</Link>
-                        <span>/</span>
-                        <span className="text-foreground">{workspace.name}</span>
-                    </div>
-                    <h1 className="text-2xl font-bold text-foreground">{workspace.name}</h1>
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                <div className="min-w-0 flex-1">
+                    <h1 className="text-2xl font-bold text-foreground truncate">{workspace.name}</h1>
                     {workspace.description && (
-                        <p className="text-muted-foreground">{workspace.description}</p>
+                        <p className="text-muted-foreground mt-1 line-clamp-2">{workspace.description}</p>
                     )}
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2 shrink-0">
                     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                         <DialogTrigger asChild>
-                            <Button>+ Buat Board</Button>
+                            <Button size="sm">+ Buat Board</Button>
                         </DialogTrigger>
                         <DialogContent className="bg-card border-border">
                             <form onSubmit={handleCreateBoard}>
@@ -164,7 +166,7 @@ export default function WorkspaceDetailPage() {
                             </form>
                         </DialogContent>
                     </Dialog>
-                    <Button variant="destructive" onClick={() => setDeleteWorkspaceDialog(true)}>
+                    <Button size="sm" variant="destructive" onClick={() => setDeleteWorkspaceDialog(true)}>
                         Hapus Workspace
                     </Button>
                 </div>

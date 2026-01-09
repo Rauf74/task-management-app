@@ -374,21 +374,21 @@ export default function BoardViewPage() {
 
     return (
         <div className="space-y-6">
+            {/* Breadcrumb */}
+            <div className="flex items-center gap-2 text-sm text-muted-foreground flex-wrap">
+                <Link href="/" className="hover:text-foreground">Dashboard</Link>
+                <span>/</span>
+                <Link href={`/workspaces/${board.workspaceId}`} className="hover:text-foreground">Workspace</Link>
+                <span>/</span>
+                <span className="text-foreground truncate max-w-[150px]">{board.name}</span>
+            </div>
+
             {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-                        <Link href="/" className="hover:text-foreground">Dashboard</Link>
-                        <span>/</span>
-                        <Link href={`/workspaces/${board.workspaceId}`} className="hover:text-foreground">Workspace</Link>
-                        <span>/</span>
-                        <span className="text-foreground">{board.name}</span>
-                    </div>
-                    <h1 className="text-2xl font-bold text-foreground">{board.name}</h1>
-                </div>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <h1 className="text-2xl font-bold text-foreground truncate">{board.name}</h1>
                 <Dialog open={columnDialogOpen} onOpenChange={setColumnDialogOpen}>
                     <DialogTrigger asChild>
-                        <Button>+ Tambah Column</Button>
+                        <Button size="sm" className="shrink-0 w-fit">+ Tambah Column</Button>
                     </DialogTrigger>
                     <DialogContent className="bg-card border-border">
                         <form onSubmit={handleCreateColumn}>
@@ -426,7 +426,7 @@ export default function BoardViewPage() {
                 onDragOver={handleDragOver}
                 onDragEnd={handleDragEnd}
             >
-                <div className="flex gap-4 overflow-x-auto pb-4">
+                <div className="flex flex-col sm:flex-row gap-4 sm:overflow-x-auto pb-4">
                     {board.columns.length === 0 ? (
                         <Card className="border-border bg-card/50 min-w-[300px]">
                             <CardContent className="flex flex-col items-center justify-center py-12">
