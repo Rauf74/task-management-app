@@ -52,11 +52,11 @@ export async function register(data: RegisterRequest): Promise<User> {
 // ==============================================
 
 export async function login(data: LoginRequest): Promise<{ user: User; token: string }> {
-    // Find user by email
-    const user = await authRepository.findByEmail(data.email);
+    // Find user by email OR username
+    const user = await authRepository.findByEmailOrName(data.email);
 
     if (!user) {
-        throw new Error("Email atau password salah");
+        throw new Error("Email/username atau password salah");
     }
 
     // Verify password

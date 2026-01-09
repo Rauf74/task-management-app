@@ -23,6 +23,23 @@ export async function findByEmail(email: string): Promise<UserWithPassword | nul
 }
 
 // ==============================================
+// Find User by Email OR Name (for login)
+// ==============================================
+
+export async function findByEmailOrName(identifier: string): Promise<UserWithPassword | null> {
+    const user = await prisma.user.findFirst({
+        where: {
+            OR: [
+                { email: identifier },
+                { name: identifier },
+            ],
+        },
+    });
+
+    return user;
+}
+
+// ==============================================
 // Find User by ID
 // ==============================================
 

@@ -1,7 +1,7 @@
 "use client";
 
 // ==============================================
-// Login Page
+// Login Page - Modern Glassmorphism
 // ==============================================
 
 import { useState } from "react";
@@ -19,7 +19,7 @@ export default function LoginPage() {
     const { login } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
-        email: "",
+        identifier: "",
         password: "",
     });
 
@@ -28,8 +28,8 @@ export default function LoginPage() {
         setIsLoading(true);
 
         try {
-            await login(formData.email, formData.password);
-            toast.success("Login berhasil!");
+            await login(formData.identifier, formData.password);
+            toast.success("Login berhasil! 🎉");
             router.push("/");
         } catch (error) {
             toast.error(error instanceof Error ? error.message : "Login gagal");
@@ -39,29 +39,35 @@ export default function LoginPage() {
     }
 
     return (
-        <Card className="border-border bg-card/80 backdrop-blur">
-            <CardHeader className="space-y-1">
-                <CardTitle className="text-2xl font-bold text-foreground">Login</CardTitle>
-                <CardDescription className="text-muted-foreground">
-                    Masukkan email dan password Anda
+        <Card className="backdrop-blur-xl bg-white/10 dark:bg-black/20 border border-white/20 shadow-2xl">
+            <CardHeader className="space-y-1 text-center">
+                {/* Logo/Icon */}
+                <div className="mx-auto mb-4 w-16 h-16 bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                    </svg>
+                </div>
+                <CardTitle className="text-2xl font-bold text-white">Selamat Datang!</CardTitle>
+                <CardDescription className="text-white/70">
+                    Masuk ke TaskScale untuk mengelola tugas Anda
                 </CardDescription>
             </CardHeader>
             <form onSubmit={handleSubmit}>
                 <CardContent className="space-y-4">
                     <div className="space-y-2">
-                        <Label htmlFor="email" className="text-foreground">Email</Label>
+                        <Label htmlFor="identifier" className="text-white/90">Email atau Username</Label>
                         <Input
-                            id="email"
-                            type="email"
-                            placeholder="nama@email.com"
-                            value={formData.email}
-                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                            id="identifier"
+                            type="text"
+                            placeholder="nama@email.com atau username"
+                            value={formData.identifier}
+                            onChange={(e) => setFormData({ ...formData, identifier: e.target.value })}
                             required
-                            className="bg-background border-input text-foreground placeholder:text-muted-foreground"
+                            className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-violet-400 focus:ring-violet-400/20"
                         />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="password" className="text-foreground">Password</Label>
+                        <Label htmlFor="password" className="text-white/90">Password</Label>
                         <Input
                             id="password"
                             type="password"
@@ -69,18 +75,29 @@ export default function LoginPage() {
                             value={formData.password}
                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                             required
-                            className="bg-background border-input text-foreground placeholder:text-muted-foreground"
+                            className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-violet-400 focus:ring-violet-400/20"
                         />
                     </div>
                 </CardContent>
                 <CardFooter className="flex flex-col space-y-4">
-                    <Button type="submit" className="w-full" disabled={isLoading}>
-                        {isLoading ? "Loading..." : "Login"}
+                    <Button
+                        type="submit"
+                        className="w-full bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white font-semibold shadow-lg"
+                        disabled={isLoading}
+                    >
+                        {isLoading ? (
+                            <div className="flex items-center gap-2">
+                                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                Loading...
+                            </div>
+                        ) : (
+                            "Masuk"
+                        )}
                     </Button>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-white/70 text-center">
                         Belum punya akun?{" "}
-                        <Link href="/register" className="text-primary hover:underline">
-                            Daftar
+                        <Link href="/register" className="text-violet-300 hover:text-violet-200 font-medium hover:underline">
+                            Daftar Sekarang
                         </Link>
                     </p>
                 </CardFooter>
