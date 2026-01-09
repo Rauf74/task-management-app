@@ -39,7 +39,7 @@ export default function LoginPage() {
     }
 
     return (
-        <Card className="backdrop-blur-xl bg-white/10 dark:bg-black/20 border border-white/20 shadow-2xl">
+        <Card className="backdrop-blur-xl bg-white/90 dark:bg-slate-900/90 border border-white/20 dark:border-slate-700/50 shadow-2xl">
             <CardHeader className="space-y-1 text-center">
                 {/* Logo/Icon */}
                 <div className="mx-auto mb-4 w-16 h-16 bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
@@ -47,15 +47,15 @@ export default function LoginPage() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                     </svg>
                 </div>
-                <CardTitle className="text-2xl font-bold text-white">Selamat Datang!</CardTitle>
-                <CardDescription className="text-white/70">
+                <CardTitle className="text-2xl font-bold text-slate-800 dark:text-white">Selamat Datang!</CardTitle>
+                <CardDescription className="text-slate-600 dark:text-slate-400">
                     Masuk ke TaskScale untuk mengelola tugas Anda
                 </CardDescription>
             </CardHeader>
             <form onSubmit={handleSubmit}>
                 <CardContent className="space-y-4">
                     <div className="space-y-2">
-                        <Label htmlFor="identifier" className="text-white/90">Email atau Username</Label>
+                        <Label htmlFor="identifier" className="text-slate-700 dark:text-slate-300">Email atau Username</Label>
                         <Input
                             id="identifier"
                             type="text"
@@ -63,11 +63,11 @@ export default function LoginPage() {
                             value={formData.identifier}
                             onChange={(e) => setFormData({ ...formData, identifier: e.target.value })}
                             required
-                            className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-violet-400 focus:ring-violet-400/20"
+                            className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-violet-500 focus:ring-violet-500/20"
                         />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="password" className="text-white/90">Password</Label>
+                        <Label htmlFor="password" className="text-slate-700 dark:text-slate-300">Password</Label>
                         <Input
                             id="password"
                             type="password"
@@ -75,7 +75,7 @@ export default function LoginPage() {
                             value={formData.password}
                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                             required
-                            className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-violet-400 focus:ring-violet-400/20"
+                            className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-violet-500 focus:ring-violet-500/20"
                         />
                     </div>
                 </CardContent>
@@ -94,9 +94,9 @@ export default function LoginPage() {
                             "Masuk"
                         )}
                     </Button>
-                    <p className="text-sm text-white/70 text-center">
+                    <p className="text-sm text-slate-600 dark:text-slate-400 text-center">
                         Belum punya akun?{" "}
-                        <Link href="/register" className="text-violet-300 hover:text-violet-200 font-medium hover:underline">
+                        <Link href="/register" className="text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 font-medium hover:underline">
                             Daftar Sekarang
                         </Link>
                     </p>

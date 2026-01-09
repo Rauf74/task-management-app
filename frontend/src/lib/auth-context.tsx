@@ -37,8 +37,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     }
 
-    async function login(email: string, password: string) {
-        const response = await authApi.login({ email, password });
+    async function login(identifier: string, password: string) {
+        const response = await authApi.login({ email: identifier, password });
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         setUser((response as any).data.user);
     }
