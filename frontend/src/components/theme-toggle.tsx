@@ -12,7 +12,7 @@ export function ThemeToggle() {
     const { theme, setTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
 
-    // Prevent hydration mismatch
+    // Prevent hydration mismatch - intentional pattern
     useEffect(() => {
         setMounted(true);
     }, []);

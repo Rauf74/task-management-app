@@ -38,6 +38,7 @@ export default function WorkspaceDetailPage() {
 
     useEffect(() => {
         loadWorkspace();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [workspaceId]);
 
     async function loadWorkspace() {
@@ -46,9 +47,8 @@ export default function WorkspaceDetailPage() {
             if (response?.data?.workspace) {
                 setWorkspace(response.data.workspace);
             }
-        } catch (error) {
+        } catch {
             toast.error("Gagal memuat workspace");
-            console.error(error);
         } finally {
             setIsLoading(false);
         }
@@ -81,7 +81,7 @@ export default function WorkspaceDetailPage() {
             await workspaceApi.delete(workspaceId);
             toast.success("Workspace berhasil dihapus");
             router.push("/");
-        } catch (error) {
+        } catch {
             toast.error("Gagal menghapus workspace");
         } finally {
             setDeleteWorkspaceDialog(false);

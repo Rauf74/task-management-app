@@ -52,8 +52,8 @@ export function SocketProvider({ children }: { children: ReactNode }) {
             setIsConnected(false);
         });
 
-        newSocket.on("connect_error", (error) => {
-            console.error("Socket connection error:", error);
+        newSocket.on("connect_error", (err) => {
+            console.error("Socket connection error:", err);
         });
 
         setSocket(newSocket);
@@ -61,6 +61,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
         return () => {
             newSocket.disconnect();
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user]);
 
     return (

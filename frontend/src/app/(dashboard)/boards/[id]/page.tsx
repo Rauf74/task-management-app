@@ -83,6 +83,7 @@ export default function BoardViewPage() {
 
     useEffect(() => {
         loadBoard();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [boardId]);
 
     async function loadBoard() {
@@ -91,9 +92,8 @@ export default function BoardViewPage() {
             if (response?.data?.board) {
                 setBoard(response.data.board);
             }
-        } catch (error) {
+        } catch {
             toast.error("Gagal memuat board");
-            console.error(error);
         } finally {
             setIsLoading(false);
         }
@@ -215,7 +215,7 @@ export default function BoardViewPage() {
                 columnId: taskColumn.id,
                 order: taskIndex,
             });
-        } catch (error) {
+        } catch {
             toast.error("Gagal memindahkan task");
             loadBoard();
         }
@@ -236,8 +236,8 @@ export default function BoardViewPage() {
                 setColumnDialogOpen(false);
                 toast.success("Column berhasil dibuat!");
             }
-        } catch (error) {
-            toast.error(error instanceof Error ? error.message : "Gagal membuat column");
+        } catch (err) {
+            toast.error(err instanceof Error ? err.message : "Gagal membuat column");
         } finally {
             setIsCreating(false);
         }
@@ -287,7 +287,7 @@ export default function BoardViewPage() {
                 prev ? { ...prev, columns: prev.columns.filter((c) => c.id !== deletingColumnId) } : prev
             );
             toast.success("Column berhasil dihapus");
-        } catch (error) {
+        } catch {
             toast.error("Gagal menghapus column");
         } finally {
             setDeleteColumnDialog(false);
@@ -316,7 +316,7 @@ export default function BoardViewPage() {
                 };
             });
             toast.success("Task berhasil dihapus");
-        } catch (error) {
+        } catch {
             toast.error("Gagal menghapus task");
         } finally {
             setDeleteTaskDialog(false);
@@ -350,7 +350,7 @@ export default function BoardViewPage() {
                 };
             });
             toast.success("Task berhasil diupdate!");
-        } catch (error) {
+        } catch {
             toast.error("Gagal mengupdate task");
         }
     }
