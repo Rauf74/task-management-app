@@ -187,7 +187,7 @@ Frontend: http://localhost:3000
 | Dockerfile backend | ✅ |
 | docker-compose.yml | ✅ |
 | Nginx reverse proxy | ✅ |
-| GitHub Actions CI/CD | 🔜 |
+| GitHub Actions CI/CD | ✅ |
 | E2E Testing (Playwright) | 🔜 |
 | Deploy ke AWS EC2 | 🔜 |
 
