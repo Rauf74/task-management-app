@@ -39,8 +39,8 @@ jobs:
       # - name: TypeScript type check
       #   run: npx tsc --noEmit
 
-      - name: Build
-        run: npm run build || true
+      # Note: Build step removed - Prisma 7 requires real DATABASE_URL
+      # Docker build handles compilation with proper environment variables
 
   # ==============================================
   # Frontend Tests & Build
