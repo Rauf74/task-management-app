@@ -4,7 +4,6 @@
 // Confirm Dialog Component
 // ==============================================
 
-import { ReactNode } from "react";
 import {
     AlertDialog,
     AlertDialogAction,

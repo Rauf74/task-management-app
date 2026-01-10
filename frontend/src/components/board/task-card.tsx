@@ -32,7 +32,7 @@ export function TaskCard({ task, onDelete, onEdit }: TaskCardProps) {
         opacity: isDragging ? 0.5 : 1,
     };
 
-    function handleCardClick(e: React.MouseEvent) {
+    function handleCardClick() {
         // Only open edit if not dragging and onEdit is provided
         if (!isDragging && onEdit) {
             onEdit(task);
