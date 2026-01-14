@@ -17,7 +17,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost/api
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost/api}
     restart: unless-stopped
 
   # Backend (Express.js)
@@ -30,7 +30,7 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - JWT_SECRET=${JWT_SECRET}
       - REDIS_URL=redis://redis:6379
-      - CORS_ORIGIN=http://localhost
+      - CORS_ORIGIN=${CORS_ORIGIN:-http://localhost}
     depends_on:
       - redis
     restart: unless-stopped
