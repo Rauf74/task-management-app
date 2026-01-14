@@ -15,6 +15,8 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 
 // Import routes
 import authRoutes from "./routes/auth.routes.js";
@@ -31,6 +33,19 @@ const app = express();
 // ==============================================
 // Middleware
 // ==============================================
+
+// Security Headers (Helmet)
+app.use(helmet());
+
+// Rate Limiting
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 menit
+    limit: 300, // Limit tiap IP ke 300 request per windowMs
+    standardHeaders: 'draft-7',
+    legacyHeaders: false,
+    message: "Terlalu banyak request dari IP ini, coba lagi nanti."
+});
+app.use(limiter);
 
 // CORS: Izinkan request dari frontend
 app.use(cors({
