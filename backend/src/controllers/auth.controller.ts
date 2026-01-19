@@ -32,7 +32,10 @@ const COOKIE_OPTIONS = {
 export async function register(req: Request, res: Response): Promise<void> {
     try {
         const data: RegisterRequest = req.body;
-        const user = await authService.register(data);
+        const { user, token } = await authService.register(data);
+
+        // Set JWT in HttpOnly cookie (auto-login after register)
+        res.cookie("token", token, COOKIE_OPTIONS);
 
         const response: ApiResponse = {
             success: true,

@@ -27,7 +27,7 @@ const SALT_ROUNDS = 10;
 // Register
 // ==============================================
 
-export async function register(data: RegisterRequest): Promise<User> {
+export async function register(data: RegisterRequest): Promise<{ user: User; token: string }> {
     // Check if email already exists
     const existingUser = await authRepository.findByEmail(data.email);
 
@@ -44,7 +44,17 @@ export async function register(data: RegisterRequest): Promise<User> {
         password: hashedPassword,
     });
 
-    return user;
+    // Generate JWT for auto-login after register
+    const payload: JWTPayload = {
+        userId: user.id,
+        email: user.email,
+    };
+
+    const token = jwt.sign(payload, JWT_SECRET, {
+        expiresIn: JWT_EXPIRES_IN,
+    } as jwt.SignOptions);
+
+    return { user, token };
 }
 
 // ==============================================
