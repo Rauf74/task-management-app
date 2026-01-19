@@ -44,6 +44,8 @@ export default function RegisterPage() {
         try {
             await register(formData.name, formData.email, formData.password);
             toast.success("Registrasi berhasil! 🎉");
+            // Small delay to ensure cookie is properly set before redirect
+            await new Promise(resolve => setTimeout(resolve, 100));
             router.push("/");
         } catch (error) {
             toast.error(error instanceof Error ? error.message : "Registrasi gagal");
