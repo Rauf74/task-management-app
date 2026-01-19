@@ -13,6 +13,7 @@ import {
     DragOverEvent,
     DragStartEvent,
     PointerSensor,
+    TouchSensor,
     useSensor,
     useSensors,
     closestCorners,
@@ -72,11 +73,17 @@ export default function BoardViewPage() {
     const [deleteTaskDialog, setDeleteTaskDialog] = useState(false);
     const [deletingTaskId, setDeletingTaskId] = useState<string | null>(null);
 
-    // DnD sensors
+    // DnD sensors (PointerSensor for desktop, TouchSensor for mobile)
     const sensors = useSensors(
         useSensor(PointerSensor, {
             activationConstraint: {
                 distance: 10,
+            },
+        }),
+        useSensor(TouchSensor, {
+            activationConstraint: {
+                delay: 200,
+                tolerance: 5,
             },
         })
     );
