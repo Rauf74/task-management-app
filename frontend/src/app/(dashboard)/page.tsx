@@ -56,10 +56,14 @@ export default function DashboardPage() {
         setIsCreating(true);
         try {
             const response = await workspaceApi.create(newWorkspace);
-            setWorkspaces([response.data.workspace, ...workspaces]);
-            setNewWorkspace({ name: "", description: "" });
-            setDialogOpen(false);
-            toast.success("Workspace berhasil dibuat!");
+            if (response?.data?.workspace) {
+                setWorkspaces([response.data.workspace, ...workspaces]);
+                setNewWorkspace({ name: "", description: "" });
+                setDialogOpen(false);
+                toast.success("Workspace berhasil dibuat!");
+            } else {
+                toast.error("Gagal membuat workspace: Response tidak valid");
+            }
         } catch (error) {
             toast.error(error instanceof Error ? error.message : "Gagal membuat workspace");
         } finally {
