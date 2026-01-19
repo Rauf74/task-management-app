@@ -17,9 +17,10 @@ import { RegisterRequest, LoginRequest, ApiResponse, AuthenticatedRequest } from
 // Cookie Options
 // ==============================================
 
+// Note: Set HTTPS_ENABLED=true when using HTTPS (after setting up SSL)
 const COOKIE_OPTIONS = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env.HTTPS_ENABLED === "true", // Only require HTTPS when explicitly enabled
     sameSite: "lax" as const,
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     path: "/",
