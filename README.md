@@ -1,6 +1,14 @@
-# Task Management App
+# TaskScale - Task Management App
 
-Aplikasi manajemen tugas bergaya Kanban dengan fitur kolaborasi real-time.
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-taskscale.site-blueviolet?style=for-the-badge)](https://taskscale.site)
+[![API Docs](https://img.shields.io/badge/📚_API_Docs-Swagger-green?style=for-the-badge)](https://taskscale.site/api/docs)
+
+Aplikasi manajemen tugas bergaya Kanban dengan fitur kolaborasi real-time, dark mode, dan drag & drop.
+
+## 🌐 Live Demo
+
+- **App**: [https://taskscale.site](https://taskscale.site)
+- **API Docs**: [https://taskscale.site/api/docs](https://taskscale.site/api/docs)
 
 ## 🚀 Tech Stack
 
@@ -9,7 +17,7 @@ Aplikasi manajemen tugas bergaya Kanban dengan fitur kolaborasi real-time.
 - **TypeScript** - Type safety
 - **Tailwind CSS v4** - Styling utility-first
 - **Shadcn/ui** - Komponen UI modern
-- **@dnd-kit** - Drag & Drop
+- **@dnd-kit** - Drag & Drop (desktop + mobile touch)
 - **Socket.io Client** - Real-time updates
 - **next-themes** - Dark/Light mode
 
@@ -22,6 +30,15 @@ Aplikasi manajemen tugas bergaya Kanban dengan fitur kolaborasi real-time.
 - **JWT** - Autentikasi dengan HttpOnly cookies
 - **Zod** - Validasi input
 - **Swagger** - API documentation
+- **Helmet** - Security headers
+- **Rate Limiting** - 300 requests/15min
+
+### DevOps
+- **Docker** - Containerization
+- **Nginx** - Reverse proxy + HTTPS
+- **AWS EC2** - Cloud hosting
+- **Let's Encrypt** - SSL certificates
+- **GitHub Actions** - CI/CD pipeline
 
 ## 📁 Struktur Proyek
 
@@ -44,29 +61,43 @@ task-management/
 │       ├── routes/               # API endpoints
 │       ├── middleware/           # Auth, validation
 │       └── socket/               # Real-time events
+├── nginx.conf                    # Reverse proxy config
+├── docker-compose.yml            # Multi-container setup
 └── README.md
 ```
 
 ## 🎨 Features
 
-- ✅ **Authentication** - Register, Login with Email/Username, Logout (JWT)
+- ✅ **Authentication** - Register, Login with Email/Username, Auto-login after register
 - ✅ **Workspace Management** - Buat, edit, hapus workspace
 - ✅ **Board Management** - Kanban boards dalam workspace
 - ✅ **Column Management** - Kolom untuk mengorganisir task
-- ✅ **Task Management** - CRUD task dengan priority
-- ✅ **Drag & Drop** - Pindahkan task antar kolom
+- ✅ **Task Management** - CRUD task dengan priority (Low, Medium, High, Urgent)
+- ✅ **Drag & Drop** - Pindahkan task antar kolom (desktop + mobile touch)
 - ✅ **Real-time Updates** - Socket.io untuk kolaborasi
 - ✅ **Dark/Light Mode** - Theme toggle dengan ColorHunt palette
 - ✅ **Delete Confirmation** - Dialog konfirmasi sebelum hapus
 - ✅ **Responsive UI** - Mobile-friendly layout
 - ✅ **Glassmorphism Auth** - Modern login/register pages
 
+## 🔒 Security
+
+- ✅ **HTTPS** - SSL/TLS encryption dengan Let's Encrypt
+- ✅ **Secure Cookies** - HttpOnly, Secure, SameSite
+- ✅ **Helmet.js** - Security headers (XSS, clickjacking, etc.)
+- ✅ **Rate Limiting** - Anti brute-force (300 req/15min)
+- ✅ **JWT Auth** - Token-based authentication
+- ✅ **bcrypt** - Password hashing
+- ✅ **CORS** - Domain whitelist
+- ✅ **SQL Injection Protection** - Prisma ORM
+- ✅ **Input Validation** - Zod schemas
+
 ## 📡 API Endpoints
 
 ### Authentication
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/api/auth/register` | Register user baru |
+| POST | `/api/auth/register` | Register user baru (auto-login) |
 | POST | `/api/auth/login` | Login dengan email/username |
 | POST | `/api/auth/logout` | Logout user |
 | GET | `/api/auth/me` | Get current user |
@@ -164,6 +195,7 @@ Frontend: http://localhost:3000
 | Column CRUD API + reorder | ✅ |
 | Task CRUD API + move | ✅ |
 | Socket.io real-time events | ✅ |
+| Security (Helmet, Rate Limiting) | ✅ |
 
 ### Frontend
 | Feature | Status |
@@ -172,7 +204,7 @@ Frontend: http://localhost:3000
 | Dashboard (Workspace List) | ✅ |
 | Workspace Detail Page | ✅ |
 | Board View (Kanban) | ✅ |
-| Drag & Drop Tasks | ✅ |
+| Drag & Drop Tasks (Desktop + Mobile) | ✅ |
 | Real-time Updates (Socket.io) | ✅ |
 | Dark/Light Mode Toggle | ✅ |
 | Edit Task Dialog | ✅ |
@@ -189,14 +221,11 @@ Frontend: http://localhost:3000
 | Nginx reverse proxy | ✅ |
 | GitHub Actions CI/CD | ✅ |
 | E2E Testing (Playwright) | ✅ |
-| Deploy ke AWS EC2 | 🔜 |
-
-## 📸 Screenshots
-
-*Coming soon*
+| Deploy ke AWS EC2 | ✅ |
+| HTTPS (Let's Encrypt) | ✅ |
+| Custom Domain | ✅ |
 
 ## 👤 Creator
 
 **Abdur Rauf Al Farras**
 - GitHub: [@Rauf74](https://github.com/Rauf74)
-
