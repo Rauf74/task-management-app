@@ -18,6 +18,13 @@ import { initializeSocket } from "./socket/index.js";
 
 const PORT = process.env.PORT || 4000;
 
+// Security Check: Pastikan JWT_SECRET ada di Production
+if (process.env.NODE_ENV === "production" && !process.env.JWT_SECRET) {
+    console.error("❌ FATAL ERROR: JWT_SECRET belum di-set di .env!");
+    console.error("Server menolak berjalan tanpa kunci keamanan.");
+    process.exit(1);
+}
+
 // Buat HTTP server dari Express app
 const httpServer = createServer(app);
 
