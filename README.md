@@ -13,7 +13,7 @@ Aplikasi manajemen tugas bergaya Kanban dengan fitur kolaborasi real-time, dark 
 ## 🚀 Tech Stack
 
 ### Frontend
-- **Next.js 15** - Framework React dengan App Router
+- **Next.js 16** - Framework React dengan App Router
 - **TypeScript** - Type safety
 - **Tailwind CSS v4** - Styling utility-first
 - **Shadcn/ui** - Komponen UI modern

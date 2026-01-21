@@ -1,26 +1,44 @@
 // ==============================================
-// Socket.io Setup
+// Socket.io Setup with Redis Adapter
 // ==============================================
 // 
 // File ini mengatur Socket.io untuk fitur real-time:
 // - Connection handling
 // - Event handlers (task moved, board updated, dll)
-// - Authentication via socket
+// - Redis adapter untuk horizontal scaling
 //
 // ==============================================
 
 import { Server as HttpServer } from "http";
 import { Server as SocketServer } from "socket.io";
+import { createAdapter } from "@socket.io/redis-adapter";
+import { createClient } from "redis";
 
 let io: SocketServer;
 
-export function initializeSocket(httpServer: HttpServer) {
+export async function initializeSocket(httpServer: HttpServer) {
     io = new SocketServer(httpServer, {
         cors: {
             origin: process.env.FRONTEND_URL || "http://localhost:3000",
             credentials: true,
         },
     });
+
+    // Setup Redis adapter for horizontal scaling
+    const redisUrl = process.env.REDIS_URL || "redis://localhost:6379";
+
+    try {
+        const pubClient = createClient({ url: redisUrl });
+        const subClient = pubClient.duplicate();
+
+        await Promise.all([pubClient.connect(), subClient.connect()]);
+
+        io.adapter(createAdapter(pubClient, subClient));
+        console.log("✅ Socket.io Redis adapter connected");
+    } catch (error) {
+        console.warn("⚠️ Redis not available, using memory adapter:", error);
+        // Falls back to default memory adapter if Redis fails
+    }
 
     io.on("connection", (socket) => {
         console.log(`📡 Client connected: ${socket.id}`);
@@ -60,3 +78,4 @@ export function emitToBoardRoom(boardId: string, event: string, data: unknown) {
         io.to(`board:${boardId}`).emit(event, data);
     }
 }
+

@@ -28,11 +28,17 @@ if (process.env.NODE_ENV === "production" && !process.env.JWT_SECRET) {
 // Buat HTTP server dari Express app
 const httpServer = createServer(app);
 
-// Inisialisasi Socket.io
-initializeSocket(httpServer);
+// Start server with async initialization
+async function startServer() {
+    // Inisialisasi Socket.io dengan Redis adapter
+    await initializeSocket(httpServer);
 
-// Jalankan server
-httpServer.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
-    console.log(`📡 Socket.io ready for connections`);
-});
+    // Jalankan server
+    httpServer.listen(PORT, () => {
+        console.log(`🚀 Server running on http://localhost:${PORT}`);
+        console.log(`📡 Socket.io ready for connections`);
+    });
+}
+
+startServer().catch(console.error);
+
