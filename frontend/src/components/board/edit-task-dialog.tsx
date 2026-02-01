@@ -9,6 +9,8 @@ import { Task } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { LabelSelector } from "./label-selector";
+import { DatePicker } from "./date-picker";
 import {
     Dialog,
     DialogContent,
@@ -26,16 +28,24 @@ import {
 
 interface EditTaskDialogProps {
     task: Task | null;
+    workspaceId: string;
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    onSave: (taskId: string, data: { title: string; description: string; priority: string }) => Promise<void>;
+    onSave: (taskId: string, data: { title: string; description: string; priority: string; dueDate?: string; labelIds?: string[] }) => Promise<void>;
 }
 
-export function EditTaskDialog({ task, open, onOpenChange, onSave }: EditTaskDialogProps) {
-    const [formData, setFormData] = useState({
+export function EditTaskDialog({ task, workspaceId, open, onOpenChange, onSave }: EditTaskDialogProps) {
+    const [formData, setFormData] = useState<{
+        title: string;
+        description: string;
+        priority: string;
+        dueDate?: Date;
+        labelIds: string[];
+    }>({
         title: "",
         description: "",
         priority: "LOW",
+        labelIds: [],
     });
     const [isSaving, setIsSaving] = useState(false);
 
@@ -46,6 +56,8 @@ export function EditTaskDialog({ task, open, onOpenChange, onSave }: EditTaskDia
                 title: task.title,
                 description: task.description || "",
                 priority: task.priority,
+                dueDate: task.dueDate ? new Date(task.dueDate) : undefined,
+                labelIds: task.labels?.map(l => l.id) || [],
             });
         }
     }, [task]);
@@ -56,7 +68,10 @@ export function EditTaskDialog({ task, open, onOpenChange, onSave }: EditTaskDia
 
         setIsSaving(true);
         try {
-            await onSave(task.id, formData);
+            await onSave(task.id, {
+                ...formData,
+                dueDate: formData.dueDate?.toISOString(),
+            });
             onOpenChange(false);
         } finally {
             setIsSaving(false);
@@ -113,6 +128,26 @@ export function EditTaskDialog({ task, open, onOpenChange, onSave }: EditTaskDia
                                     <SelectItem value="URGENT">Urgent</SelectItem>
                                 </SelectContent>
                             </Select>
+                        </div>
+
+                        {/* Labels */}
+                        <div className="space-y-2">
+                            <Label className="text-foreground">Labels</Label>
+                            <LabelSelector
+                                workspaceId={workspaceId}
+                                selectedLabelIds={formData.labelIds}
+                                onSelect={(id) => setFormData({ ...formData, labelIds: [...formData.labelIds, id] })}
+                                onDeselect={(id) => setFormData({ ...formData, labelIds: formData.labelIds.filter(lid => lid !== id) })}
+                            />
+                        </div>
+
+                        {/* Due Date */}
+                        <div className="space-y-2">
+                            <Label className="text-foreground">Due Date</Label>
+                            <DatePicker
+                                date={formData.dueDate}
+                                setDate={(date) => setFormData({ ...formData, dueDate: date })}
+                            />
                         </div>
                     </div>
                     <DialogFooter>

@@ -10,8 +10,8 @@ export async function createTask(req: AuthenticatedRequest, res: Response): Prom
     try {
         const { columnId } = req.params;
         const userId = req.user!.userId;
-        const { title, description, priority, dueDate } = req.body;
-        const task = await taskService.createTask({ title, description, priority, dueDate, columnId }, userId);
+        const { title, description, priority, dueDate, labelIds } = req.body;
+        const task = await taskService.createTask({ title, description, priority, dueDate, labelIds, columnId }, userId);
         res.status(201).json({ success: true, data: { task }, message: "Task berhasil dibuat" } as ApiResponse);
     } catch (error) {
         const message = error instanceof Error ? error.message : "Terjadi kesalahan";
@@ -23,8 +23,8 @@ export async function updateTask(req: AuthenticatedRequest, res: Response): Prom
     try {
         const { id } = req.params;
         const userId = req.user!.userId;
-        const { title, description, priority, dueDate } = req.body;
-        const task = await taskService.updateTask(id, { title, description, priority, dueDate }, userId);
+        const { title, description, priority, dueDate, labelIds } = req.body;
+        const task = await taskService.updateTask(id, { title, description, priority, dueDate, labelIds }, userId);
         res.status(200).json({ success: true, data: { task }, message: "Task berhasil diupdate" } as ApiResponse);
     } catch (error) {
         const message = error instanceof Error ? error.message : "Terjadi kesalahan";

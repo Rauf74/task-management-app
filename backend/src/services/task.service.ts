@@ -21,7 +21,7 @@ async function checkColumnAccess(columnId: string, userId: string) {
 }
 
 export async function createTask(
-    data: { title: string; description?: string; priority?: Priority; dueDate?: string; columnId: string },
+    data: { title: string; description?: string; priority?: Priority; dueDate?: string; columnId: string; labelIds?: string[] },
     userId: string
 ) {
     const { workspaceId, boardId } = await checkColumnAccess(data.columnId, userId);
@@ -39,6 +39,9 @@ export async function createTask(
         columnId: data.columnId,
         creatorId: userId,
         order: maxOrder + 1,
+        labels: data.labelIds ? {
+            connect: data.labelIds.map(id => ({ id }))
+        } : undefined,
     });
 
     await activityService.logActivity({
@@ -56,7 +59,7 @@ export async function createTask(
 
 export async function updateTask(
     id: string,
-    data: { title?: string; description?: string; priority?: Priority; dueDate?: string | null },
+    data: { title?: string; description?: string; priority?: Priority; dueDate?: string | null; labelIds?: string[] },
     userId: string
 ) {
     const task = await taskRepository.findById(id);
@@ -67,6 +70,9 @@ export async function updateTask(
         description: data.description,
         priority: data.priority,
         dueDate: data.dueDate === null ? null : data.dueDate ? new Date(data.dueDate) : undefined,
+        labels: data.labelIds ? {
+            set: data.labelIds.map(id => ({ id }))
+        } : undefined,
     });
 }
 

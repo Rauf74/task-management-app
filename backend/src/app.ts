@@ -24,6 +24,7 @@ import workspaceRoutes from "./routes/workspace.routes.js";
 import boardRoutes from "./routes/board.routes.js";
 import columnRoutes from "./routes/column.routes.js";
 import taskRoutes from "./routes/task.routes.js";
+import labelRoutes from "./routes/label.routes.js";
 
 // Import Swagger
 import { setupSwagger } from "./lib/swagger.js";
@@ -78,6 +79,7 @@ app.use("/api/workspaces", workspaceRoutes);
 app.use("/api/boards", boardRoutes);
 app.use("/api/columns", columnRoutes);
 app.use("/api/tasks", taskRoutes);
+app.use("/api/workspaces", labelRoutes);
 
 // Swagger documentation
 setupSwagger(app);

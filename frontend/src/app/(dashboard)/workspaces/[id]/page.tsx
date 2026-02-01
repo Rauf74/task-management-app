@@ -175,62 +175,74 @@ export default function WorkspaceDetailPage() {
                 </div>
             </div>
 
-            {/* Dashboard Widgets */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-2">
-                    <AnalyticsWidget workspaceId={workspaceId} />
-                </div>
-                <div className="lg:col-span-1">
-                    <ActivityFeed workspaceId={workspaceId} />
-                </div>
-            </div>
+            {/* Dashboard Layout Container */}
+            <div className="flex flex-col lg:flex-row gap-6 items-start">
+                {/* Main content (Analytics & Boards) */}
+                <div className="flex-1 min-w-0 space-y-8">
+                    {/* Analytics Section */}
+                    <section>
+                        <AnalyticsWidget workspaceId={workspaceId} />
+                    </section>
 
-            {/* Board Grid */}
-            {workspace.boards.length === 0 ? (
-                <Card className="glass border-border/50 bg-card/30">
-                    <CardContent className="flex flex-col items-center justify-center py-16 text-center">
-                        <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                            <span className="text-2xl">📋</span>
+                    {/* Boards Section */}
+                    <section className="space-y-4">
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-xl font-bold text-foreground">Boards dalam Workspace</h2>
                         </div>
-                        <h3 className="text-xl font-semibold mb-2">Belum ada board</h3>
-                        <p className="text-muted-foreground mb-6 max-w-md">
-                            Buat board Kanban pertama Anda untuk mulai melacak tugas-tugas dalam workspace ini.
-                        </p>
-                        <Button onClick={() => setDialogOpen(true)} size="lg" className="shadow-lg shadow-primary/20">
-                            Buat Board Pertama
-                        </Button>
-                    </CardContent>
-                </Card>
-            ) : (
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {workspace.boards.map((board: Board) => (
-                        <Link key={board.id} href={`/boards/${board.id}`} className="group block h-full">
-                            <Card className="glass-card h-full relative overflow-hidden group-hover:border-primary/50 transition-all duration-300">
-                                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                                <CardHeader>
-                                    <CardTitle className="text-foreground group-hover:text-primary transition-colors flex items-center gap-2">
-                                        <span className="text-xl">📋</span>
-                                        {board.name}
-                                    </CardTitle>
-                                    <CardDescription className="text-muted-foreground line-clamp-2">
-                                        {board.description || "Tidak ada deskripsi"}
-                                    </CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="flex items-center justify-between text-xs text-muted-foreground mt-2">
-                                        <span className="px-2 py-1 rounded-md bg-secondary">
-                                            Kanban Board
-                                        </span>
-                                        <span className="group-hover:translate-x-1 transition-transform">
-                                            Buka Board →
-                                        </span>
+
+                        {workspace.boards.length === 0 ? (
+                            <Card className="glass border-border/50 bg-card/30">
+                                <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+                                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                                        <span className="text-2xl">📋</span>
                                     </div>
+                                    <h3 className="text-xl font-semibold mb-2">Belum ada board</h3>
+                                    <p className="text-muted-foreground mb-6 max-w-md">
+                                        Buat board Kanban pertama Anda untuk mulai melacak tugas-tugas dalam workspace ini.
+                                    </p>
+                                    <Button onClick={() => setDialogOpen(true)} size="lg" className="shadow-lg shadow-primary/20">
+                                        Buat Board Pertama
+                                    </Button>
                                 </CardContent>
                             </Card>
-                        </Link>
-                    ))}
+                        ) : (
+                            <div className="grid gap-4 md:grid-cols-2">
+                                {workspace.boards.map((board: Board) => (
+                                    <Link key={board.id} href={`/boards/${board.id}`} className="group block h-full">
+                                        <Card className="glass-card h-full relative overflow-hidden group-hover:border-primary/50 transition-all duration-300">
+                                            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                                            <CardHeader className="pb-2">
+                                                <CardTitle className="text-base group-hover:text-primary transition-colors flex items-center gap-2">
+                                                    <span className="text-lg">📋</span>
+                                                    {board.name}
+                                                </CardTitle>
+                                                <CardDescription className="text-xs text-muted-foreground line-clamp-1">
+                                                    {board.description || "Tidak ada deskripsi"}
+                                                </CardDescription>
+                                            </CardHeader>
+                                            <CardContent>
+                                                <div className="flex items-center justify-between text-[10px] text-muted-foreground mt-1">
+                                                    <span className="px-1.5 py-0.5 rounded bg-secondary/50">
+                                                        Kanban Board
+                                                    </span>
+                                                    <span className="group-hover:translate-x-1 transition-transform">
+                                                        Buka Board →
+                                                    </span>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    </Link>
+                                ))}
+                            </div>
+                        )}
+                    </section>
                 </div>
-            )}
+
+                {/* Sidebar (Activity Feed) */}
+                <aside className="w-full lg:w-80 shrink-0 lg:sticky lg:top-6 h-fit lg:h-[calc(100vh-140px)] flex flex-col">
+                    <ActivityFeed workspaceId={workspaceId} />
+                </aside>
+            </div>
 
             {/* Delete Workspace Confirmation */}
             <ConfirmDialog

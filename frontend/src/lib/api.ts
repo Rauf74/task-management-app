@@ -125,20 +125,38 @@ export const columnApi = {
 // ==============================================
 
 export const taskApi = {
-    create: (columnId: string, data: { title: string; description?: string; priority?: string }) =>
+    create: (columnId: string, data: { title: string; description?: string; priority?: string; dueDate?: string; labelIds?: string[] }) =>
         fetcher<{ success: boolean; data: { task: Task } }>(
             `/api/columns/${columnId}/tasks`,
             { method: "POST", body: data }
         ),
 
-    update: (id: string, data: { title?: string; description?: string; priority?: string }) =>
-        fetcher(`/api/tasks/${id}`, { method: "PUT", body: data }),
+    update: (id: string, data: { title?: string; description?: string; priority?: string; dueDate?: string | null; labelIds?: string[] }) =>
+        fetcher<{ success: boolean; data: { task: Task } }>(`/api/tasks/${id}`, { method: "PUT", body: data }),
 
     delete: (id: string) =>
         fetcher(`/api/tasks/${id}`, { method: "DELETE" }),
 
     move: (id: string, data: { columnId: string; order: number }) =>
         fetcher(`/api/tasks/${id}/move`, { method: "PATCH", body: data }),
+};
+
+// ==============================================
+// Label API
+// ==============================================
+
+export const labelApi = {
+    list: (workspaceId: string) =>
+        fetcher<{ success: boolean; data: { labels: Label[] } }>(`/api/workspaces/${workspaceId}/labels`),
+
+    create: (workspaceId: string, data: { name: string; color: string }) =>
+        fetcher<{ success: boolean; data: { label: Label } }>(
+            `/api/workspaces/${workspaceId}/labels`,
+            { method: "POST", body: data }
+        ),
+
+    delete: (id: string) =>
+        fetcher(`/api/workspaces/labels/${id}`, { method: "DELETE" }),
 };
 
 // ==============================================
@@ -178,6 +196,13 @@ export interface Column {
     tasks: Task[];
 }
 
+export interface Label {
+    id: string;
+    name: string;
+    color: string;
+    workspaceId: string;
+}
+
 export interface Task {
     id: string;
     title: string;
@@ -185,6 +210,8 @@ export interface Task {
     priority: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
     order: number;
     columnId: string;
+    dueDate?: string;
+    labels?: Label[];
 }
 
 export interface BoardWithDetails extends Board {

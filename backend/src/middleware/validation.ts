@@ -92,6 +92,7 @@ export const taskSchema = z.object({
     description: z.string().max(1000).optional(),
     priority: z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"]).optional(),
     dueDate: z.string().datetime().optional(),
+    labelIds: z.array(z.string()).optional(),
 });
 
 export const updateTaskSchema = z.object({
@@ -99,6 +100,7 @@ export const updateTaskSchema = z.object({
     description: z.string().max(1000).optional(),
     priority: z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"]).optional(),
     dueDate: z.string().datetime().nullable().optional(),
+    labelIds: z.array(z.string()).optional(),
 });
 
 export const moveTaskSchema = z.object({

@@ -9,6 +9,9 @@ import { CSS } from "@dnd-kit/utilities";
 import { Task } from "@/lib/api";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { format, isPast, isToday } from "date-fns";
 
 interface TaskCardProps {
     task: Task;
@@ -58,19 +61,50 @@ export function TaskCard({ task, onDelete, onEdit }: TaskCardProps) {
                                 {task.description}
                             </p>
                         )}
-                        <div className="flex gap-2 mt-2.5">
-                            <span
-                                className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${task.priority === "URGENT"
-                                    ? "bg-red-500/10 text-red-600 border-red-200 dark:border-red-900/30"
-                                    : task.priority === "HIGH"
-                                        ? "bg-orange-500/10 text-orange-600 border-orange-200 dark:border-orange-900/30"
-                                        : task.priority === "MEDIUM"
-                                            ? "bg-yellow-500/10 text-yellow-600 border-yellow-200 dark:border-yellow-900/30"
-                                            : "bg-blue-500/10 text-blue-600 border-blue-200 dark:border-blue-900/30"
-                                    }`}
-                            >
-                                {task.priority}
-                            </span>
+
+                        {/* Labels */}
+                        {task.labels && task.labels.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-2">
+                                {task.labels.map((label) => (
+                                    <div
+                                        key={label.id}
+                                        className="h-1.5 w-6 rounded-full"
+                                        style={{ backgroundColor: label.color }}
+                                        title={label.name}
+                                    />
+                                ))}
+                            </div>
+                        )}
+
+                        <div className="flex items-center justify-between gap-2 mt-2.5">
+                            <div className="flex gap-2 items-center">
+                                <span
+                                    className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${task.priority === "URGENT"
+                                        ? "bg-red-500/10 text-red-600 border-red-200 dark:border-red-900/30"
+                                        : task.priority === "HIGH"
+                                            ? "bg-orange-500/10 text-orange-600 border-orange-200 dark:border-orange-900/30"
+                                            : task.priority === "MEDIUM"
+                                                ? "bg-yellow-500/10 text-yellow-600 border-yellow-200 dark:border-yellow-900/30"
+                                                : "bg-blue-500/10 text-blue-600 border-blue-200 dark:border-blue-900/30"
+                                        }`}
+                                >
+                                    {task.priority}
+                                </span>
+
+                                {task.dueDate && (
+                                    <div
+                                        className={`flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-md ${isPast(new Date(task.dueDate)) && !isToday(new Date(task.dueDate))
+                                            ? "text-red-600 bg-red-500/10"
+                                            : isToday(new Date(task.dueDate))
+                                                ? "text-orange-600 bg-orange-500/10"
+                                                : "text-muted-foreground"
+                                            }`}
+                                    >
+                                        <CalendarIcon className="h-3 w-3" />
+                                        {format(new Date(task.dueDate), "MMM d")}
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                     <Button

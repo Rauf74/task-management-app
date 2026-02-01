@@ -45,6 +45,8 @@ import { KanbanColumn } from "@/components/board/kanban-column";
 import { TaskCard } from "@/components/board/task-card";
 import { EditTaskDialog } from "@/components/board/edit-task-dialog";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { LabelSelector } from "@/components/board/label-selector";
+import { DatePicker } from "@/components/board/date-picker";
 
 export default function BoardViewPage() {
     const params = useParams();
@@ -60,7 +62,18 @@ export default function BoardViewPage() {
     const [taskDialogOpen, setTaskDialogOpen] = useState(false);
     const [selectedColumnId, setSelectedColumnId] = useState<string | null>(null);
     const [newColumn, setNewColumn] = useState({ title: "" });
-    const [newTask, setNewTask] = useState({ title: "", description: "", priority: "LOW" });
+    const [newTask, setNewTask] = useState<{
+        title: string;
+        description: string;
+        priority: string;
+        dueDate?: Date;
+        labelIds: string[];
+    }>({
+        title: "",
+        description: "",
+        priority: "LOW",
+        labelIds: []
+    });
     const [isCreating, setIsCreating] = useState(false);
 
     // Edit task state
@@ -256,7 +269,10 @@ export default function BoardViewPage() {
 
         setIsCreating(true);
         try {
-            const response = await taskApi.create(selectedColumnId, newTask);
+            const response = await taskApi.create(selectedColumnId, {
+                ...newTask,
+                dueDate: newTask.dueDate?.toISOString(),
+            });
             if (response?.data?.task) {
                 setBoard((prev) => {
                     if (!prev) return prev;
@@ -269,7 +285,7 @@ export default function BoardViewPage() {
                         ),
                     };
                 });
-                setNewTask({ title: "", description: "", priority: "LOW" });
+                setNewTask({ title: "", description: "", priority: "LOW", labelIds: [] });
                 setTaskDialogOpen(false);
                 toast.success("Task berhasil dibuat!");
             }
@@ -341,20 +357,14 @@ export default function BoardViewPage() {
         setEditDialogOpen(true);
     }
 
-    async function handleUpdateTask(taskId: string, data: { title: string; description: string; priority: string }) {
+    async function handleUpdateTask(taskId: string, data: { title: string; description: string; priority: string; dueDate?: string; labelIds?: string[] }) {
         try {
             await taskApi.update(taskId, data);
             setBoard((prev) => {
                 if (!prev) return prev;
-                return {
-                    ...prev,
-                    columns: prev.columns.map((col) => ({
-                        ...col,
-                        tasks: col.tasks.map((t) =>
-                            t.id === taskId ? { ...t, title: data.title, description: data.description, priority: data.priority as Task["priority"] } : t
-                        ),
-                    })),
-                };
+                // Full reload is safer for complex updates like labels
+                loadBoard();
+                return prev;
             });
             toast.success("Task berhasil diupdate!");
         } catch {
@@ -519,6 +529,26 @@ export default function BoardViewPage() {
                                     </SelectContent>
                                 </Select>
                             </div>
+
+                            {/* Labels */}
+                            <div className="space-y-2">
+                                <Label className="text-foreground">Labels</Label>
+                                <LabelSelector
+                                    workspaceId={board.workspaceId}
+                                    selectedLabelIds={newTask.labelIds}
+                                    onSelect={(id) => setNewTask({ ...newTask, labelIds: [...newTask.labelIds, id] })}
+                                    onDeselect={(id) => setNewTask({ ...newTask, labelIds: newTask.labelIds.filter(lid => lid !== id) })}
+                                />
+                            </div>
+
+                            {/* Due Date */}
+                            <div className="space-y-2">
+                                <Label className="text-foreground">Due Date</Label>
+                                <DatePicker
+                                    date={newTask.dueDate}
+                                    setDate={(date) => setNewTask({ ...newTask, dueDate: date })}
+                                />
+                            </div>
                         </div>
                         <DialogFooter>
                             <Button type="submit" disabled={isCreating}>
@@ -532,6 +562,7 @@ export default function BoardViewPage() {
             {/* Edit Task Dialog */}
             <EditTaskDialog
                 task={editingTask}
+                workspaceId={board.workspaceId}
                 open={editDialogOpen}
                 onOpenChange={setEditDialogOpen}
                 onSave={handleUpdateTask}

@@ -58,6 +58,7 @@ model Workspace {
   userId String
   user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   boards Board[]
+  labels Label[]
   activities Activity[]
 
   @@map("workspaces")
@@ -138,9 +139,12 @@ model Label {
   createdAt DateTime @default(now())
 
   // Relations
-  tasks Task[]
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  tasks       Task[]
 
   @@map("labels")
+  @@index([workspaceId])
 }
 
 // ============================================

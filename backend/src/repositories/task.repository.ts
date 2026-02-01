@@ -20,6 +20,7 @@ export async function create(data: {
     columnId: string;
     creatorId: string;
     order: number;
+    labels?: { connect: { id: string }[] };
 }) {
     return prisma.task.create({
         data,
@@ -32,6 +33,7 @@ export async function update(id: string, data: {
     description?: string;
     priority?: Priority;
     dueDate?: Date | null;
+    labels?: { set: { id: string }[] };
 }) {
     return prisma.task.update({
         where: { id },
