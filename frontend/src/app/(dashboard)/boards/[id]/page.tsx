@@ -452,7 +452,7 @@ export default function BoardViewPage() {
                                 </div>
                                 <h3 className="font-semibold mb-2">Mulai Workflow Anda</h3>
                                 <p className="text-sm text-muted-foreground mb-6">
-                                    Buat kolom pertama (contoh: "To Do") untuk mulai mengorganisir tugas.
+                                    Buat kolom pertama (contoh: &quot;To Do&quot;) untuk mulai mengorganisir tugas.
                                 </p>
                                 <Button onClick={() => setColumnDialogOpen(true)} className="shadow-md shadow-primary/20">
                                     Buat Column Pertama
