@@ -70,13 +70,13 @@ export function AnalyticsWidget({ workspaceId }: { workspaceId: string }) {
     }
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Priority Distribution */}
             <Card className="glass-card">
                 <CardHeader>
                     <CardTitle className="text-lg font-medium">Task Priority</CardTitle>
                 </CardHeader>
-                <CardContent className="h-[250px]">
+                <CardContent className="h-[300px]">
                     <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
                             <Pie
@@ -115,7 +115,7 @@ export function AnalyticsWidget({ workspaceId }: { workspaceId: string }) {
                 <CardHeader>
                     <CardTitle className="text-lg font-medium">Task Status</CardTitle>
                 </CardHeader>
-                <CardContent className="h-[250px]">
+                <CardContent className="h-[300px]">
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={data.statusData}>
                             <XAxis
@@ -128,13 +128,15 @@ export function AnalyticsWidget({ workspaceId }: { workspaceId: string }) {
                                 hide
                             />
                             <Tooltip
-                                cursor={{ fill: 'var(--muted)/0.2' }}
+                                cursor={false}
                                 contentStyle={{
-                                    backgroundColor: "var(--background)",
-                                    borderColor: "var(--border)",
-                                    borderRadius: "8px"
+                                    backgroundColor: "hsl(var(--popover))",
+                                    borderColor: "hsl(var(--border))",
+                                    borderRadius: "var(--radius)",
+                                    color: "hsl(var(--popover-foreground))",
+                                    boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
                                 }}
-                                itemStyle={{ color: "var(--foreground)" }}
+                                itemStyle={{ color: "hsl(var(--foreground))" }}
                             />
                             <Bar dataKey="value" radius={[4, 4, 0, 0]}>
                                 {data.statusData.map((entry, index) => (

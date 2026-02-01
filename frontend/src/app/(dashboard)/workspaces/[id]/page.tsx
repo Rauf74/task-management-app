@@ -25,6 +25,7 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { toast } from "sonner";
 
 import { AnalyticsWidget } from "@/components/dashboard/analytics-widget";
+import { ActivityFeed } from "@/components/dashboard/activity-feed";
 
 export default function WorkspaceDetailPage() {
     const params = useParams();
@@ -174,8 +175,15 @@ export default function WorkspaceDetailPage() {
                 </div>
             </div>
 
-            {/* Analytics Widget */}
-            <AnalyticsWidget workspaceId={workspaceId} />
+            {/* Dashboard Widgets */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2">
+                    <AnalyticsWidget workspaceId={workspaceId} />
+                </div>
+                <div className="lg:col-span-1">
+                    <ActivityFeed workspaceId={workspaceId} />
+                </div>
+            </div>
 
             {/* Board Grid */}
             {workspace.boards.length === 0 ? (
