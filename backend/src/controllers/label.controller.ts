@@ -1,16 +1,17 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import * as labelService from "../services/label.service.js";
 import { z } from "zod";
+import { AuthenticatedRequest } from "../types/index.js";
 
 const createLabelSchema = z.object({
     name: z.string().min(1, "Nama label wajib diisi"),
     color: z.string().regex(/^#([0-9A-F]{3}){1,2}$/i, "Format warna tidak valid"),
 });
 
-export async function createLabel(req: Request, res: Response): Promise<void> {
+export async function createLabel(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
         const { workspaceId } = req.params;
-        const userId = (req as any).user!.id;
+        const userId = req.user!.userId;
 
         const validated = createLabelSchema.parse(req.body);
 
@@ -23,7 +24,7 @@ export async function createLabel(req: Request, res: Response): Promise<void> {
         });
     } catch (error) {
         if (error instanceof z.ZodError) {
-            res.status(400).json({ success: false, message: (error as z.ZodError).errors[0].message });
+            res.status(400).json({ success: false, message: error.issues[0].message });
         } else if (error instanceof Error) {
             res.status(400).json({ success: false, message: error.message });
         } else {
@@ -32,10 +33,10 @@ export async function createLabel(req: Request, res: Response): Promise<void> {
     }
 }
 
-export async function getLabels(req: Request, res: Response): Promise<void> {
+export async function getLabels(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
         const { workspaceId } = req.params;
-        const userId = (req as any).user!.id;
+        const userId = req.user!.userId;
 
         const labels = await labelService.getLabels(workspaceId, userId);
 
@@ -51,10 +52,10 @@ export async function getLabels(req: Request, res: Response): Promise<void> {
     }
 }
 
-export async function deleteLabel(req: Request, res: Response): Promise<void> {
+export async function deleteLabel(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
         const { id } = req.params;
-        const userId = (req as any).user!.id;
+        const userId = req.user!.userId;
 
         await labelService.deleteLabel(id, userId);
 
