@@ -115,3 +115,25 @@ export async function deleteWorkspace(req: AuthenticatedRequest, res: Response):
         res.status(statusCode).json({ success: false, error: message });
     }
 }
+
+// ==============================================
+// Get Analytics
+// ==============================================
+
+export async function getAnalytics(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+        const { id } = req.params;
+        const userId = req.user!.userId;
+        const analytics = await workspaceService.getWorkspaceAnalytics(id, userId);
+
+        const response: ApiResponse = {
+            success: true,
+            data: analytics,
+        };
+        res.status(200).json(response);
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "Terjadi kesalahan";
+        const statusCode = message.includes("tidak ditemukan") ? 404 : 500;
+        res.status(statusCode).json({ success: false, error: message });
+    }
+}

@@ -64,3 +64,17 @@ export async function deleteWorkspace(id: string, userId: string) {
 
     return workspaceRepository.remove(id);
 }
+
+// ==============================================
+// Get Analytics
+// ==============================================
+
+export async function getWorkspaceAnalytics(id: string, userId: string) {
+    // Check ownership
+    const isOwner = await workspaceRepository.isOwner(id, userId);
+    if (!isOwner) {
+        throw new Error("Workspace tidak ditemukan atau tidak memiliki akses");
+    }
+
+    return workspaceRepository.getAnalytics(id);
+}

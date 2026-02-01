@@ -14,6 +14,53 @@ router.use(requireAuth);
 
 /**
  * @swagger
+ * /api/workspaces/{id}:
+ *   delete:
+ *     tags: [Workspace]
+ *     summary: Delete workspace
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Workspace deleted
+ */
+router.delete("/:id", workspaceController.deleteWorkspace);
+
+// ==============================================
+// Analytics Routes
+// ==============================================
+
+/**
+ * @swagger
+ * /api/workspaces/{id}/analytics:
+ *   get:
+ *     tags: [Workspace]
+ *     summary: Get workspace analytics
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Workspace analytics data
+ */
+router.get("/:id/analytics", workspaceController.getAnalytics);
+
+// ==============================================
+// Nested Routes for Boards
+// ==============================================
+/**
+ * @swagger
  * /api/workspaces:
  *   get:
  *     tags: [Workspace]
@@ -110,6 +157,7 @@ router.put("/:id", validate(updateWorkspaceSchema), workspaceController.updateWo
  *       200:
  *         description: Workspace deleted
  */
+// (Removed from here, moving to top)
 router.delete("/:id", workspaceController.deleteWorkspace);
 
 // ==============================================
