@@ -21,7 +21,7 @@ export async function createLabel(
             name: data.name,
             color: data.color,
             workspaceId,
-        } as any,
+        },
     });
 }
 
