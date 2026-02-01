@@ -24,6 +24,8 @@ import {
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { toast } from "sonner";
 
+import { AnalyticsWidget } from "@/components/dashboard/analytics-widget";
+
 export default function WorkspaceDetailPage() {
     const params = useParams();
     const router = useRouter();
@@ -171,6 +173,9 @@ export default function WorkspaceDetailPage() {
                     </Button>
                 </div>
             </div>
+
+            {/* Analytics Widget */}
+            <AnalyticsWidget workspaceId={workspaceId} />
 
             {/* Board Grid */}
             {workspace.boards.length === 0 ? (
