@@ -174,23 +174,45 @@ export default function WorkspaceDetailPage() {
 
             {/* Board Grid */}
             {workspace.boards.length === 0 ? (
-                <Card className="border-border bg-card/50">
-                    <CardContent className="flex flex-col items-center justify-center py-12">
-                        <p className="text-muted-foreground mb-4">Belum ada board di workspace ini</p>
-                        <Button onClick={() => setDialogOpen(true)}>Buat Board Pertama</Button>
+                <Card className="glass border-border/50 bg-card/30">
+                    <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+                        <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                            <span className="text-2xl">📋</span>
+                        </div>
+                        <h3 className="text-xl font-semibold mb-2">Belum ada board</h3>
+                        <p className="text-muted-foreground mb-6 max-w-md">
+                            Buat board Kanban pertama Anda untuk mulai melacak tugas-tugas dalam workspace ini.
+                        </p>
+                        <Button onClick={() => setDialogOpen(true)} size="lg" className="shadow-lg shadow-primary/20">
+                            Buat Board Pertama
+                        </Button>
                     </CardContent>
                 </Card>
             ) : (
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {workspace.boards.map((board: Board) => (
-                        <Link key={board.id} href={`/boards/${board.id}`}>
-                            <Card className="border-border bg-card hover:bg-accent transition-colors cursor-pointer h-full">
+                        <Link key={board.id} href={`/boards/${board.id}`} className="group block h-full">
+                            <Card className="glass-card h-full relative overflow-hidden group-hover:border-primary/50 transition-all duration-300">
+                                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                                 <CardHeader>
-                                    <CardTitle className="text-foreground">{board.name}</CardTitle>
-                                    <CardDescription className="text-muted-foreground">
+                                    <CardTitle className="text-foreground group-hover:text-primary transition-colors flex items-center gap-2">
+                                        <span className="text-xl">📋</span>
+                                        {board.name}
+                                    </CardTitle>
+                                    <CardDescription className="text-muted-foreground line-clamp-2">
                                         {board.description || "Tidak ada deskripsi"}
                                     </CardDescription>
                                 </CardHeader>
+                                <CardContent>
+                                    <div className="flex items-center justify-between text-xs text-muted-foreground mt-2">
+                                        <span className="px-2 py-1 rounded-md bg-secondary">
+                                            Kanban Board
+                                        </span>
+                                        <span className="group-hover:translate-x-1 transition-transform">
+                                            Buka Board →
+                                        </span>
+                                    </div>
+                                </CardContent>
                             </Card>
                         </Link>
                     ))}

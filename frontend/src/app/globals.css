@@ -6,8 +6,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -16,11 +17,13 @@
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar: var(--sidebar);
+  
   --color-chart-5: var(--chart-5);
   --color-chart-4: var(--chart-4);
   --color-chart-3: var(--chart-3);
   --color-chart-2: var(--chart-2);
   --color-chart-1: var(--chart-1);
+  
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -37,6 +40,7 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -47,104 +51,118 @@
 }
 
 /* ============================================
-   Light Mode - ColorHunt Inspired
-   Palette: #F5F5F5, #E8E8E8, #3B82F6, #1E3A5F
-   Clean, professional, soft grays with blue accent
+   Light Mode - Premium SaaS
+   Clean white/slate foundation with crisp borders
    ============================================ */
 :root {
-  --radius: 0.625rem;
+  --radius: 0.75rem; /* Slightly more rounded for modern feel */
+  
   /* Backgrounds */
-  --background: #F8FAFC;
-  --foreground: #0F172A;
+  --background: #FFFFFF;
+  --foreground: #09090B; /* Zinc-950 */
+  
   /* Cards */
   --card: #FFFFFF;
-  --card-foreground: #0F172A;
+  --card-foreground: #09090B;
+  
   /* Popover */
   --popover: #FFFFFF;
-  --popover-foreground: #0F172A;
-  /* Primary - Blue accent */
-  --primary: #3B82F6;
+  --popover-foreground: #09090B;
+  
+  /* Primary - Deep Professional Blue */
+  --primary: #2563EB; /* Blue-600 */
   --primary-foreground: #FFFFFF;
+  
   /* Secondary */
-  --secondary: #F1F5F9;
-  --secondary-foreground: #1E293B;
+  --secondary: #F4F4F5; /* Zinc-100 */
+  --secondary-foreground: #18181B; /* Zinc-900 */
+  
   /* Muted */
-  --muted: #F1F5F9;
-  --muted-foreground: #64748B;
+  --muted: #F4F4F5; /* Zinc-100 */
+  --muted-foreground: #71717A; /* Zinc-500 */
+  
   /* Accent */
-  --accent: #EFF6FF;
-  --accent-foreground: #1E40AF;
+  --accent: #F4F4F5; /* Zinc-100 */
+  --accent-foreground: #18181B; /* Zinc-900 */
+  
   /* Destructive */
   --destructive: #EF4444;
-  /* Borders */
-  --border: #E2E8F0;
-  --input: #E2E8F0;
-  --ring: #3B82F6;
+  --destructive-foreground: #FAFAFA;
+  
+  /* Borders - Subtle but defined */
+  --border: #E4E4E7; /* Zinc-200 */
+  --input: #E4E4E7; /* Zinc-200 */
+  --ring: #2563EB; /* Blue-600 */
+  
   /* Charts */
   --chart-1: #3B82F6;
   --chart-2: #10B981;
   --chart-3: #F59E0B;
   --chart-4: #8B5CF6;
   --chart-5: #EC4899;
+  
   /* Sidebar */
-  --sidebar: #FFFFFF;
-  --sidebar-foreground: #0F172A;
-  --sidebar-primary: #3B82F6;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #F1F5F9;
-  --sidebar-accent-foreground: #1E293B;
-  --sidebar-border: #E2E8F0;
-  --sidebar-ring: #3B82F6;
+  --sidebar: #F9FAFB; /* Slate-50 */
+  --sidebar-foreground: #09090B;
+  --sidebar-primary: #18181B;
+  --sidebar-primary-foreground: #FAFAFA;
+  --sidebar-accent: #F4F4F5;
+  --sidebar-accent-foreground: #18181B;
+  --sidebar-border: #E4E4E7;
+  --sidebar-ring: #2563EB;
 }
 
 /* ============================================
-   Dark Mode - ColorHunt Inspired
-   Palette: #0F0E17, #1A1A2E, #16213E, #0EA5E9
-   Deep navy blues with cyan accent
+   Dark Mode - Deep Space
+   Rich dark grays instead of pure black for depth
    ============================================ */
 .dark {
-  /* Backgrounds - Deep navy */
-  --background: #0F172A;
-  --foreground: #F1F5F9;
-  /* Cards */
-  --card: #1E293B;
-  --card-foreground: #F1F5F9;
+  /* Backgrounds - Zinc-950 base */
+  --background: #09090B;
+  --foreground: #FAFAFA; /* Zinc-50 */
+  
+  /* Cards - Zinc-900 */
+  --card: #18181B; 
+  --card-foreground: #FAFAFA;
+  
   /* Popover */
-  --popover: #1E293B;
-  --popover-foreground: #F1F5F9;
-  /* Primary - Cyan accent */
-  --primary: #0EA5E9;
-  --primary-foreground: #0F172A;
+  --popover: #18181B;
+  --popover-foreground: #FAFAFA;
+  
+  /* Primary - Lighter Blue for visibility */
+  --primary: #3B82F6; /* Blue-500 */
+  --primary-foreground: #FAFAFA;
+  
   /* Secondary */
-  --secondary: #334155;
-  --secondary-foreground: #F1F5F9;
+  --secondary: #27272A; /* Zinc-800 */
+  --secondary-foreground: #FAFAFA;
+  
   /* Muted */
-  --muted: #334155;
-  --muted-foreground: #94A3B8;
+  --muted: #27272A;
+  --muted-foreground: #A1A1AA; /* Zinc-400 */
+  
   /* Accent */
-  --accent: #1E3A5F;
-  --accent-foreground: #7DD3FC;
+  --accent: #27272A;
+  --accent-foreground: #FAFAFA;
+  
   /* Destructive */
-  --destructive: #F87171;
-  /* Borders */
-  --border: #334155;
-  --input: #334155;
-  --ring: #0EA5E9;
-  /* Charts */
-  --chart-1: #0EA5E9;
-  --chart-2: #34D399;
-  --chart-3: #FBBF24;
-  --chart-4: #A78BFA;
-  --chart-5: #F472B6;
+  --destructive: #7F1D1D;
+  --destructive-foreground: #FAFAFA;
+  
+  /* Borders - Subtle dark borders */
+  --border: #27272A;
+  --input: #27272A;
+  --ring: #1D4ED8;
+  
   /* Sidebar */
-  --sidebar: #1E293B;
-  --sidebar-foreground: #F1F5F9;
-  --sidebar-primary: #0EA5E9;
-  --sidebar-primary-foreground: #0F172A;
-  --sidebar-accent: #334155;
-  --sidebar-accent-foreground: #F1F5F9;
-  --sidebar-border: #334155;
-  --sidebar-ring: #0EA5E9;
+  --sidebar: #09090B;
+  --sidebar-foreground: #F4F4F5;
+  --sidebar-primary: #3B82F6;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #27272A;
+  --sidebar-accent-foreground: #F4F4F5;
+  --sidebar-border: #27272A;
+  --sidebar-ring: #3B82F6;
 }
 
 @layer base {
@@ -153,5 +171,26 @@
   }
   body {
     @apply bg-background text-foreground;
+    /* Dot Pattern - Subtle technical feel */
+    background-image: radial-gradient(var(--border) 1px, transparent 1px);
+    background-size: 24px 24px;
+    background-position: 0 0;
+  }
+  
+  /* Enhance headings with stronger font */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    @apply tracking-tight;
+  }
+}
+
+/* Utilities for Glassmorphism & Modern Effects */
+@layer utilities {
+  .glass {
+    @apply bg-background/60 backdrop-blur-md border border-border/50;
+  }
+  
+  .glass-card {
+    @apply bg-card/50 backdrop-blur-sm border border-border/50 shadow-sm hover:shadow-md transition-all duration-300;
   }
 }

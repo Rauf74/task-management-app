@@ -40,28 +40,28 @@ export default function LoginPage() {
     }
 
     return (
-        <Card className="backdrop-blur-xl bg-white/90 dark:bg-slate-900/90 border border-white/20 dark:border-slate-700/50 shadow-2xl relative">
+        <Card className="glass-card w-[400px] relative">
             {/* Theme Toggle - Top Right of Card */}
             <div className="absolute top-3 right-3 z-10">
                 <ThemeToggle />
             </div>
 
-            <CardHeader className="space-y-1 text-center pt-10">
+            <CardHeader className="space-y-1 text-center pt-8">
                 {/* Logo/Icon */}
-                <div className="mx-auto mb-4 w-16 h-16 bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="mx-auto mb-6 w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center shadow-inner ring-1 ring-primary/20">
+                    <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                     </svg>
                 </div>
-                <CardTitle className="text-2xl font-bold text-slate-800 dark:text-white">Selamat Datang!</CardTitle>
-                <CardDescription className="text-slate-600 dark:text-slate-400">
+                <CardTitle className="text-2xl font-bold tracking-tight">Selamat Datang!</CardTitle>
+                <CardDescription>
                     Masuk ke TaskScale untuk mengelola tugas Anda
                 </CardDescription>
             </CardHeader>
             <form onSubmit={handleSubmit}>
                 <CardContent className="space-y-4">
                     <div className="space-y-2">
-                        <Label htmlFor="identifier" className="text-slate-700 dark:text-slate-300">Email atau Username</Label>
+                        <Label htmlFor="identifier">Email atau Username</Label>
                         <Input
                             id="identifier"
                             type="text"
@@ -69,11 +69,10 @@ export default function LoginPage() {
                             value={formData.identifier}
                             onChange={(e) => setFormData({ ...formData, identifier: e.target.value })}
                             required
-                            className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-violet-500 focus:ring-violet-500/20"
                         />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="password" className="text-slate-700 dark:text-slate-300">Password</Label>
+                        <Label htmlFor="password">Password</Label>
                         <Input
                             id="password"
                             type="password"
@@ -81,14 +80,13 @@ export default function LoginPage() {
                             value={formData.password}
                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                             required
-                            className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-violet-500 focus:ring-violet-500/20"
                         />
                     </div>
                 </CardContent>
                 <CardFooter className="flex flex-col space-y-4">
                     <Button
                         type="submit"
-                        className="w-full bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white font-semibold shadow-lg"
+                        className="w-full shadow-lg shadow-primary/20"
                         disabled={isLoading}
                     >
                         {isLoading ? (
@@ -100,9 +98,9 @@ export default function LoginPage() {
                             "Masuk"
                         )}
                     </Button>
-                    <p className="text-sm text-slate-600 dark:text-slate-400 text-center">
+                    <p className="text-sm text-muted-foreground text-center">
                         Belum punya akun?{" "}
-                        <Link href="/register" className="text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 font-medium hover:underline">
+                        <Link href="/register" className="text-primary hover:underline font-medium">
                             Daftar Sekarang
                         </Link>
                     </p>

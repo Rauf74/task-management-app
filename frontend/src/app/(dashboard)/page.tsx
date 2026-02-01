@@ -134,27 +134,50 @@ export default function DashboardPage() {
 
             {/* Workspace Grid */}
             {workspaces.length === 0 ? (
-                <Card className="border-border bg-card/50">
-                    <CardContent className="flex flex-col items-center justify-center py-12">
-                        <p className="text-muted-foreground mb-4">Belum ada workspace</p>
-                        <Button onClick={() => setDialogOpen(true)}>Buat Workspace Pertama</Button>
+                <Card className="glass border-border/50 bg-card/30">
+                    <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+                        <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                            <span className="text-2xl">📂</span>
+                        </div>
+                        <h3 className="text-xl font-semibold mb-2">Belum ada workspace</h3>
+                        <p className="text-muted-foreground mb-6 max-w-md">
+                            Mulai dengan membuat workspace untuk mengorganisir board dan tugas-tugas tim Anda.
+                        </p>
+                        <Button onClick={() => setDialogOpen(true)} size="lg" className="shadow-lg shadow-primary/20">
+                            Buat Workspace Pertama
+                        </Button>
                     </CardContent>
                 </Card>
             ) : (
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {workspaces.map((workspace) => (
-                        <Link key={workspace.id} href={`/workspaces/${workspace.id}`}>
-                            <Card className="border-border bg-card hover:bg-accent transition-colors cursor-pointer h-full">
+                        <Link key={workspace.id} href={`/workspaces/${workspace.id}`} className="group block h-full">
+                            <Card className="glass-card h-full relative overflow-hidden group-hover:border-primary/50 transition-all duration-300">
+                                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                                 <CardHeader>
-                                    <CardTitle className="text-foreground">{workspace.name}</CardTitle>
-                                    <CardDescription className="text-muted-foreground">
+                                    <CardTitle className="text-foreground group-hover:text-primary transition-colors flex items-center gap-2">
+                                        <span className="p-2 rounded-md bg-primary/10 text-primary text-lg">
+                                            {workspace.name.charAt(0).toUpperCase()}
+                                        </span>
+                                        {workspace.name}
+                                    </CardTitle>
+                                    <CardDescription className="text-muted-foreground line-clamp-2">
                                         {workspace.description || "Tidak ada deskripsi"}
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent>
-                                    <p className="text-sm text-muted-foreground">
-                                        {workspace._count?.boards || 0} board
-                                    </p>
+                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                        <div className="flex -space-x-2">
+                                            {[1, 2, 3].map(i => (
+                                                <div key={i} className="w-6 h-6 rounded-full bg-muted border-2 border-background flex items-center justify-center text-[10px]">
+                                                    👤
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <span className="ml-2 px-2 py-0.5 rounded-full bg-secondary text-xs">
+                                            {workspace._count?.boards || 0} Boards
+                                        </span>
+                                    </div>
                                 </CardContent>
                             </Card>
                         </Link>

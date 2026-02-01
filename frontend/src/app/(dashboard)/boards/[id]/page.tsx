@@ -433,12 +433,20 @@ export default function BoardViewPage() {
                 onDragOver={handleDragOver}
                 onDragEnd={handleDragEnd}
             >
-                <div className="flex flex-col sm:flex-row gap-4 sm:overflow-x-auto pb-4">
+                <div className="flex flex-col sm:flex-row gap-6 sm:overflow-x-auto pb-4 h-[calc(100vh-200px)]">
                     {board.columns.length === 0 ? (
-                        <Card className="border-border bg-card/50 min-w-[300px]">
-                            <CardContent className="flex flex-col items-center justify-center py-12">
-                                <p className="text-muted-foreground mb-4">Belum ada column</p>
-                                <Button onClick={() => setColumnDialogOpen(true)}>Buat Column Pertama</Button>
+                        <Card className="glass border-border/50 bg-card/30 min-w-[300px] h-fit">
+                            <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+                                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                                    <span className="text-xl">📊</span>
+                                </div>
+                                <h3 className="font-semibold mb-2">Mulai Workflow Anda</h3>
+                                <p className="text-sm text-muted-foreground mb-6">
+                                    Buat kolom pertama (contoh: "To Do") untuk mulai mengorganisir tugas.
+                                </p>
+                                <Button onClick={() => setColumnDialogOpen(true)} className="shadow-md shadow-primary/20">
+                                    Buat Column Pertama
+                                </Button>
                             </CardContent>
                         </Card>
                     ) : (

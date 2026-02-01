@@ -44,7 +44,7 @@ export function TaskCard({ task, onDelete, onEdit }: TaskCardProps) {
         <Card
             ref={setNodeRef}
             style={style}
-            className={`border-border bg-secondary cursor-grab hover:bg-accent ${isDragging ? "shadow-lg" : ""
+            className={`cursor-grab group transition-all duration-200 border border-border/60 bg-card hover:border-primary/40 hover:shadow-md ${isDragging ? "shadow-xl ring-2 ring-primary/20 rotate-2 scale-105 opacity-90 z-50" : "shadow-sm"
                 }`}
             {...attributes}
             {...listeners}
@@ -52,21 +52,21 @@ export function TaskCard({ task, onDelete, onEdit }: TaskCardProps) {
             <CardContent className="p-3" onClick={handleCardClick}>
                 <div className="flex items-start justify-between gap-2">
                     <div className="flex-1 cursor-pointer" onClick={handleCardClick}>
-                        <p className="text-foreground text-sm font-medium">{task.title}</p>
+                        <p className="text-foreground text-sm font-medium leading-none mb-1.5">{task.title}</p>
                         {task.description && (
-                            <p className="text-muted-foreground text-xs mt-1 line-clamp-2">
+                            <p className="text-muted-foreground text-[10px] sm:text-xs line-clamp-2 leading-relaxed">
                                 {task.description}
                             </p>
                         )}
-                        <div className="flex gap-2 mt-2">
+                        <div className="flex gap-2 mt-2.5">
                             <span
-                                className={`text-xs px-2 py-0.5 rounded ${task.priority === "URGENT"
-                                    ? "bg-red-500/20 text-red-600 dark:text-red-400"
+                                className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${task.priority === "URGENT"
+                                    ? "bg-red-500/10 text-red-600 border-red-200 dark:border-red-900/30"
                                     : task.priority === "HIGH"
-                                        ? "bg-orange-500/20 text-orange-600 dark:text-orange-400"
+                                        ? "bg-orange-500/10 text-orange-600 border-orange-200 dark:border-orange-900/30"
                                         : task.priority === "MEDIUM"
-                                            ? "bg-yellow-500/20 text-yellow-600 dark:text-yellow-400"
-                                            : "bg-blue-500/20 text-blue-600 dark:text-blue-400"
+                                            ? "bg-yellow-500/10 text-yellow-600 border-yellow-200 dark:border-yellow-900/30"
+                                            : "bg-blue-500/10 text-blue-600 border-blue-200 dark:border-blue-900/30"
                                     }`}
                             >
                                 {task.priority}
@@ -80,7 +80,7 @@ export function TaskCard({ task, onDelete, onEdit }: TaskCardProps) {
                             e.stopPropagation();
                             onDelete(task.id);
                         }}
-                        className="text-muted-foreground hover:text-destructive h-5 w-5 p-0"
+                        className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive h-6 w-6 p-0 hover:bg-destructive/10 rounded-full"
                     >
                         ×
                     </Button>
