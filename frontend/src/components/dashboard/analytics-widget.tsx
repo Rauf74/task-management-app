@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from "recharts";
-import { getCookie } from "cookies-next";
+import { API_URL } from "@/lib/api";
 
 // Color Palette matching our theme
 const COLORS = [
@@ -32,7 +32,7 @@ export function AnalyticsWidget({ workspaceId }: { workspaceId: string }) {
         async function fetchAnalytics() {
             try {
                 // Use credentials: 'include' to send httpOnly cookies automatically
-                const res = await fetch(`http://localhost:4000/api/workspaces/${workspaceId}/analytics`, {
+                const res = await fetch(`${API_URL}/api/workspaces/${workspaceId}/analytics`, {
                     credentials: "include",
                 });
 

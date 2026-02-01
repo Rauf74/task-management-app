@@ -15,6 +15,7 @@ import {
     Columns,
     MoreHorizontal
 } from "lucide-react";
+import { API_URL } from "@/lib/api";
 
 interface ActivityLog {
     id: string;
@@ -36,7 +37,7 @@ export function ActivityFeed({ workspaceId }: { workspaceId: string }) {
     useEffect(() => {
         async function fetchActivities() {
             try {
-                const res = await fetch(`http://localhost:4000/api/workspaces/${workspaceId}/activities`, {
+                const res = await fetch(`${API_URL}/api/workspaces/${workspaceId}/activities`, {
                     credentials: "include",
                 });
 
