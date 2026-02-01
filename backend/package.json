@@ -21,8 +21,8 @@
     "author": "Abdur Rauf Al Farras",
     "license": "MIT",
     "dependencies": {
-        "@prisma/adapter-pg": "^7.2.0",
-        "@prisma/client": "^7.2.0",
+        "@prisma/adapter-pg": "^7.3.0",
+        "@prisma/client": "^7.3.0",
         "@socket.io/redis-adapter": "^8.3.0",
         "bcryptjs": "^3.0.3",
         "cookie-parser": "^1.4.7",
@@ -50,7 +50,7 @@
         "@types/pg": "^8.16.0",
         "@types/swagger-jsdoc": "^6.0.4",
         "@types/swagger-ui-express": "^4.1.8",
-        "prisma": "^7.2.0",
+        "prisma": "^7.3.0",
         "tsx": "^4.21.0",
         "typescript": "^5.9.3"
     }
