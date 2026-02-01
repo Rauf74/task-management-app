@@ -4,6 +4,7 @@
 
 import { Router } from "express";
 import * as workspaceController from "../controllers/workspace.controller.js";
+import * as activityController from "../controllers/activity.controller.js";
 import { validate, workspaceSchema, updateWorkspaceSchema } from "../middleware/validation.js";
 import { requireAuth } from "../middleware/auth.middleware.js";
 
@@ -12,28 +13,8 @@ const router = Router();
 // All routes require authentication
 router.use(requireAuth);
 
-/**
- * @swagger
- * /api/workspaces/{id}:
- *   delete:
- *     tags: [Workspace]
- *     summary: Delete workspace
- *     security:
- *       - cookieAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Workspace deleted
- */
-router.delete("/:id", workspaceController.deleteWorkspace);
-
 // ==============================================
-// Analytics Routes
+// Analytics & Activity Routes
 // ==============================================
 
 /**
@@ -55,6 +36,26 @@ router.delete("/:id", workspaceController.deleteWorkspace);
  *         description: Workspace analytics data
  */
 router.get("/:id/analytics", workspaceController.getAnalytics);
+
+/**
+ * @swagger
+ * /api/workspaces/{id}/activities:
+ *   get:
+ *     tags: [Workspace]
+ *     summary: Get workspace activities
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Workspace activity log
+ */
+router.get("/:id/activities", activityController.getActivities);
 
 // ==============================================
 // Nested Routes for Boards

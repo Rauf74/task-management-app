@@ -37,6 +37,7 @@ model User {
   // Relations
   workspaces Workspace[]
   tasks      Task[]      @relation("TaskCreator")
+  activities Activity[]
 
   @@map("users")
 }
@@ -57,6 +58,7 @@ model Workspace {
   userId String
   user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   boards Board[]
+  activities Activity[]
 
   @@map("workspaces")
 }
@@ -149,4 +151,29 @@ enum Priority {
   MEDIUM
   HIGH
   URGENT
+}
+
+// ============================================
+// Activity Log Model (Audit Trail)
+// ============================================
+// Mencatat segala aktivitas yang terjadi di workspace
+// Contoh: "Rauf created task 'Homepage' in 'To Do' column"
+model Activity {
+  id          String   @id @default(cuid())
+  action      String   // "CREATE_TASK", "MOVE_TASK", "DELETE_BOARD", etc.
+  entityType  String   // "TASK", "BOARD", "COLUMN"
+  entityId    String   // ID dari objek yang diubah
+  entityTitle String   // Snapshot judul objek saat itu (biar tetap ada walau objek asli dihapus)
+  details     String?  // Detail tambahan, misal "from To Do to Done"
+  
+  createdAt   DateTime @default(now())
+  
+  // Relations
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+  @@map("activities")
 }
