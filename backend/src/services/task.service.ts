@@ -24,8 +24,12 @@ export async function createTask(
     data: { title: string; description?: string; priority?: Priority; dueDate?: string; columnId: string },
     userId: string
 ) {
-    const { workspaceId } = await checkColumnAccess(data.columnId, userId);
+    const { workspaceId, boardId } = await checkColumnAccess(data.columnId, userId);
     const maxOrder = await taskRepository.getMaxOrder(data.columnId);
+
+    // Fetch names for logging
+    const column = await columnRepository.findById(data.columnId);
+    const board = await boardRepository.findById(boardId);
 
     const task = await taskRepository.create({
         title: data.title,
@@ -42,7 +46,7 @@ export async function createTask(
         entityType: "TASK",
         entityId: task.id,
         entityTitle: task.title,
-        details: `Created task`,
+        details: `di kolom "${column?.title}" pada board "${board?.name}"`,
         userId,
         workspaceId
     });
@@ -72,6 +76,9 @@ export async function deleteTask(id: string, userId: string) {
 
     const { workspaceId } = await checkColumnAccess(task.columnId, userId);
 
+    // Fetch details for logging
+    const column = await columnRepository.findById(task.columnId);
+
     await taskRepository.remove(id);
 
     await activityService.logActivity({
@@ -79,7 +86,7 @@ export async function deleteTask(id: string, userId: string) {
         entityType: "TASK",
         entityId: task.id,
         entityTitle: task.title,
-        details: "Deleted task",
+        details: `dari kolom "${column?.title}"`,
         userId,
         workspaceId
     });
@@ -89,7 +96,11 @@ export async function moveTask(id: string, columnId: string, order: number, user
     const task = await taskRepository.findById(id);
     if (!task) throw new Error("Task tidak ditemukan");
 
-    const { workspaceId } = await checkColumnAccess(columnId, userId);
+    const { workspaceId, boardId } = await checkColumnAccess(columnId, userId);
+
+    // Fetch details for logging
+    const destColumn = await columnRepository.findById(columnId);
+    const board = await boardRepository.findById(boardId);
 
     await taskRepository.moveTask(id, columnId, order);
 
@@ -98,7 +109,7 @@ export async function moveTask(id: string, columnId: string, order: number, user
         entityType: "TASK",
         entityId: task.id,
         entityTitle: task.title,
-        details: `Moved task`,
+        details: `ke kolom "${destColumn?.title}" pada board "${board?.name}"`,
         userId,
         workspaceId
     });
