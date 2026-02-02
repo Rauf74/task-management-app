@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
 import { formatDistanceToNow } from "date-fns";
 import { id as idLocale } from "date-fns/locale";
 import {
@@ -13,7 +13,9 @@ import {
     ArrowRight,
     Layout,
     Columns,
-    MoreHorizontal
+    MoreHorizontal,
+    ChevronDown,
+    ChevronUp
 } from "lucide-react";
 import { API_URL } from "@/lib/api";
 
@@ -30,9 +32,12 @@ interface ActivityLog {
     };
 }
 
+const ITEMS_PER_PAGE = 5;
+
 export function ActivityFeed({ workspaceId }: { workspaceId: string }) {
     const [activities, setActivities] = useState<ActivityLog[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
 
     useEffect(() => {
         async function fetchActivities() {
@@ -97,16 +102,28 @@ export function ActivityFeed({ workspaceId }: { workspaceId: string }) {
         return log.details || `melakukan aktivitas pada ${log.entityTitle}`;
     };
 
+    const handleLoadMore = () => {
+        setVisibleCount(prev => Math.min(prev + ITEMS_PER_PAGE, activities.length));
+    };
+
+    const handleShowLess = () => {
+        setVisibleCount(ITEMS_PER_PAGE);
+    };
+
+    const visibleActivities = activities.slice(0, visibleCount);
+    const hasMore = visibleCount < activities.length;
+    const canShowLess = visibleCount > ITEMS_PER_PAGE;
+
     if (isLoading) {
         return (
-            <Card className="glass-card h-full">
-                <CardHeader>
-                    <CardTitle className="text-lg font-medium flex items-center gap-2">
-                        <Activity className="h-5 w-5" />
+            <Card className="glass-card">
+                <CardHeader className="pb-3 border-b border-border/40">
+                    <CardTitle className="text-base font-semibold flex items-center gap-2">
+                        <Activity className="h-4 w-4 text-primary" />
                         Aktivitas Terkini
                     </CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-4">
                     <div className="space-y-4">
                         {[1, 2, 3].map((i) => (
                             <div key={i} className="flex items-center gap-4 animate-pulse">
@@ -124,63 +141,94 @@ export function ActivityFeed({ workspaceId }: { workspaceId: string }) {
     }
 
     return (
-        <Card className="glass-card flex flex-col h-full border-primary/10 shadow-lg">
+        <Card className="glass-card border-primary/10 shadow-lg">
             <CardHeader className="pb-3 border-b border-border/40">
                 <CardTitle className="text-base font-semibold flex items-center gap-2">
                     <Activity className="h-4 w-4 text-primary" />
                     Aktivitas Terkini
+                    {activities.length > 0 && (
+                        <span className="ml-auto text-xs font-normal text-muted-foreground bg-secondary/50 px-2 py-0.5 rounded-full">
+                            {Math.min(visibleCount, activities.length)} / {activities.length}
+                        </span>
+                    )}
                 </CardTitle>
             </CardHeader>
-            <CardContent className="flex-1 p-0 relative min-h-0">
-                <ScrollArea className="h-full w-full">
-                    <div className="p-4 pr-6">
-                        {activities.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center py-12 text-muted-foreground opacity-60">
-                                <MoreHorizontal className="h-8 w-8 mb-2" />
-                                <p className="text-sm italic">Belum ada aktivitas tercatat</p>
-                            </div>
-                        ) : (
-                            <div className="space-y-6">
-                                {activities.map((log) => (
-                                    <div key={log.id} className="flex gap-3 relative group">
-                                        {/* Timeline line */}
-                                        <div className="absolute left-[18px] top-10 bottom-[-24px] w-[1px] bg-gradient-to-b from-border to-transparent group-last:hidden" />
+            <CardContent className="p-0">
+                <div className="p-4 pr-4">
+                    {activities.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center py-12 text-muted-foreground opacity-60">
+                            <MoreHorizontal className="h-8 w-8 mb-2" />
+                            <p className="text-sm italic">Belum ada aktivitas tercatat</p>
+                        </div>
+                    ) : (
+                        <div className="space-y-5">
+                            {visibleActivities.map((log, index) => (
+                                <div key={log.id} className="flex gap-3 relative group">
+                                    {/* Timeline line */}
+                                    <div className="absolute left-[18px] top-10 bottom-[-20px] w-[1px] bg-gradient-to-b from-border to-transparent group-last:hidden" />
 
-                                        <Avatar className="h-9 w-9 border border-border shadow-sm ring-2 ring-background">
-                                            <AvatarImage src={log.user.image || ""} />
-                                            <AvatarFallback className="bg-primary/5 text-primary text-xs font-bold">
-                                                {log.user.name.charAt(0).toUpperCase()}
-                                            </AvatarFallback>
-                                        </Avatar>
+                                    <Avatar className="h-9 w-9 border border-border shadow-sm ring-2 ring-background shrink-0">
+                                        <AvatarImage src={log.user.image || ""} />
+                                        <AvatarFallback className="bg-primary/5 text-primary text-xs font-bold">
+                                            {log.user.name.charAt(0).toUpperCase()}
+                                        </AvatarFallback>
+                                    </Avatar>
 
-                                        <div className="flex-1 min-w-0 space-y-1.5 pt-0.5">
-                                            <div className="flex items-center justify-between gap-2">
-                                                <p className="text-xs font-semibold leading-none text-foreground truncate">
-                                                    {log.user.name}
-                                                </p>
-                                                <span className="text-[10px] text-muted-foreground shrink-0 tabular-nums">
-                                                    {formatDistanceToNow(new Date(log.createdAt), {
-                                                        addSuffix: true,
-                                                        locale: idLocale
-                                                    })}
-                                                </span>
-                                            </div>
-
-                                            <p className="text-xs text-muted-foreground leading-relaxed">
-                                                {getMessage(log)}
+                                    <div className="flex-1 min-w-0 space-y-1 pt-0.5">
+                                        <div className="flex items-center justify-between gap-2">
+                                            <p className="text-xs font-semibold leading-none text-foreground truncate">
+                                                {log.user.name}
                                             </p>
+                                            <span className="text-[10px] text-muted-foreground shrink-0 tabular-nums">
+                                                {formatDistanceToNow(new Date(log.createdAt), {
+                                                    addSuffix: true,
+                                                    locale: idLocale
+                                                })}
+                                            </span>
+                                        </div>
 
-                                            <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-secondary/80 border border-border/50 text-[10px] text-muted-foreground w-fit mt-1">
-                                                {getIcon(log.action)}
-                                                <span className="capitalize">{log.entityType.toLowerCase()}</span>
-                                            </div>
+                                        <p className="text-xs text-muted-foreground leading-relaxed">
+                                            {getMessage(log)}
+                                        </p>
+
+                                        <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-secondary/80 border border-border/50 text-[10px] text-muted-foreground w-fit mt-1">
+                                            {getIcon(log.action)}
+                                            <span className="capitalize">{log.entityType.toLowerCase()}</span>
                                         </div>
                                     </div>
-                                ))}
-                            </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                {/* Load More / Show Less Buttons */}
+                {activities.length > 0 && (hasMore || canShowLess) && (
+                    <div className="px-4 pb-4 pt-2 border-t border-border/40 flex gap-2">
+                        {hasMore && (
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={handleLoadMore}
+                                className="flex-1 h-8 text-xs text-muted-foreground hover:text-foreground"
+                            >
+                                <ChevronDown className="h-3.5 w-3.5 mr-1" />
+                                Load More
+                            </Button>
+                        )}
+                        {canShowLess && (
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={handleShowLess}
+                                className="flex-1 h-8 text-xs text-muted-foreground hover:text-foreground"
+                            >
+                                <ChevronUp className="h-3.5 w-3.5 mr-1" />
+                                Show Less
+                            </Button>
                         )}
                     </div>
-                </ScrollArea>
+                )}
             </CardContent>
         </Card>
     );

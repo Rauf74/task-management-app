@@ -239,7 +239,7 @@ export default function WorkspaceDetailPage() {
                 </div>
 
                 {/* Sidebar (Activity Feed) */}
-                <aside className="w-full lg:w-80 shrink-0 lg:sticky lg:top-6 h-fit lg:h-[calc(100vh-140px)] flex flex-col">
+                <aside className="w-full lg:w-80 shrink-0 lg:sticky lg:top-6">
                     <ActivityFeed workspaceId={workspaceId} />
                 </aside>
             </div>
