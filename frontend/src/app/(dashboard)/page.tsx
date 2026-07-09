@@ -114,7 +114,7 @@ export default function DashboardPage() {
                 </div>
                 <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                     <DialogTrigger asChild>
-                        <Button>+ Buat Workspace</Button>
+                        <Button variant="brand">+ Buat Workspace</Button>
                     </DialogTrigger>
                     <DialogContent className="bg-card border-border">
                         <form onSubmit={handleCreateWorkspace}>
@@ -193,16 +193,13 @@ export default function DashboardPage() {
                                             </CardDescription>
                                         </CardHeader>
                                         <CardContent>
-                                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                                <div className="flex -space-x-2">
-                                                    {[1, 2, 3].map(i => (
-                                                        <div key={i} className="w-6 h-6 rounded-full bg-muted border-2 border-background flex items-center justify-center text-[10px]">
-                                                            👤
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                                <span className="ml-2 px-2 py-0.5 rounded-full bg-secondary text-xs">
-                                                    {workspace._count?.boards || 0} Boards
+                                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 text-primary font-medium">
+                                                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                                                    {workspace._count?.boards || 0} Board{(workspace._count?.boards || 0) !== 1 ? "s" : ""}
+                                                </span>
+                                                <span className="inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity accent-brand font-medium">
+                                                    Buka →
                                                 </span>
                                             </div>
                                         </CardContent>
