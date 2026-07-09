@@ -56,26 +56,23 @@ export function TaskCard({ task, onDelete, onEdit }: TaskCardProps) {
                 active:scale-[0.985] active:shadow-inner
                 ${isDragging ? "shadow-xl ring-2 ring-primary/30 rotate-1 scale-[1.02] z-50 opacity-95" : "shadow-sm"}`}
             {...attributes}
+            {...listeners}
         >
             {/* Priority accent strip (left) */}
             <span
-                className={`absolute left-0 top-0 h-full w-1 ${p.strip} opacity-60 transition-opacity duration-200 group-hover:opacity-100`}
+                className={`pointer-events-none absolute left-0 top-0 h-full w-1 ${p.strip} opacity-60 transition-opacity duration-200 group-hover:opacity-100`}
                 aria-hidden
             />
 
             <CardContent className="p-3.5 pl-4" onClick={handleCardClick}>
                 <div className="flex items-start gap-2.5">
-                    {/* Drag handle */}
-                    <button
-                        type="button"
-                        aria-label="Drag task"
-                        className="mt-0.5 shrink-0 cursor-grab text-muted-foreground/50 hover:text-primary transition-colors active:cursor-grabbing touch-none"
-                        {...attributes}
-                        {...listeners}
-                        onClick={(e) => e.stopPropagation()}
+                    {/* Drag handle (visual affordance; whole card is draggable) */}
+                    <span
+                        aria-hidden
+                        className="mt-0.5 shrink-0 text-muted-foreground/50 group-hover:text-primary transition-colors"
                     >
                         <GripVertical className="h-4 w-4" />
-                    </button>
+                    </span>
 
                     <div className="flex-1 min-w-0 cursor-pointer" onClick={handleCardClick}>
                         <p className="text-foreground text-sm font-semibold leading-snug mb-1.5 line-clamp-2">
