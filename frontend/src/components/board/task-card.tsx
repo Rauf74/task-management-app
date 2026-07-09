@@ -10,7 +10,7 @@ import { Task } from "@/lib/api";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, GripVertical, X } from "lucide-react";
 import { format, isPast, isToday } from "date-fns";
 
 interface TaskCardProps {
@@ -47,15 +47,25 @@ export function TaskCard({ task, onDelete, onEdit }: TaskCardProps) {
         <Card
             ref={setNodeRef}
             style={style}
-            className={`cursor-grab group transition-all duration-200 border border-border/60 bg-card hover:border-primary/40 hover:shadow-md ${isDragging ? "shadow-xl ring-2 ring-primary/20 rotate-2 scale-105 opacity-90 z-50" : "shadow-sm"
-                }`}
+            className={`cursor-grab group transition-all duration-200 border border-border/60 bg-card hover:border-primary/40 hover:shadow-md active:scale-[0.99] active:shadow-inner ${isDragging ? "shadow-xl ring-2 ring-primary/20 rotate-2 scale-105 opacity-90 z-50" : "shadow-sm"}`}
             {...attributes}
-            {...listeners}
         >
             <CardContent className="p-3" onClick={handleCardClick}>
-                <div className="flex items-start justify-between gap-2">
-                    <div className="flex-1 cursor-pointer" onClick={handleCardClick}>
-                        <p className="text-foreground text-sm font-medium leading-none mb-1.5">{task.title}</p>
+                <div className="flex items-start gap-2">
+                    {/* Drag handle - grab target for dnd */}
+                    <button
+                        type="button"
+                        aria-label="Drag task"
+                        className="mt-0.5 shrink-0 cursor-grab text-muted-foreground/60 hover:text-muted-foreground transition-colors active:cursor-grabbing touch-none"
+                        {...attributes}
+                        {...listeners}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <GripVertical className="h-4 w-4" />
+                    </button>
+
+                    <div className="flex-1 cursor-pointer min-w-0" onClick={handleCardClick}>
+                        <p className="text-foreground text-sm font-medium leading-none mb-1.5 truncate">{task.title}</p>
                         {task.description && (
                             <p className="text-muted-foreground text-[10px] sm:text-xs line-clamp-2 leading-relaxed">
                                 {task.description}
@@ -114,9 +124,9 @@ export function TaskCard({ task, onDelete, onEdit }: TaskCardProps) {
                             e.stopPropagation();
                             onDelete(task.id);
                         }}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive h-6 w-6 p-0 hover:bg-destructive/10 rounded-full"
+                        className="shrink-0 h-7 w-7 p-0 rounded-full text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-opacity opacity-70 sm:opacity-0 sm:group-hover:opacity-100"
                     >
-                        ×
+                        <X className="h-4 w-4" />
                     </Button>
                 </div>
             </CardContent>
