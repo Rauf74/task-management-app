@@ -374,8 +374,14 @@ export default function BoardViewPage() {
 
     if (isLoading) {
         return (
-            <div className="flex items-center justify-center h-64">
-                <div className="text-muted-foreground">Memuat board...</div>
+            <div className="space-y-6">
+                <div className="h-4 w-48 bg-muted/40 rounded animate-pulse" />
+                <div className="h-8 w-56 bg-muted/50 rounded-lg animate-pulse" />
+                <div className="flex flex-col sm:flex-row gap-6 h-[calc(100vh-200px)]">
+                    {[1, 2, 3].map((i) => (
+                        <div key={i} className="w-full sm:min-w-[300px] sm:max-w-[300px] h-full bg-muted/40 rounded-xl animate-pulse" />
+                    ))}
+                </div>
             </div>
         );
     }
@@ -443,7 +449,7 @@ export default function BoardViewPage() {
                 onDragOver={handleDragOver}
                 onDragEnd={handleDragEnd}
             >
-                <div className="flex flex-col sm:flex-row gap-6 sm:overflow-x-auto pb-4 h-[calc(100vh-200px)]">
+                <div className="flex flex-col sm:flex-row gap-6 sm:overflow-x-auto sm:snap-x sm:snap-mandatory pb-4 h-[calc(100vh-160px)] sm:h-[calc(100vh-200px)]">
                     {board.columns.length === 0 ? (
                         <Card className="glass border-border/50 bg-card/30 min-w-[300px] h-fit">
                             <CardContent className="flex flex-col items-center justify-center py-12 text-center">
