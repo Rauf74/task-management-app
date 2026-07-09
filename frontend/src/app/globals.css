@@ -70,30 +70,39 @@
   --popover: #FFFFFF;
   --popover-foreground: #09090B;
   
-  /* Primary - Deep Professional Blue */
-  --primary: #2563EB; /* Blue-600 */
+  /* Primary - Emerald (calm productivity) */
+  --primary: #059669; /* Emerald-600 */
   --primary-foreground: #FFFFFF;
-  
+
+  /* Accent - Violet (focal point only: CTAs, active, hover lift) */
+  --accent-brand: #7C3AED; /* Violet-600 */
+
   /* Secondary */
   --secondary: #F4F4F5; /* Zinc-100 */
   --secondary-foreground: #18181B; /* Zinc-900 */
-  
+
   /* Muted */
   --muted: #F4F4F5; /* Zinc-100 */
   --muted-foreground: #71717A; /* Zinc-500 */
-  
+
   /* Accent */
   --accent: #F4F4F5; /* Zinc-100 */
   --accent-foreground: #18181B; /* Zinc-900 */
-  
+
   /* Destructive */
   --destructive: #EF4444;
   --destructive-foreground: #FAFAFA;
-  
+
+  /* Priority - strong, functional color-coding (Opsi B) */
+  --priority-urgent: #DC2626;   /* Red-600 */
+  --priority-high: #F97316;     /* Orange-500 */
+  --priority-medium: #F59E0B;   /* Amber-500 */
+  --priority-low: #10B981;      /* Emerald-500 */
+
   /* Borders - Subtle but defined */
   --border: #E4E4E7; /* Zinc-200 */
   --input: #E4E4E7; /* Zinc-200 */
-  --ring: #2563EB; /* Blue-600 */
+  --ring: #059669; /* Emerald-600 */
   
   /* Charts */
   --chart-1: #3B82F6;
@@ -130,30 +139,39 @@
   --popover: #18181B;
   --popover-foreground: #FAFAFA;
   
-  /* Primary - Lighter Blue for visibility */
-  --primary: #3B82F6; /* Blue-500 */
-  --primary-foreground: #FAFAFA;
-  
+  /* Primary - Emerald (visible on dark) */
+  --primary: #10B981; /* Emerald-500 */
+  --primary-foreground: #052E22; /* Deep emerald ink for contrast */
+
+  /* Accent - Violet (focal point) */
+  --accent-brand: #A78BFA; /* Violet-400, visible on dark */
+
   /* Secondary */
   --secondary: #27272A; /* Zinc-800 */
   --secondary-foreground: #FAFAFA;
-  
+
   /* Muted */
-  --muted: #27272A;
+  --muted: #27272A; /* Zinc-800 */
   --muted-foreground: #A1A1AA; /* Zinc-400 */
-  
+
   /* Accent */
-  --accent: #27272A;
+  --accent: #27272A; /* Zinc-800 */
   --accent-foreground: #FAFAFA;
-  
+
   /* Destructive */
   --destructive: #7F1D1D;
   --destructive-foreground: #FAFAFA;
-  
+
+  /* Priority - strong, functional (Opsi B) */
+  --priority-urgent: #F87171;   /* Red-400 */
+  --priority-high: #FB923C;     /* Orange-400 */
+  --priority-medium: #FBBF24;   /* Amber-400 */
+  --priority-low: #34D399;      /* Emerald-400 */
+
   /* Borders - Subtle dark borders */
   --border: #27272A;
   --input: #27272A;
-  --ring: #1D4ED8;
+  --ring: #10B981;
 
   /* Dot pattern - faint light dots on deep dark */
   --dot-pattern: rgba(255, 255, 255, 0.045);
@@ -197,4 +215,24 @@
   .glass-card {
     @apply bg-card/50 backdrop-blur-sm border border-border/50 shadow-sm hover:shadow-md transition-all duration-300;
   }
+
+  /* Priority accent (Opsi B - strong, functional color-coding) */
+  .priority-urgent { color: var(--priority-urgent); }
+  .priority-high   { color: var(--priority-high); }
+  .priority-medium { color: var(--priority-medium); }
+  .priority-low    { color: var(--priority-low); }
+
+  .badge-urgent { background: color-mix(in srgb, var(--priority-urgent) 14%, transparent); color: var(--priority-urgent); border-color: color-mix(in srgb, var(--priority-urgent) 30%, transparent); }
+  .badge-high   { background: color-mix(in srgb, var(--priority-high) 14%, transparent); color: var(--priority-high); border-color: color-mix(in srgb, var(--priority-high) 30%, transparent); }
+  .badge-medium { background: color-mix(in srgb, var(--priority-medium) 14%, transparent); color: var(--priority-medium); border-color: color-mix(in srgb, var(--priority-medium) 30%, transparent); }
+  .badge-low    { background: color-mix(in srgb, var(--priority-low) 14%, transparent); color: var(--priority-low); border-color: color-mix(in srgb, var(--priority-low) 30%, transparent); }
+
+  /* Task card left accent strip by priority */
+  .accent-strip-urgent { background: var(--priority-urgent); }
+  .accent-strip-high   { background: var(--priority-high); }
+  .accent-strip-medium { background: var(--priority-medium); }
+  .accent-strip-low    { background: var(--priority-low); }
+
+  /* Brand focal accent */
+  .accent-brand { color: var(--accent-brand); }
 }
