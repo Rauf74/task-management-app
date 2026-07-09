@@ -23,7 +23,6 @@ import {
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { toast } from "sonner";
 import { AnalyticsWidget } from "@/components/dashboard/analytics-widget";
-import { ActivityFeed } from "@/components/dashboard/activity-feed";
 import { ArrowRight, KanbanSquare, Plus, Trash2 } from "lucide-react";
 
 const WS_COLORS = ["#059669", "#7C3AED", "#F97316", "#0EA5E9", "#EC4899", "#F59E0B"];
@@ -213,65 +212,59 @@ export default function WorkspaceDetailPage() {
                 </div>
             </div>
 
-            {/* Layout: main + activity */}
-            <div className="flex flex-col lg:flex-row gap-6 items-start">
-                <div className="flex-1 min-w-0 space-y-8">
-                    <section>
-                        <AnalyticsWidget workspaceId={workspaceId} />
-                    </section>
+            {/* Analytics + Boards (full width, activity moved to topbar) */}
+            <div className="space-y-8">
+                <section>
+                    <AnalyticsWidget workspaceId={workspaceId} />
+                </section>
 
-                    <section className="space-y-4">
-                        <h2 className="text-lg font-semibold text-foreground">Boards</h2>
+                <section className="space-y-4">
+                    <h2 className="text-lg font-semibold text-foreground">Boards</h2>
 
-                        {workspace.boards.length === 0 ? (
-                            <div className="rounded-2xl border border-dashed border-border bg-card/40 py-16 text-center">
-                                <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-primary/10 text-primary">
-                                    <KanbanSquare className="h-7 w-7" />
-                                </div>
-                                <h3 className="mt-4 text-xl font-semibold text-foreground">Belum ada board</h3>
-                                <p className="mx-auto mt-2 mb-6 max-w-md text-sm text-muted-foreground">
-                                    Buat board Kanban pertama kamu untuk mulai melacak tugas dalam workspace ini.
-                                </p>
-                                <Button variant="brand" size="lg" onClick={() => setDialogOpen(true)}>
-                                    Buat Board Pertama
-                                </Button>
+                    {workspace.boards.length === 0 ? (
+                        <div className="rounded-2xl border border-dashed border-border bg-card/40 py-16 text-center">
+                            <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-primary/10 text-primary">
+                                <KanbanSquare className="h-7 w-7" />
                             </div>
-                        ) : (
-                            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                                {workspace.boards.map((board: Board) => (
-                                    <Link
-                                        key={board.id}
-                                        href={`/boards/${board.id}`}
-                                        className="group relative block overflow-hidden rounded-2xl border border-border bg-card p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg"
-                                    >
-                                        <div className="flex items-start gap-3">
-                                            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
-                                                <KanbanSquare className="h-5 w-5" />
-                                            </span>
-                                            <div className="min-w-0 flex-1">
-                                                <h3 className="truncate font-semibold text-foreground transition-colors group-hover:text-primary">
-                                                    {board.name}
-                                                </h3>
-                                                <p className="mt-0.5 line-clamp-2 text-sm text-muted-foreground">
-                                                    {board.description || "Tidak ada deskripsi"}
-                                                </p>
-                                            </div>
+                            <h3 className="mt-4 text-xl font-semibold text-foreground">Belum ada board</h3>
+                            <p className="mx-auto mt-2 mb-6 max-w-md text-sm text-muted-foreground">
+                                Buat board Kanban pertama kamu untuk mulai melacak tugas dalam workspace ini.
+                            </p>
+                            <Button variant="brand" size="lg" onClick={() => setDialogOpen(true)}>
+                                Buat Board Pertama
+                            </Button>
+                        </div>
+                    ) : (
+                        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                            {workspace.boards.map((board: Board) => (
+                                <Link
+                                    key={board.id}
+                                    href={`/boards/${board.id}`}
+                                    className="group relative block overflow-hidden rounded-2xl border border-border bg-card p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg"
+                                >
+                                    <div className="flex items-start gap-3">
+                                        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
+                                            <KanbanSquare className="h-5 w-5" />
+                                        </span>
+                                        <div className="min-w-0 flex-1">
+                                            <h3 className="truncate font-semibold text-foreground transition-colors group-hover:text-primary">
+                                                {board.name}
+                                            </h3>
+                                            <p className="mt-0.5 line-clamp-2 text-sm text-muted-foreground">
+                                                {board.description || "Tidak ada deskripsi"}
+                                            </p>
                                         </div>
-                                        <div className="mt-4 flex items-center justify-end">
-                                            <span className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground opacity-0 transition-all group-hover:translate-x-0.5 group-hover:opacity-100 group-hover:text-primary">
-                                                Buka Board <ArrowRight className="h-4 w-4" />
-                                            </span>
-                                        </div>
-                                    </Link>
-                                ))}
-                            </div>
-                        )}
-                    </section>
-                </div>
-
-                <aside className="w-full lg:w-80 shrink-0 lg:sticky lg:top-24">
-                    <ActivityFeed workspaceId={workspaceId} />
-                </aside>
+                                    </div>
+                                    <div className="mt-4 flex items-center justify-end">
+                                        <span className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground opacity-0 transition-all group-hover:translate-x-0.5 group-hover:opacity-100 group-hover:text-primary">
+                                            Buka Board <ArrowRight className="h-4 w-4" />
+                                        </span>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    )}
+                </section>
             </div>
 
             <ConfirmDialog

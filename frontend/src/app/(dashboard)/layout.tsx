@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/sheet";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { SidebarNav } from "@/components/layout/sidebar-nav";
+import { ActivityMenu } from "@/components/layout/activity-menu";
 import { Menu } from "lucide-react";
 
 export default function DashboardLayout({
@@ -91,6 +92,7 @@ export default function DashboardLayout({
                         <div className="hidden lg:block" />
 
                         <div className="flex items-center gap-2">
+                            <ActivityMenu />
                             <ThemeToggle />
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>

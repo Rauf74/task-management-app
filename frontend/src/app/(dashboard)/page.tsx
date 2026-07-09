@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DashboardHero } from "@/components/dashboard/dashboard-hero";
-import { GlobalActivity } from "@/components/dashboard/global-activity";
 import {
     Dialog,
     DialogContent,
@@ -110,83 +109,74 @@ export default function DashboardPage() {
                 onAddWorkspace={() => setDialogOpen(true)}
             />
 
-            <div className="grid gap-6 lg:grid-cols-3 items-start">
-                {/* Workspaces */}
-                <div className="lg:col-span-2 space-y-4">
-                    <div className="flex items-center justify-between">
-                        <h2 className="text-lg font-semibold text-foreground">Workspace kamu</h2>
-                        {workspaces.length > 0 && (
-                            <span className="text-sm text-muted-foreground">{workspaces.length} total</span>
-                        )}
-                    </div>
-
-                    {workspaces.length === 0 ? (
-                        <div className="rounded-2xl border border-dashed border-border bg-card/40 py-16 text-center">
-                            <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-primary/10 text-primary">
-                                <FolderKanban className="h-7 w-7" />
-                            </div>
-                            <h3 className="mt-4 text-xl font-semibold text-foreground">Belum ada workspace</h3>
-                            <p className="mx-auto mt-2 mb-6 max-w-md text-sm text-muted-foreground">
-                                Mulai dengan membuat workspace untuk mengorganisir board dan tugas-tugas kamu.
-                            </p>
-                            <Button variant="brand" size="lg" onClick={() => setDialogOpen(true)}>
-                                Buat Workspace Pertama
-                            </Button>
-                        </div>
-                    ) : (
-                        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-2">
-                            {workspaces.map((workspace) => {
-                                const color = colorFor(workspace.id);
-                                return (
-                                    <Link
-                                        key={workspace.id}
-                                        href={`/workspaces/${workspace.id}`}
-                                        className="group relative block overflow-hidden rounded-2xl border border-border bg-card p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg"
-                                    >
-                                        {/* top accent bar (workspace identity color) */}
-                                        <span
-                                            className="absolute inset-x-0 top-0 h-1"
-                                            style={{ backgroundColor: color }}
-                                        />
-                                        <div className="flex items-start gap-3">
-                                            <span
-                                                className="grid h-11 w-11 shrink-0 place-items-center rounded-xl text-base font-bold text-white"
-                                                style={{ backgroundColor: color }}
-                                            >
-                                                {workspace.name.charAt(0).toUpperCase()}
-                                            </span>
-                                            <div className="min-w-0 flex-1">
-                                                <h3 className="truncate font-semibold text-foreground transition-colors group-hover:text-primary">
-                                                    {workspace.name}
-                                                </h3>
-                                                <p className="mt-0.5 line-clamp-2 text-sm text-muted-foreground">
-                                                    {workspace.description || "Tidak ada deskripsi"}
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <div className="mt-4 flex items-center justify-between">
-                                            <span className="inline-flex items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
-                                                <LayoutDot />
-                                                {workspace._count?.boards || 0} Board
-                                                {(workspace._count?.boards || 0) !== 1 ? "s" : ""}
-                                            </span>
-                                            <span className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground opacity-0 transition-all group-hover:translate-x-0.5 group-hover:opacity-100 group-hover:text-primary">
-                                                Buka <ArrowRight className="h-4 w-4" />
-                                            </span>
-                                        </div>
-                                    </Link>
-                                );
-                            })}
-                        </div>
+            <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                    <h2 className="text-lg font-semibold text-foreground">Workspace kamu</h2>
+                    {workspaces.length > 0 && (
+                        <span className="text-sm text-muted-foreground">{workspaces.length} total</span>
                     )}
                 </div>
 
-                {/* Activity */}
-                <div className="lg:sticky lg:top-24">
-                    <GlobalActivity workspaceIds={workspaces.map((w) => w.id)} />
-                </div>
-            </div>
+                {workspaces.length === 0 ? (
+                    <div className="rounded-2xl border border-dashed border-border bg-card/40 py-16 text-center">
+                        <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-primary/10 text-primary">
+                            <FolderKanban className="h-7 w-7" />
+                        </div>
+                        <h3 className="mt-4 text-xl font-semibold text-foreground">Belum ada workspace</h3>
+                        <p className="mx-auto mt-2 mb-6 max-w-md text-sm text-muted-foreground">
+                            Mulai dengan membuat workspace untuk mengorganisir board dan tugas-tugas kamu.
+                        </p>
+                        <Button variant="brand" size="lg" onClick={() => setDialogOpen(true)}>
+                            Buat Workspace Pertama
+                        </Button>
+                    </div>
+                ) : (
+                    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                        {workspaces.map((workspace) => {
+                            const color = colorFor(workspace.id);
+                            return (
+                                <Link
+                                    key={workspace.id}
+                                    href={`/workspaces/${workspace.id}`}
+                                    className="group relative block overflow-hidden rounded-2xl border border-border bg-card p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg"
+                                >
+                                    {/* top accent bar (workspace identity color) */}
+                                    <span
+                                        className="absolute inset-x-0 top-0 h-1"
+                                        style={{ backgroundColor: color }}
+                                    />
+                                    <div className="flex items-start gap-3">
+                                        <span
+                                            className="grid h-11 w-11 shrink-0 place-items-center rounded-xl text-base font-bold text-white"
+                                            style={{ backgroundColor: color }}
+                                        >
+                                            {workspace.name.charAt(0).toUpperCase()}
+                                        </span>
+                                        <div className="min-w-0 flex-1">
+                                            <h3 className="truncate font-semibold text-foreground transition-colors group-hover:text-primary">
+                                                {workspace.name}
+                                            </h3>
+                                            <p className="mt-0.5 line-clamp-2 text-sm text-muted-foreground">
+                                                {workspace.description || "Tidak ada deskripsi"}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-4 flex items-center justify-between">
+                                        <span className="inline-flex items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
+                                            <LayoutDot />
+                                            {workspace._count?.boards || 0} Board
+                                            {(workspace._count?.boards || 0) !== 1 ? "s" : ""}
+                                        </span>
+                                        <span className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground opacity-0 transition-all group-hover:translate-x-0.5 group-hover:opacity-100 group-hover:text-primary">
+                                            Buka <ArrowRight className="h-4 w-4" />
+                                        </span>
+                                    </div>
+                                </Link>
+                            );
+                        })}
+                    </div>
+                )}
 
             {/* Create workspace dialog */}
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -229,6 +219,7 @@ export default function DashboardPage() {
                     </form>
                 </DialogContent>
             </Dialog>
+        </div>
         </div>
     );
 }
