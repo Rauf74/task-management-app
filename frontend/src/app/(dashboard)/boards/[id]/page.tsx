@@ -395,24 +395,53 @@ export default function BoardViewPage() {
         );
     }
 
+    const totalTasks = board.columns.reduce((s, c) => s + c.tasks.length, 0);
+    const doneCol = board.columns.find((c) => /done|selesai|complete/i.test(c.title));
+    const doneTasks = doneCol ? doneCol.tasks.length : 0;
+    const progress = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
+
     return (
         <div className="space-y-6">
             {/* Breadcrumb */}
-            <div className="flex items-center gap-2 text-sm text-muted-foreground flex-wrap">
-                <Link href="/" className="hover:text-foreground">Dashboard</Link>
-                <span>/</span>
-                <Link href={`/workspaces/${board.workspaceId}`} className="hover:text-foreground">Workspace</Link>
-                <span>/</span>
-                <span className="text-foreground truncate max-w-[150px]">{board.name}</span>
+            <div className="flex items-center gap-1.5 text-sm text-muted-foreground flex-wrap">
+                <Link href="/" className="hover:text-foreground transition-colors">Dashboard</Link>
+                <span className="text-muted-foreground/40">/</span>
+                <Link href={`/workspaces/${board.workspaceId}`} className="hover:text-foreground transition-colors">Workspace</Link>
+                <span className="text-muted-foreground/40">/</span>
+                <span className="text-foreground font-medium truncate max-w-[150px]">{board.name}</span>
             </div>
 
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <h1 className="text-2xl font-bold text-foreground truncate">{board.name}</h1>
-                <Dialog open={columnDialogOpen} onOpenChange={setColumnDialogOpen}>
-                    <DialogTrigger asChild>
-                        <Button size="sm" className="shrink-0 w-fit">+ Tambah Column</Button>
-                    </DialogTrigger>
+            {/* Toolbar */}
+            <div className="rounded-2xl border border-border bg-card p-5">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="min-w-0">
+                        <h1 className="text-2xl font-bold text-foreground truncate">{board.name}</h1>
+                        <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                            <span className="inline-flex items-center gap-1.5">
+                                <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                                {board.columns.length} Column{board.columns.length !== 1 ? "s" : ""}
+                            </span>
+                            <span className="inline-flex items-center gap-1.5">
+                                <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-brand)]" />
+                                {totalTasks} Task{totalTasks !== 1 ? "s" : ""}
+                            </span>
+                            {totalTasks > 0 && (
+                                <span className="inline-flex items-center gap-2">
+                                    <span className="h-1.5 w-24 overflow-hidden rounded-full bg-muted">
+                                        <span
+                                            className="block h-full rounded-full bg-primary transition-all"
+                                            style={{ width: `${progress}%` }}
+                                        />
+                                    </span>
+                                    <span className="tabular-nums font-medium text-foreground">{progress}%</span>
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                    <Dialog open={columnDialogOpen} onOpenChange={setColumnDialogOpen}>
+                        <DialogTrigger asChild>
+                            <Button variant="brand" size="sm" className="shrink-0 w-fit">+ Tambah Column</Button>
+                        </DialogTrigger>
                     <DialogContent className="bg-card border-border">
                         <form onSubmit={handleCreateColumn}>
                             <DialogHeader>
@@ -439,6 +468,7 @@ export default function BoardViewPage() {
                         </form>
                     </DialogContent>
                 </Dialog>
+                </div>
             </div>
 
             {/* Kanban Board with DnD */}
