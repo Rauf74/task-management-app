@@ -2,29 +2,28 @@
 // Prisma Client Singleton (Prisma 7.x)
 // ==============================================
 //
-// Prisma 7 memerlukan driver adapter untuk koneksi
-// database PostgreSQL. Menggunakan @prisma/adapter-pg.
-//
+// MariaDB/MySQL driver via @prisma/adapter-mariadb.
+// Connection URL is read from DATABASE_URL (set in prisma.config.ts / .env).
+// No TLS required for local MariaDB.
 // ==============================================
 
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { Pool } from "pg";
+import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 
 // Get database URL from environment
 const connectionString = process.env.DATABASE_URL || "";
 
-// Create PostgreSQL connection pool with SSL
-const pool = new Pool({
-    connectionString,
-    ssl: {
-        rejectUnauthorized: false, // Required for Supabase/cloud databases
-    },
+// Parse mysql://user:pass@host:port/db into PoolConfig object
+const url = new URL(connectionString);
+const adapter = new PrismaMariaDb({
+    host: url.hostname,
+    port: Number(url.port) || 3306,
+    user: decodeURIComponent(url.username),
+    password: decodeURIComponent(url.password),
+    database: url.pathname.replace(/^\//, ""),
+    connectionLimit: 5,
 });
-
-// Create Prisma adapter
-const adapter = new PrismaPg(pool);
 
 // Singleton pattern for development
 const globalForPrisma = globalThis as unknown as {

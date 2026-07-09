@@ -18,7 +18,7 @@ generator client {
 
 // Prisma 7.x: Connection URLs moved to prisma.config.ts
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
 }
 
 // ============================================
