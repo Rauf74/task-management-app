@@ -9,11 +9,9 @@ import Link from "next/link";
 import { workspaceApi, Workspace } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { WelcomeSection } from "@/components/dashboard/welcome-section";
-import { QuickStats } from "@/components/dashboard/quick-stats";
+import { DashboardHero } from "@/components/dashboard/dashboard-hero";
 import { GlobalActivity } from "@/components/dashboard/global-activity";
 import {
     Dialog,
@@ -22,9 +20,18 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog";
+import { ArrowRight, FolderKanban } from "lucide-react";
 import { toast } from "sonner";
+
+const WS_COLORS = [
+    "#059669", "#7C3AED", "#F97316", "#0EA5E9", "#EC4899", "#F59E0B",
+];
+function colorFor(id: string) {
+    let h = 0;
+    for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+    return WS_COLORS[h % WS_COLORS.length];
+}
 
 export default function DashboardPage() {
     const { user } = useAuth();
@@ -78,19 +85,17 @@ export default function DashboardPage() {
 
     if (isLoading) {
         return (
-            <div className="space-y-8">
-                <div className="space-y-3">
-                    <div className="h-8 w-64 bg-muted/50 rounded-lg animate-pulse" />
-                    <div className="h-4 w-48 bg-muted/40 rounded animate-pulse" />
+            <div className="space-y-6">
+                <div className="grid gap-4 lg:grid-cols-3">
+                    <div className="h-44 lg:col-span-2 rounded-2xl bg-muted/40 animate-pulse" />
+                    <div className="grid grid-cols-2 gap-4 lg:grid-cols-1">
+                        <div className="h-[88px] rounded-2xl bg-muted/40 animate-pulse" />
+                        <div className="h-[88px] rounded-2xl bg-muted/40 animate-pulse" />
+                    </div>
                 </div>
-                <div className="grid gap-4 sm:grid-cols-3">
+                <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
                     {[1, 2, 3].map((i) => (
-                        <div key={i} className="h-[68px] bg-muted/40 rounded-xl animate-pulse" />
-                    ))}
-                </div>
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {[1, 2, 3].map((i) => (
-                        <div key={i} className="h-36 bg-muted/40 rounded-xl animate-pulse" />
+                        <div key={i} className="h-40 rounded-2xl bg-muted/40 animate-pulse" />
                     ))}
                 </div>
             </div>
@@ -99,121 +104,135 @@ export default function DashboardPage() {
 
     return (
         <div className="space-y-8">
-            {/* Welcome + overview */}
-            <WelcomeSection userName={user?.name || ""} workspaces={workspaces} />
-            <QuickStats
+            <DashboardHero
+                userName={user?.name || ""}
                 workspaces={workspaces}
                 onAddWorkspace={() => setDialogOpen(true)}
             />
 
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold text-foreground">Workspace</h1>
-                    <p className="text-muted-foreground">Kelola semua workspace Anda</p>
-                </div>
-                <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                    <DialogTrigger asChild>
-                        <Button variant="brand">+ Buat Workspace</Button>
-                    </DialogTrigger>
-                    <DialogContent className="bg-card border-border">
-                        <form onSubmit={handleCreateWorkspace}>
-                            <DialogHeader>
-                                <DialogTitle className="text-foreground">Buat Workspace Baru</DialogTitle>
-                                <DialogDescription className="text-muted-foreground">
-                                    Workspace adalah wadah untuk mengelompokkan board-board Anda.
-                                </DialogDescription>
-                            </DialogHeader>
-                            <div className="space-y-4 py-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="name" className="text-foreground">Nama Workspace</Label>
-                                    <Input
-                                        id="name"
-                                        placeholder="Contoh: Personal, Kantor"
-                                        value={newWorkspace.name}
-                                        onChange={(e) => setNewWorkspace({ ...newWorkspace, name: e.target.value })}
-                                        required
-                                        className="bg-background border-input text-foreground"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="description" className="text-foreground">Deskripsi (opsional)</Label>
-                                    <Input
-                                        id="description"
-                                        placeholder="Deskripsi singkat..."
-                                        value={newWorkspace.description}
-                                        onChange={(e) => setNewWorkspace({ ...newWorkspace, description: e.target.value })}
-                                        className="bg-background border-input text-foreground"
-                                    />
-                                </div>
-                            </div>
-                            <DialogFooter>
-                                <Button type="submit" disabled={isCreating}>
-                                    {isCreating ? "Membuat..." : "Buat Workspace"}
-                                </Button>
-                            </DialogFooter>
-                        </form>
-                    </DialogContent>
-                </Dialog>
-            </div>
-
-            {/* Workspace Grid + Global Activity */}
             <div className="grid gap-6 lg:grid-cols-3 items-start">
-                <div className="lg:col-span-2 space-y-6">
+                {/* Workspaces */}
+                <div className="lg:col-span-2 space-y-4">
+                    <div className="flex items-center justify-between">
+                        <h2 className="text-lg font-semibold text-foreground">Workspace kamu</h2>
+                        {workspaces.length > 0 && (
+                            <span className="text-sm text-muted-foreground">{workspaces.length} total</span>
+                        )}
+                    </div>
+
                     {workspaces.length === 0 ? (
-                        <Card className="glass border-border/50 bg-card/30">
-                            <CardContent className="flex flex-col items-center justify-center py-16 text-center">
-                                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                                    <span className="text-2xl">📂</span>
-                                </div>
-                                <h3 className="text-xl font-semibold mb-2">Belum ada workspace</h3>
-                                <p className="text-muted-foreground mb-6 max-w-md">
-                                    Mulai dengan membuat workspace untuk mengorganisir board dan tugas-tugas tim Anda.
-                                </p>
-                                <Button onClick={() => setDialogOpen(true)} size="lg" className="shadow-lg shadow-primary/20">
-                                    Buat Workspace Pertama
-                                </Button>
-                            </CardContent>
-                        </Card>
+                        <div className="rounded-2xl border border-dashed border-border bg-card/40 py-16 text-center">
+                            <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-primary/10 text-primary">
+                                <FolderKanban className="h-7 w-7" />
+                            </div>
+                            <h3 className="mt-4 text-xl font-semibold text-foreground">Belum ada workspace</h3>
+                            <p className="mx-auto mt-2 mb-6 max-w-md text-sm text-muted-foreground">
+                                Mulai dengan membuat workspace untuk mengorganisir board dan tugas-tugas kamu.
+                            </p>
+                            <Button variant="brand" size="lg" onClick={() => setDialogOpen(true)}>
+                                Buat Workspace Pertama
+                            </Button>
+                        </div>
                     ) : (
-                        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
-                            {workspaces.map((workspace) => (
-                                <Link key={workspace.id} href={`/workspaces/${workspace.id}`} className="group block h-full">
-                                    <Card className="glass-card h-full relative overflow-hidden group-hover:border-primary/50 transition-all duration-300">
-                                        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                                        <CardHeader>
-                                            <CardTitle className="text-foreground group-hover:text-primary transition-colors flex items-center gap-2">
-                                                <span className="p-2 rounded-md bg-primary/10 text-primary text-lg">
-                                                    {workspace.name.charAt(0).toUpperCase()}
-                                                </span>
-                                                {workspace.name}
-                                            </CardTitle>
-                                            <CardDescription className="text-muted-foreground line-clamp-2">
-                                                {workspace.description || "Tidak ada deskripsi"}
-                                            </CardDescription>
-                                        </CardHeader>
-                                        <CardContent>
-                                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 text-primary font-medium">
-                                                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                                                    {workspace._count?.boards || 0} Board{(workspace._count?.boards || 0) !== 1 ? "s" : ""}
-                                                </span>
-                                                <span className="inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity accent-brand font-medium">
-                                                    Buka →
-                                                </span>
+                        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-2">
+                            {workspaces.map((workspace) => {
+                                const color = colorFor(workspace.id);
+                                return (
+                                    <Link
+                                        key={workspace.id}
+                                        href={`/workspaces/${workspace.id}`}
+                                        className="group relative block overflow-hidden rounded-2xl border border-border bg-card p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg"
+                                    >
+                                        {/* top accent bar (workspace identity color) */}
+                                        <span
+                                            className="absolute inset-x-0 top-0 h-1"
+                                            style={{ backgroundColor: color }}
+                                        />
+                                        <div className="flex items-start gap-3">
+                                            <span
+                                                className="grid h-11 w-11 shrink-0 place-items-center rounded-xl text-base font-bold text-white"
+                                                style={{ backgroundColor: color }}
+                                            >
+                                                {workspace.name.charAt(0).toUpperCase()}
+                                            </span>
+                                            <div className="min-w-0 flex-1">
+                                                <h3 className="truncate font-semibold text-foreground transition-colors group-hover:text-primary">
+                                                    {workspace.name}
+                                                </h3>
+                                                <p className="mt-0.5 line-clamp-2 text-sm text-muted-foreground">
+                                                    {workspace.description || "Tidak ada deskripsi"}
+                                                </p>
                                             </div>
-                                        </CardContent>
-                                    </Card>
-                                </Link>
-                            ))}
+                                        </div>
+
+                                        <div className="mt-4 flex items-center justify-between">
+                                            <span className="inline-flex items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
+                                                <LayoutDot />
+                                                {workspace._count?.boards || 0} Board
+                                                {(workspace._count?.boards || 0) !== 1 ? "s" : ""}
+                                            </span>
+                                            <span className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground opacity-0 transition-all group-hover:translate-x-0.5 group-hover:opacity-100 group-hover:text-primary">
+                                                Buka <ArrowRight className="h-4 w-4" />
+                                            </span>
+                                        </div>
+                                    </Link>
+                                );
+                            })}
                         </div>
                     )}
                 </div>
 
-                <div className="lg:sticky lg:top-20">
+                {/* Activity */}
+                <div className="lg:sticky lg:top-24">
                     <GlobalActivity workspaceIds={workspaces.map((w) => w.id)} />
                 </div>
             </div>
+
+            {/* Create workspace dialog */}
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogContent className="bg-card border-border">
+                    <form onSubmit={handleCreateWorkspace}>
+                        <DialogHeader>
+                            <DialogTitle className="text-foreground">Buat Workspace Baru</DialogTitle>
+                            <DialogDescription className="text-muted-foreground">
+                                Workspace adalah wadah untuk mengelompokkan board-board kamu.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-4 py-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="name" className="text-foreground">Nama Workspace</Label>
+                                <Input
+                                    id="name"
+                                    placeholder="Contoh: Personal, Kantor"
+                                    value={newWorkspace.name}
+                                    onChange={(e) => setNewWorkspace({ ...newWorkspace, name: e.target.value })}
+                                    required
+                                    className="bg-background border-input text-foreground"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="description" className="text-foreground">Deskripsi (opsional)</Label>
+                                <Input
+                                    id="description"
+                                    placeholder="Deskripsi singkat..."
+                                    value={newWorkspace.description}
+                                    onChange={(e) => setNewWorkspace({ ...newWorkspace, description: e.target.value })}
+                                    className="bg-background border-input text-foreground"
+                                />
+                            </div>
+                        </div>
+                        <DialogFooter>
+                            <Button type="submit" variant="brand" disabled={isCreating}>
+                                {isCreating ? "Membuat..." : "Buat Workspace"}
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
         </div>
     );
+}
+
+function LayoutDot() {
+    return <span className="h-1.5 w-1.5 rounded-full bg-primary" />;
 }
