@@ -44,7 +44,7 @@ export default function RegisterPage() {
 
         try {
             await register(formData.name, formData.email, formData.password);
-            toast.success("Registrasi berhasil! 🎉");
+            toast.success("Registrasi berhasil!");
             await new Promise(resolve => setTimeout(resolve, 100));
             router.push("/");
         } catch (error) {
