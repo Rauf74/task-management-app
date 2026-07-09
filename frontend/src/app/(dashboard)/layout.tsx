@@ -27,6 +27,8 @@ import { SidebarNav } from "@/components/layout/sidebar-nav";
 import { ActivityMenu } from "@/components/layout/activity-menu";
 import { Menu } from "lucide-react";
 
+const COLLAPSE_KEY = "taskscale:sidebar-collapsed";
+
 export default function DashboardLayout({
     children,
 }: {
@@ -35,6 +37,24 @@ export default function DashboardLayout({
     const router = useRouter();
     const { user, isLoading, logout } = useAuth();
     const [drawerOpen, setDrawerOpen] = useState(false);
+    const [collapsed, setCollapsed] = useState(false);
+
+    // Restore preference (desktop only)
+    useEffect(() => {
+        try {
+            setCollapsed(localStorage.getItem(COLLAPSE_KEY) === "1");
+        } catch {}
+    }, []);
+
+    function toggleCollapsed() {
+        setCollapsed((prev) => {
+            const next = !prev;
+            try {
+                localStorage.setItem(COLLAPSE_KEY, next ? "1" : "0");
+            } catch {}
+            return next;
+        });
+    }
 
     useEffect(() => {
         if (!isLoading && !user) {
@@ -63,12 +83,16 @@ export default function DashboardLayout({
     return (
         <div className="min-h-screen bg-background">
             {/* Desktop sidebar - fixed */}
-            <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 border-r border-border bg-card lg:block">
-                <SidebarNav />
+            <aside
+                className={`fixed inset-y-0 left-0 z-30 hidden border-r border-border bg-card transition-[width] duration-300 lg:block ${
+                    collapsed ? "w-[68px]" : "w-64"
+                }`}
+            >
+                <SidebarNav collapsed={collapsed} onToggleCollapse={toggleCollapsed} />
             </aside>
 
             {/* Content area (offset for sidebar on desktop) */}
-            <div className="lg:pl-64">
+            <div className={`transition-[padding] duration-300 lg:pl-64 ${collapsed ? "lg:pl-[68px]" : ""}`}>
                 {/* Topbar */}
                 <header className="sticky top-0 z-20 border-b border-border bg-card/80 backdrop-blur-md">
                     <div className="flex h-16 items-center justify-between gap-3 px-4 sm:px-6">
