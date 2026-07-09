@@ -1,24 +1,28 @@
 "use client";
 
+// ==============================================
+// Analytics Widget - Task Priority + Task Status
+// Compact, proportional bars (no oversized charts)
+// ==============================================
+
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from "recharts";
 import { API_URL } from "@/lib/api";
 
-// Color Palette matching our theme
-const COLORS = [
-    "#2563EB", // Blue (Primary)
-    "#10B981", // Emerald (Success)
-    "#F59E0B", // Amber (Warning)
-    "#EF4444", // Red (Danger)
-];
+const PRIORITY_META = [
+    { key: "URGENT", label: "Urgent", color: "#DC2626" },
+    { key: "HIGH", label: "High", color: "#F97316" },
+    { key: "MEDIUM", label: "Medium", color: "#F59E0B" },
+    { key: "LOW", label: "Low", color: "#10B981" },
+] as const;
 
-const PRIORITY_COLORS: Record<string, string> = {
-    LOW: "#2563EB",
-    MEDIUM: "#F59E0B",
-    HIGH: "#F97316",
-    URGENT: "#EF4444",
-};
+function statusColor(name: string): string {
+    const n = name.toLowerCase();
+    if (/(done|selesai|complete)/.test(n)) return "#10B981";
+    if (/(progress|doing|active)/.test(n)) return "#7C3AED";
+    if (/(todo|backlog|queue)/.test(n)) return "#64748B";
+    return "#0EA5E9";
+}
 
 interface AnalyticsData {
     priorityData: { name: string; value: number }[];
@@ -28,123 +32,121 @@ interface AnalyticsData {
 export function AnalyticsWidget({ workspaceId }: { workspaceId: string }) {
     const [data, setData] = useState<AnalyticsData | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+
     useEffect(() => {
         async function fetchAnalytics() {
             try {
-                // Use credentials: 'include' to send httpOnly cookies automatically
                 const res = await fetch(`${API_URL}/api/workspaces/${workspaceId}/analytics`, {
                     credentials: "include",
                 });
-
-                if (!res.ok) {
-                    throw new Error(`API Error: ${res.status}`);
-                }
-
+                if (!res.ok) throw new Error(`API Error: ${res.status}`);
                 const json = await res.json();
-
-                if (json.success) {
-                    setData(json.data);
-                }
+                if (json.success) setData(json.data);
             } catch (error) {
                 console.error("Failed to fetch analytics", error);
             } finally {
                 setIsLoading(false);
             }
         }
-
         fetchAnalytics();
     }, [workspaceId]);
 
     if (isLoading) {
         return (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <div className="h-[300px] rounded-xl bg-muted/20 animate-pulse" />
-                <div className="h-[300px] rounded-xl bg-muted/20 animate-pulse" />
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="h-[210px] rounded-2xl bg-muted/30 animate-pulse" />
+                <div className="h-[210px] rounded-2xl bg-muted/30 animate-pulse" />
             </div>
         );
     }
 
-    // If no data, return nothing (clean UI)
-    if (!data || (data.priorityData.length === 0 && data.statusData.length === 0)) {
-        return null;
-    }
+    const prio = PRIORITY_META.map((m) => ({
+        ...m,
+        value: data?.priorityData.find((d) => d.name === m.key)?.value || 0,
+    }));
+    const prioTotal = prio.reduce((s, p) => s + p.value, 0);
+
+    const status = data?.statusData || [];
+    const statusTotal = status.reduce((s, x) => s + x.value, 0);
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Priority Distribution */}
-            <Card className="glass-card">
-                <CardHeader>
-                    <CardTitle className="text-lg font-medium">Task Priority</CardTitle>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {/* Task Priority */}
+            <Card className="rounded-2xl border-border bg-card">
+                <CardHeader className="pb-3">
+                    <CardTitle className="text-sm font-semibold tracking-tight text-foreground">
+                        Task Priority
+                    </CardTitle>
                 </CardHeader>
-                <CardContent className="h-[300px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                            <Pie
-                                data={data.priorityData}
-                                cx="50%"
-                                cy="50%"
-                                innerRadius={60}
-                                outerRadius={80}
-                                paddingAngle={5}
-                                dataKey="value"
-                            >
-                                {data.priorityData.map((entry, index) => (
-                                    <Cell
-                                        key={`cell-${index}`}
-                                        fill={PRIORITY_COLORS[entry.name] || COLORS[index % COLORS.length]}
-                                        stroke="none"
-                                    />
-                                ))}
-                            </Pie>
-                            <Tooltip
-                                contentStyle={{
-                                    backgroundColor: "var(--background)",
-                                    borderColor: "var(--border)",
-                                    borderRadius: "8px"
-                                }}
-                                itemStyle={{ color: "var(--foreground)" }}
-                            />
-                            <Legend verticalAlign="bottom" height={36} />
-                        </PieChart>
-                    </ResponsiveContainer>
+                <CardContent>
+                    {prioTotal === 0 ? (
+                        <p className="py-8 text-center text-sm text-muted-foreground">Belum ada task</p>
+                    ) : (
+                        <div className="space-y-3.5">
+                            {prio.map((p) => {
+                                const pct = Math.round((p.value / prioTotal) * 100);
+                                return (
+                                    <div key={p.key} className="space-y-1.5">
+                                        <div className="flex items-center justify-between text-xs">
+                                            <span className="flex items-center gap-2 font-medium text-foreground">
+                                                <span
+                                                    className="h-2.5 w-2.5 rounded-full"
+                                                    style={{ backgroundColor: p.color }}
+                                                />
+                                                {p.label}
+                                            </span>
+                                            <span className="tabular-nums text-muted-foreground">
+                                                {p.value} · {pct}%
+                                            </span>
+                                        </div>
+                                        <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+                                            <div
+                                                className="h-full rounded-full transition-all duration-500"
+                                                style={{ width: `${pct}%`, backgroundColor: p.color }}
+                                            />
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
                 </CardContent>
             </Card>
 
-            {/* Status Progress */}
-            <Card className="glass-card">
-                <CardHeader>
-                    <CardTitle className="text-lg font-medium">Task Status</CardTitle>
+            {/* Task Status */}
+            <Card className="rounded-2xl border-border bg-card">
+                <CardHeader className="pb-3">
+                    <CardTitle className="text-sm font-semibold tracking-tight text-foreground">
+                        Task Status
+                    </CardTitle>
                 </CardHeader>
-                <CardContent className="h-[300px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={data.statusData}>
-                            <XAxis
-                                dataKey="name"
-                                tick={{ fontSize: 12, fill: "var(--muted-foreground)" }}
-                                axisLine={false}
-                                tickLine={false}
-                            />
-                            <YAxis
-                                hide
-                            />
-                            <Tooltip
-                                cursor={false}
-                                contentStyle={{
-                                    backgroundColor: "hsl(var(--popover))",
-                                    borderColor: "hsl(var(--border))",
-                                    borderRadius: "var(--radius)",
-                                    color: "hsl(var(--popover-foreground))",
-                                    boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
-                                }}
-                                itemStyle={{ color: "hsl(var(--foreground))" }}
-                            />
-                            <Bar dataKey="value" radius={[4, 4, 0, 0]}>
-                                {data.statusData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                ))}
-                            </Bar>
-                        </BarChart>
-                    </ResponsiveContainer>
+                <CardContent>
+                    {statusTotal === 0 ? (
+                        <p className="py-8 text-center text-sm text-muted-foreground">Belum ada task</p>
+                    ) : (
+                        <div className="space-y-3.5">
+                            {status.map((s) => {
+                                const c = statusColor(s.name);
+                                const pct = Math.round((s.value / statusTotal) * 100);
+                                return (
+                                    <div key={s.name} className="space-y-1.5">
+                                        <div className="flex items-center justify-between text-xs">
+                                            <span className="truncate font-medium text-foreground">{s.name}</span>
+                                            <span className="shrink-0 tabular-nums text-muted-foreground">
+                                                {s.value} · {pct}%
+                                            </span>
+                                        </div>
+                                        <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+                                            <div
+                                                className="h-full rounded-full transition-all duration-500"
+                                                style={{ width: `${pct}%`, backgroundColor: c }}
+                                            />
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
                 </CardContent>
             </Card>
         </div>

@@ -6,52 +6,11 @@
 
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { formatDistanceToNow } from "date-fns";
-import { id as idLocale } from "date-fns/locale";
-import {
-    Activity,
-    FilePlus,
-    Trash2,
-    ArrowRight,
-    Layout,
-    Columns,
-    MoreHorizontal,
-} from "lucide-react";
+import { Activity } from "lucide-react";
 import { API_URL } from "@/lib/api";
-
-interface ActivityLog {
-    id: string;
-    action: string;
-    entityType: string;
-    entityTitle: string;
-    details: string | null;
-    createdAt: string;
-    user: { name: string; image: string | null };
-    workspaceName?: string;
-}
+import { ActivityItem, ActivityLog } from "./activity-item";
 
 const MAX_ITEMS = 10;
-
-function getIcon(action: string) {
-    if (action.includes("CREATE")) return <FilePlus className="h-4 w-4 text-emerald-500" />;
-    if (action.includes("DELETE")) return <Trash2 className="h-4 w-4 text-destructive" />;
-    if (action.includes("MOVE")) return <ArrowRight className="h-4 w-4 text-blue-500" />;
-    if (action.includes("BOARD")) return <Layout className="h-4 w-4 text-violet-500" />;
-    if (action.includes("COLUMN")) return <Columns className="h-4 w-4 text-orange-500" />;
-    return <Activity className="h-4 w-4 text-muted-foreground" />;
-}
-
-function getMessage(log: ActivityLog) {
-    if (log.action === "CREATE_TASK") return `membuat task "${log.entityTitle}" ${log.details || ""}`;
-    if (log.action === "MOVE_TASK") return `memindahkan task "${log.entityTitle}" ${log.details || ""}`;
-    if (log.action === "DELETE_TASK") return `menghapus task "${log.entityTitle}" ${log.details || ""}`;
-    if (log.action === "CREATE_COLUMN") return `menambahkan kolom "${log.entityTitle}"`;
-    if (log.action === "DELETE_COLUMN") return `menghapus kolom "${log.entityTitle}"`;
-    if (log.action === "CREATE_BOARD") return `membuat board "${log.entityTitle}"`;
-    if (log.action === "DELETE_BOARD") return `menghapus board "${log.entityTitle}"`;
-    return log.details || `melakukan aktivitas pada ${log.entityTitle}`;
-}
 
 export function GlobalActivity({ workspaceIds }: { workspaceIds: string[] }) {
     const [activities, setActivities] = useState<ActivityLog[]>([]);
@@ -101,21 +60,21 @@ export function GlobalActivity({ workspaceIds }: { workspaceIds: string[] }) {
 
     if (isLoading) {
         return (
-            <Card className="glass-card">
-                <CardHeader className="pb-3 border-b border-border/40">
-                    <CardTitle className="text-base font-semibold flex items-center gap-2">
-                        <Activity className="h-4 w-4 text-primary" />
+            <Card className="rounded-2xl border-border bg-card">
+                <CardHeader className="flex flex-row items-center gap-2 space-y-0 border-b border-border/40 pb-3">
+                    <Activity className="h-4 w-4 text-primary" />
+                    <CardTitle className="text-sm font-semibold tracking-tight text-foreground">
                         Aktivitas Global
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="p-4">
                     <div className="space-y-4">
                         {[1, 2, 3].map((i) => (
-                            <div key={i} className="flex items-center gap-4 animate-pulse">
+                            <div key={i} className="flex items-center gap-3 animate-pulse">
                                 <div className="h-9 w-9 rounded-full bg-muted/40" />
-                                <div className="space-y-2 flex-1">
-                                    <div className="h-4 w-3/4 bg-muted/40 rounded" />
-                                    <div className="h-3 w-1/2 bg-muted/40 rounded" />
+                                <div className="flex-1 space-y-2">
+                                    <div className="h-3.5 w-2/3 rounded bg-muted/40" />
+                                    <div className="h-3 w-1/2 rounded bg-muted/40" />
                                 </div>
                             </div>
                         ))}
@@ -126,50 +85,28 @@ export function GlobalActivity({ workspaceIds }: { workspaceIds: string[] }) {
     }
 
     return (
-        <Card className="glass-card border-primary/10 shadow-lg">
-            <CardHeader className="pb-3 border-b border-border/40">
-                <CardTitle className="text-base font-semibold flex items-center gap-2">
-                    <Activity className="h-4 w-4 text-primary" />
+        <Card className="rounded-2xl border-border bg-card">
+            <CardHeader className="flex flex-row items-center gap-2 space-y-0 border-b border-border/40 pb-3">
+                <Activity className="h-4 w-4 text-primary" />
+                <CardTitle className="text-sm font-semibold tracking-tight text-foreground">
                     Aktivitas Global
                 </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
                 <div className="p-4">
                     {activities.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center py-12 text-muted-foreground opacity-60">
-                            <MoreHorizontal className="h-8 w-8 mb-2" />
-                            <p className="text-sm italic">Belum ada aktivitas tercatat</p>
+                        <div className="flex flex-col items-center justify-center py-10 text-muted-foreground">
+                            <Activity className="h-7 w-7 mb-2 opacity-60" />
+                            <p className="text-sm">Belum ada aktivitas tercatat</p>
                         </div>
                     ) : (
-                        <div className="space-y-5">
-                            {activities.map((log) => (
-                                <div key={log.id} className="flex gap-3">
-                                    <Avatar className="h-9 w-9 border border-border shadow-sm ring-2 ring-background shrink-0">
-                                        <AvatarFallback className="bg-primary/5 text-primary text-xs font-bold">
-                                            {log.user.name.charAt(0).toUpperCase()}
-                                        </AvatarFallback>
-                                    </Avatar>
-                                    <div className="flex-1 min-w-0 space-y-1 pt-0.5">
-                                        <div className="flex items-center justify-between gap-2">
-                                            <p className="text-xs font-semibold leading-none text-foreground truncate">
-                                                {log.user.name}
-                                            </p>
-                                            <span className="text-[10px] text-muted-foreground shrink-0 tabular-nums">
-                                                {formatDistanceToNow(new Date(log.createdAt), {
-                                                    addSuffix: true,
-                                                    locale: idLocale,
-                                                })}
-                                            </span>
-                                        </div>
-                                        <p className="text-xs text-muted-foreground leading-relaxed">
-                                            {getMessage(log)}
-                                        </p>
-                                        <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-secondary/80 border border-border/50 text-[10px] text-muted-foreground w-fit mt-1">
-                                            {getIcon(log.action)}
-                                            <span className="capitalize">{log.entityType.toLowerCase()}</span>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div className="space-y-1">
+                            {activities.map((log, i) => (
+                                <ActivityItem
+                                    key={log.id}
+                                    log={log}
+                                    isLast={i === activities.length - 1}
+                                />
                             ))}
                         </div>
                     )}
