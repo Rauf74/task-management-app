@@ -7,10 +7,14 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { workspaceApi, Workspace } from "@/lib/api";
+import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { WelcomeSection } from "@/components/dashboard/welcome-section";
+import { QuickStats } from "@/components/dashboard/quick-stats";
+import { GlobalActivity } from "@/components/dashboard/global-activity";
 import {
     Dialog,
     DialogContent,
@@ -23,6 +27,7 @@ import {
 import { toast } from "sonner";
 
 export default function DashboardPage() {
+    const { user } = useAuth();
     const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isCreating, setIsCreating] = useState(false);
@@ -73,14 +78,34 @@ export default function DashboardPage() {
 
     if (isLoading) {
         return (
-            <div className="flex items-center justify-center h-64">
-                <div className="text-muted-foreground">Memuat workspace...</div>
+            <div className="space-y-8">
+                <div className="space-y-3">
+                    <div className="h-8 w-64 bg-muted/50 rounded-lg animate-pulse" />
+                    <div className="h-4 w-48 bg-muted/40 rounded animate-pulse" />
+                </div>
+                <div className="grid gap-4 sm:grid-cols-3">
+                    {[1, 2, 3].map((i) => (
+                        <div key={i} className="h-[68px] bg-muted/40 rounded-xl animate-pulse" />
+                    ))}
+                </div>
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    {[1, 2, 3].map((i) => (
+                        <div key={i} className="h-36 bg-muted/40 rounded-xl animate-pulse" />
+                    ))}
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-8">
+            {/* Welcome + overview */}
+            <WelcomeSection userName={user?.name || ""} workspaces={workspaces} />
+            <QuickStats
+                workspaces={workspaces}
+                onAddWorkspace={() => setDialogOpen(true)}
+            />
+
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
@@ -132,58 +157,66 @@ export default function DashboardPage() {
                 </Dialog>
             </div>
 
-            {/* Workspace Grid */}
-            {workspaces.length === 0 ? (
-                <Card className="glass border-border/50 bg-card/30">
-                    <CardContent className="flex flex-col items-center justify-center py-16 text-center">
-                        <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                            <span className="text-2xl">📂</span>
-                        </div>
-                        <h3 className="text-xl font-semibold mb-2">Belum ada workspace</h3>
-                        <p className="text-muted-foreground mb-6 max-w-md">
-                            Mulai dengan membuat workspace untuk mengorganisir board dan tugas-tugas tim Anda.
-                        </p>
-                        <Button onClick={() => setDialogOpen(true)} size="lg" className="shadow-lg shadow-primary/20">
-                            Buat Workspace Pertama
-                        </Button>
-                    </CardContent>
-                </Card>
-            ) : (
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {workspaces.map((workspace) => (
-                        <Link key={workspace.id} href={`/workspaces/${workspace.id}`} className="group block h-full">
-                            <Card className="glass-card h-full relative overflow-hidden group-hover:border-primary/50 transition-all duration-300">
-                                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                                <CardHeader>
-                                    <CardTitle className="text-foreground group-hover:text-primary transition-colors flex items-center gap-2">
-                                        <span className="p-2 rounded-md bg-primary/10 text-primary text-lg">
-                                            {workspace.name.charAt(0).toUpperCase()}
-                                        </span>
-                                        {workspace.name}
-                                    </CardTitle>
-                                    <CardDescription className="text-muted-foreground line-clamp-2">
-                                        {workspace.description || "Tidak ada deskripsi"}
-                                    </CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                        <div className="flex -space-x-2">
-                                            {[1, 2, 3].map(i => (
-                                                <div key={i} className="w-6 h-6 rounded-full bg-muted border-2 border-background flex items-center justify-center text-[10px]">
-                                                    👤
+            {/* Workspace Grid + Global Activity */}
+            <div className="grid gap-6 lg:grid-cols-3 items-start">
+                <div className="lg:col-span-2 space-y-6">
+                    {workspaces.length === 0 ? (
+                        <Card className="glass border-border/50 bg-card/30">
+                            <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+                                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                                    <span className="text-2xl">📂</span>
+                                </div>
+                                <h3 className="text-xl font-semibold mb-2">Belum ada workspace</h3>
+                                <p className="text-muted-foreground mb-6 max-w-md">
+                                    Mulai dengan membuat workspace untuk mengorganisir board dan tugas-tugas tim Anda.
+                                </p>
+                                <Button onClick={() => setDialogOpen(true)} size="lg" className="shadow-lg shadow-primary/20">
+                                    Buat Workspace Pertama
+                                </Button>
+                            </CardContent>
+                        </Card>
+                    ) : (
+                        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+                            {workspaces.map((workspace) => (
+                                <Link key={workspace.id} href={`/workspaces/${workspace.id}`} className="group block h-full">
+                                    <Card className="glass-card h-full relative overflow-hidden group-hover:border-primary/50 transition-all duration-300">
+                                        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        <CardHeader>
+                                            <CardTitle className="text-foreground group-hover:text-primary transition-colors flex items-center gap-2">
+                                                <span className="p-2 rounded-md bg-primary/10 text-primary text-lg">
+                                                    {workspace.name.charAt(0).toUpperCase()}
+                                                </span>
+                                                {workspace.name}
+                                            </CardTitle>
+                                            <CardDescription className="text-muted-foreground line-clamp-2">
+                                                {workspace.description || "Tidak ada deskripsi"}
+                                            </CardDescription>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                                <div className="flex -space-x-2">
+                                                    {[1, 2, 3].map(i => (
+                                                        <div key={i} className="w-6 h-6 rounded-full bg-muted border-2 border-background flex items-center justify-center text-[10px]">
+                                                            👤
+                                                        </div>
+                                                    ))}
                                                 </div>
-                                            ))}
-                                        </div>
-                                        <span className="ml-2 px-2 py-0.5 rounded-full bg-secondary text-xs">
-                                            {workspace._count?.boards || 0} Boards
-                                        </span>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </Link>
-                    ))}
+                                                <span className="ml-2 px-2 py-0.5 rounded-full bg-secondary text-xs">
+                                                    {workspace._count?.boards || 0} Boards
+                                                </span>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                </Link>
+                            ))}
+                        </div>
+                    )}
                 </div>
-            )}
+
+                <div className="lg:sticky lg:top-20">
+                    <GlobalActivity workspaceIds={workspaces.map((w) => w.id)} />
+                </div>
+            </div>
         </div>
     );
 }
