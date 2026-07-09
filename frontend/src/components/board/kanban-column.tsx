@@ -9,6 +9,7 @@ import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { Column as ColumnType, Task } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 import { TaskCard } from "./task-card";
 
 interface ColumnProps {
@@ -29,21 +30,22 @@ export function KanbanColumn({ column, onDeleteColumn, onDeleteTask, onAddTask, 
         <div className="w-full sm:min-w-[300px] sm:max-w-[300px] sm:snap-center">
             <Card className={`glass border-border/40 bg-secondary/40 h-full transition-colors ${isOver ? "border-primary/50 ring-2 ring-primary/20" : ""
                 }`}>
-                <CardHeader className="pb-3 sticky top-0 bg-inherit z-10 rounded-t-lg backdrop-blur-md">
-                    <div className="flex items-center justify-between">
-                        <CardTitle className="text-foreground text-sm font-semibold tracking-tight">
-                            {column.title}
-                            <span className="ml-2 px-2 py-0.5 rounded-full bg-background/50 text-muted-foreground text-xs shadow-sm">
+                <CardHeader className="pb-3 sticky top-0 bg-card/80 z-10 rounded-t-lg backdrop-blur-md border-b border-border/40">
+                    <div className="flex items-center justify-between gap-2">
+                        <CardTitle className="flex items-center gap-2 text-foreground text-sm font-semibold tracking-tight min-w-0">
+                            <span className="truncate">{column.title}</span>
+                            <span className="shrink-0 px-2 py-0.5 rounded-full bg-muted text-muted-foreground text-xs font-medium">
                                 {column.tasks.length}
                             </span>
                         </CardTitle>
                         <Button
                             variant="ghost"
-                            size="sm"
+                            size="icon"
                             onClick={() => onDeleteColumn(column.id)}
-                            className="text-muted-foreground hover:text-destructive h-6 w-6 p-0 hover:bg-destructive/10 rounded-full transition-colors"
+                            className="shrink-0 text-muted-foreground/60 hover:text-destructive hover:bg-destructive/10 h-6 w-6 p-0 rounded-full transition-colors"
+                            aria-label="Delete column"
                         >
-                            ×
+                            <X className="h-4 w-4" />
                         </Button>
                     </div>
                 </CardHeader>
@@ -62,8 +64,8 @@ export function KanbanColumn({ column, onDeleteColumn, onDeleteTask, onAddTask, 
                         ))}
                     </SortableContext>
                     <Button
-                        variant="ghost"
-                        className="w-full text-muted-foreground hover:text-primary hover:bg-primary/5 border border-dashed border-border/50 hover:border-primary/50 transition-all rounded-lg h-9"
+                        variant="outline"
+                        className="w-full text-muted-foreground hover:text-primary hover:border-primary/50 hover:bg-primary/5 border-dashed transition-all rounded-lg h-10 font-medium"
                         onClick={() => onAddTask(column.id)}
                     >
                         + Tambah Task
