@@ -49,7 +49,7 @@ export function ActivityFeed({ workspaceId }: { workspaceId: string }) {
                 });
                 if (res.ok) {
                     const json = await res.json();
-                    if (json.success) setActivities(json.data);
+                    if (json.success) setActivities(json.data.activities || []);
                 }
             } catch (error) {
                 console.error("Failed to fetch activities", error);
