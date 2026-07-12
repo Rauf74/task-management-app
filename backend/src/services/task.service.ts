@@ -1,33 +1,35 @@
-// ==============================================
-// Task Service
-// ==============================================
-
 import { Priority } from "@prisma/client";
 import * as taskRepository from "../repositories/task.repository.js";
 import * as columnRepository from "../repositories/column.repository.js";
 import * as boardRepository from "../repositories/board.repository.js";
 import * as workspaceRepository from "../repositories/workspace.repository.js";
-
 import * as activityService from "./activity.service.js";
+import { AppError } from "../types/index.js";
 
 async function checkColumnAccess(columnId: string, userId: string) {
     const boardId = await columnRepository.getBoardId(columnId);
-    if (!boardId) throw new Error("Column tidak ditemukan");
+    if (!boardId) throw new AppError("Column tidak ditemukan", 404);
     const workspaceId = await boardRepository.getWorkspaceId(boardId);
-    if (!workspaceId) throw new Error("Board tidak ditemukan");
+    if (!workspaceId) throw new AppError("Board tidak ditemukan", 404);
     const isOwner = await workspaceRepository.isOwner(workspaceId, userId);
-    if (!isOwner) throw new Error("Tidak memiliki akses");
-    return { boardId, workspaceId }; // Return IDs for logging
+    if (!isOwner) throw new AppError("Tidak memiliki akses", 403);
+    return { boardId, workspaceId };
 }
 
 export async function createTask(
-    data: { title: string; description?: string; priority?: Priority; dueDate?: string; columnId: string; labelIds?: string[] },
+    data: {
+        title: string;
+        description?: string;
+        priority?: Priority;
+        dueDate?: string;
+        columnId: string;
+        labelIds?: string[];
+    },
     userId: string
 ) {
     const { workspaceId, boardId } = await checkColumnAccess(data.columnId, userId);
     const maxOrder = await taskRepository.getMaxOrder(data.columnId);
 
-    // Fetch names for logging
     const column = await columnRepository.findById(data.columnId);
     const board = await boardRepository.findById(boardId);
 
@@ -39,9 +41,9 @@ export async function createTask(
         columnId: data.columnId,
         creatorId: userId,
         order: maxOrder + 1,
-        labels: data.labelIds ? {
-            connect: data.labelIds.map(id => ({ id }))
-        } : undefined,
+        labels: data.labelIds
+            ? { connect: data.labelIds.map((id) => ({ id })) }
+            : undefined,
     });
 
     await activityService.logActivity({
@@ -51,7 +53,7 @@ export async function createTask(
         entityTitle: task.title,
         details: `di kolom "${column?.title}" pada board "${board?.name}"`,
         userId,
-        workspaceId
+        workspaceId,
     });
 
     return task;
@@ -59,30 +61,35 @@ export async function createTask(
 
 export async function updateTask(
     id: string,
-    data: { title?: string; description?: string; priority?: Priority; dueDate?: string | null; labelIds?: string[] },
+    data: {
+        title?: string;
+        description?: string;
+        priority?: Priority;
+        dueDate?: string | null;
+        labelIds?: string[];
+    },
     userId: string
 ) {
     const task = await taskRepository.findById(id);
-    if (!task) throw new Error("Task tidak ditemukan");
+    if (!task) throw new AppError("Task tidak ditemukan", 404);
     await checkColumnAccess(task.columnId, userId);
+
     return taskRepository.update(id, {
         title: data.title,
         description: data.description,
         priority: data.priority,
         dueDate: data.dueDate === null ? null : data.dueDate ? new Date(data.dueDate) : undefined,
-        labels: data.labelIds ? {
-            set: data.labelIds.map(id => ({ id }))
-        } : undefined,
+        labels: data.labelIds
+            ? { set: data.labelIds.map((id) => ({ id })) }
+            : undefined,
     });
 }
 
 export async function deleteTask(id: string, userId: string) {
     const task = await taskRepository.findById(id);
-    if (!task) throw new Error("Task tidak ditemukan");
+    if (!task) throw new AppError("Task tidak ditemukan", 404);
 
     const { workspaceId } = await checkColumnAccess(task.columnId, userId);
-
-    // Fetch details for logging
     const column = await columnRepository.findById(task.columnId);
 
     await taskRepository.remove(id);
@@ -94,17 +101,15 @@ export async function deleteTask(id: string, userId: string) {
         entityTitle: task.title,
         details: `dari kolom "${column?.title}"`,
         userId,
-        workspaceId
+        workspaceId,
     });
 }
 
 export async function moveTask(id: string, columnId: string, order: number, userId: string) {
     const task = await taskRepository.findById(id);
-    if (!task) throw new Error("Task tidak ditemukan");
+    if (!task) throw new AppError("Task tidak ditemukan", 404);
 
     const { workspaceId, boardId } = await checkColumnAccess(columnId, userId);
-
-    // Fetch details for logging
     const destColumn = await columnRepository.findById(columnId);
     const board = await boardRepository.findById(boardId);
 
@@ -117,6 +122,6 @@ export async function moveTask(id: string, columnId: string, order: number, user
         entityTitle: task.title,
         details: `ke kolom "${destColumn?.title}" pada board "${board?.name}"`,
         userId,
-        workspaceId
+        workspaceId,
     });
 }

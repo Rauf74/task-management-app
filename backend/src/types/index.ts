@@ -17,7 +17,6 @@ export interface User {
     updatedAt: Date;
 }
 
-// User with password (internal use only)
 export interface UserWithPassword extends User {
     password: string;
 }
@@ -46,11 +45,6 @@ export interface ChangePasswordRequest {
     newPassword: string;
 }
 
-export interface AuthResponse {
-    user: User;
-    message: string;
-}
-
 // ==============================================
 // JWT Types
 // ==============================================
@@ -66,6 +60,31 @@ export interface JWTPayload {
 
 export interface AuthenticatedRequest extends Request {
     user?: JWTPayload;
+}
+
+// ==============================================
+// Custom Error with HTTP Status Code
+// ==============================================
+
+export class AppError extends Error {
+    statusCode: number;
+
+    constructor(message: string, statusCode: number) {
+        super(message);
+        this.statusCode = statusCode;
+        this.name = "AppError";
+    }
+}
+
+// ==============================================
+// Helper: extract userId from authenticated request
+// ==============================================
+
+export function getUserId(req: AuthenticatedRequest): string {
+    if (!req.user) {
+        throw new AppError("Unauthorized", 401);
+    }
+    return req.user.userId;
 }
 
 // ==============================================

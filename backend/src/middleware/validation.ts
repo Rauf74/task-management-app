@@ -69,6 +69,15 @@ export const updateWorkspaceSchema = z.object({
 });
 
 // ==============================================
+// Label Schemas
+// ==============================================
+
+export const createLabelSchema = z.object({
+    name: z.string().min(1, "Nama label wajib diisi").max(50),
+    color: z.string().regex(/^#([0-9A-F]{3}){1,2}$/i, "Format warna tidak valid (contoh: #FF5733)"),
+});
+
+// ==============================================
 // Board Schemas
 // ==============================================
 

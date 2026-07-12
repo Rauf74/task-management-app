@@ -1,4 +1,6 @@
 import { prisma } from "../lib/prisma.js";
+import * as workspaceRepository from "../repositories/workspace.repository.js";
+import { AppError } from "../types/index.js";
 
 interface LogActivityParams {
     action: string;
@@ -28,7 +30,10 @@ export async function logActivity(params: LogActivityParams) {
     }
 }
 
-export async function getWorkspaceActivities(workspaceId: string, limit = 20) {
+export async function getWorkspaceActivities(workspaceId: string, userId: string, limit = 20) {
+    const isOwner = await workspaceRepository.isOwner(workspaceId, userId);
+    if (!isOwner) throw new AppError("Tidak memiliki akses ke workspace ini", 403);
+
     return prisma.activity.findMany({
         where: { workspaceId },
         orderBy: { createdAt: "desc" },

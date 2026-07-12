@@ -1,139 +1,58 @@
-// ==============================================
-// Workspace Controller
-// ==============================================
-
 import { Response } from "express";
 import * as workspaceService from "../services/workspace.service.js";
-import { AuthenticatedRequest, ApiResponse } from "../types/index.js";
+import { AuthenticatedRequest, getUserId } from "../types/index.js";
+import { asyncHandler } from "../middleware/async-handler.js";
 
-// ==============================================
-// Get All Workspaces
-// ==============================================
+export const getWorkspaces = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const userId = getUserId(req);
 
-export async function getWorkspaces(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-        const userId = req.user!.userId;
-        const workspaces = await workspaceService.getWorkspaces(userId);
+    const workspaces = await workspaceService.getWorkspaces(userId);
 
-        const response: ApiResponse = {
-            success: true,
-            data: { workspaces },
-        };
-        res.status(200).json(response);
-    } catch (error) {
-        const message = error instanceof Error ? error.message : "Terjadi kesalahan";
-        res.status(500).json({ success: false, error: message });
-    }
-}
+    res.status(200).json({ success: true, data: { workspaces } });
+});
 
-// ==============================================
-// Get Workspace by ID
-// ==============================================
+export const getWorkspace = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const { id } = req.params;
+    const userId = getUserId(req);
 
-export async function getWorkspace(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-        const { id } = req.params;
-        const userId = req.user!.userId;
-        const workspace = await workspaceService.getWorkspaceById(id, userId);
+    const workspace = await workspaceService.getWorkspaceById(id, userId);
 
-        const response: ApiResponse = {
-            success: true,
-            data: { workspace },
-        };
-        res.status(200).json(response);
-    } catch (error) {
-        const message = error instanceof Error ? error.message : "Terjadi kesalahan";
-        const statusCode = message.includes("tidak ditemukan") ? 404 : 500;
-        res.status(statusCode).json({ success: false, error: message });
-    }
-}
+    res.status(200).json({ success: true, data: { workspace } });
+});
 
-// ==============================================
-// Create Workspace
-// ==============================================
+export const createWorkspace = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const userId = getUserId(req);
+    const { name, description } = req.body;
 
-export async function createWorkspace(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-        const userId = req.user!.userId;
-        const { name, description } = req.body;
-        const workspace = await workspaceService.createWorkspace({ name, description }, userId);
+    const workspace = await workspaceService.createWorkspace({ name, description }, userId);
 
-        const response: ApiResponse = {
-            success: true,
-            data: { workspace },
-            message: "Workspace berhasil dibuat",
-        };
-        res.status(201).json(response);
-    } catch (error) {
-        const message = error instanceof Error ? error.message : "Terjadi kesalahan";
-        res.status(500).json({ success: false, error: message });
-    }
-}
+    res.status(201).json({ success: true, data: { workspace }, message: "Workspace berhasil dibuat" });
+});
 
-// ==============================================
-// Update Workspace
-// ==============================================
+export const updateWorkspace = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const { id } = req.params;
+    const userId = getUserId(req);
+    const { name, description } = req.body;
 
-export async function updateWorkspace(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-        const { id } = req.params;
-        const userId = req.user!.userId;
-        const { name, description } = req.body;
-        const workspace = await workspaceService.updateWorkspace(id, { name, description }, userId);
+    const workspace = await workspaceService.updateWorkspace(id, { name, description }, userId);
 
-        const response: ApiResponse = {
-            success: true,
-            data: { workspace },
-            message: "Workspace berhasil diupdate",
-        };
-        res.status(200).json(response);
-    } catch (error) {
-        const message = error instanceof Error ? error.message : "Terjadi kesalahan";
-        const statusCode = message.includes("tidak ditemukan") ? 404 : 500;
-        res.status(statusCode).json({ success: false, error: message });
-    }
-}
+    res.status(200).json({ success: true, data: { workspace }, message: "Workspace berhasil diupdate" });
+});
 
-// ==============================================
-// Delete Workspace
-// ==============================================
+export const deleteWorkspace = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const { id } = req.params;
+    const userId = getUserId(req);
 
-export async function deleteWorkspace(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-        const { id } = req.params;
-        const userId = req.user!.userId;
-        await workspaceService.deleteWorkspace(id, userId);
+    await workspaceService.deleteWorkspace(id, userId);
 
-        const response: ApiResponse = {
-            success: true,
-            message: "Workspace berhasil dihapus",
-        };
-        res.status(200).json(response);
-    } catch (error) {
-        const message = error instanceof Error ? error.message : "Terjadi kesalahan";
-        const statusCode = message.includes("tidak ditemukan") ? 404 : 500;
-        res.status(statusCode).json({ success: false, error: message });
-    }
-}
+    res.status(200).json({ success: true, message: "Workspace berhasil dihapus" });
+});
 
-// ==============================================
-// Get Analytics
-// ==============================================
+export const getAnalytics = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const { id } = req.params;
+    const userId = getUserId(req);
 
-export async function getAnalytics(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-        const { id } = req.params;
-        const userId = req.user!.userId;
-        const analytics = await workspaceService.getWorkspaceAnalytics(id, userId);
+    const analytics = await workspaceService.getWorkspaceAnalytics(id, userId);
 
-        const response: ApiResponse = {
-            success: true,
-            data: analytics,
-        };
-        res.status(200).json(response);
-    } catch (error) {
-        const message = error instanceof Error ? error.message : "Terjadi kesalahan";
-        const statusCode = message.includes("tidak ditemukan") ? 404 : 500;
-        res.status(statusCode).json({ success: false, error: message });
-    }
-}
+    res.status(200).json({ success: true, data: analytics });
+});

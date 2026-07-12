@@ -18,13 +18,8 @@ import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 
-// Import routes
-import authRoutes from "./routes/auth.routes.js";
-import workspaceRoutes from "./routes/workspace.routes.js";
-import boardRoutes from "./routes/board.routes.js";
-import columnRoutes from "./routes/column.routes.js";
-import taskRoutes from "./routes/task.routes.js";
-import labelRoutes from "./routes/label.routes.js";
+// Import routes (via barrel)
+import { authRoutes, workspaceRoutes, boardRoutes, columnRoutes, taskRoutes, labelRoutes } from "./routes/index.js";
 
 // Import Swagger
 import { setupSwagger } from "./lib/swagger.js";

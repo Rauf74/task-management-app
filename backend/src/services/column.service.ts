@@ -1,17 +1,14 @@
-// ==============================================
-// Column Service
-// ==============================================
-
 import * as columnRepository from "../repositories/column.repository.js";
 import * as boardRepository from "../repositories/board.repository.js";
 import * as workspaceRepository from "../repositories/workspace.repository.js";
 import * as activityService from "./activity.service.js";
+import { AppError } from "../types/index.js";
 
 async function checkBoardAccess(boardId: string, userId: string) {
     const workspaceId = await boardRepository.getWorkspaceId(boardId);
-    if (!workspaceId) throw new Error("Board tidak ditemukan");
+    if (!workspaceId) throw new AppError("Board tidak ditemukan", 404);
     const isOwner = await workspaceRepository.isOwner(workspaceId, userId);
-    if (!isOwner) throw new Error("Tidak memiliki akses");
+    if (!isOwner) throw new AppError("Tidak memiliki akses", 403);
     return { workspaceId };
 }
 
@@ -28,7 +25,7 @@ export async function createColumn(data: { title: string; boardId: string }, use
         entityTitle: column.title,
         details: "Created column",
         userId,
-        workspaceId
+        workspaceId,
     });
 
     return column;
@@ -36,17 +33,16 @@ export async function createColumn(data: { title: string; boardId: string }, use
 
 export async function updateColumn(id: string, data: { title?: string }, userId: string) {
     const column = await columnRepository.findById(id);
-    if (!column) throw new Error("Column tidak ditemukan");
+    if (!column) throw new AppError("Column tidak ditemukan", 404);
     await checkBoardAccess(column.boardId, userId);
     return columnRepository.update(id, data);
 }
 
 export async function deleteColumn(id: string, userId: string) {
     const column = await columnRepository.findById(id);
-    if (!column) throw new Error("Column tidak ditemukan");
+    if (!column) throw new AppError("Column tidak ditemukan", 404);
 
     const { workspaceId } = await checkBoardAccess(column.boardId, userId);
-
     await columnRepository.remove(id);
 
     await activityService.logActivity({
@@ -56,14 +52,14 @@ export async function deleteColumn(id: string, userId: string) {
         entityTitle: column.title,
         details: "Deleted column",
         userId,
-        workspaceId
+        workspaceId,
     });
 }
 
 export async function reorderColumns(columnIds: string[], userId: string) {
     if (columnIds.length === 0) return [];
     const boardId = await columnRepository.getBoardId(columnIds[0]);
-    if (!boardId) throw new Error("Column tidak ditemukan");
+    if (!boardId) throw new AppError("Column tidak ditemukan", 404);
     await checkBoardAccess(boardId, userId);
     return columnRepository.reorder(columnIds);
 }

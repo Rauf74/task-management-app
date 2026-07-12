@@ -3,78 +3,40 @@
 // ==============================================
 
 import * as workspaceRepository from "../repositories/workspace.repository.js";
-
-// ==============================================
-// Get User's Workspaces
-// ==============================================
+import { AppError } from "../types/index.js";
 
 export async function getWorkspaces(userId: string) {
     return workspaceRepository.findByUserId(userId);
 }
 
-// ==============================================
-// Get Workspace Detail
-// ==============================================
-
 export async function getWorkspaceById(id: string, userId: string) {
-    // Check ownership
     const isOwner = await workspaceRepository.isOwner(id, userId);
-    if (!isOwner) {
-        throw new Error("Workspace tidak ditemukan atau tidak memiliki akses");
-    }
+    if (!isOwner) throw new AppError("Workspace tidak ditemukan atau tidak memiliki akses", 404);
 
     return workspaceRepository.findById(id);
 }
 
-// ==============================================
-// Create Workspace
-// ==============================================
-
 export async function createWorkspace(data: { name: string; description?: string }, userId: string) {
-    return workspaceRepository.create({
-        ...data,
-        userId,
-    });
+    return workspaceRepository.create({ ...data, userId });
 }
 
-// ==============================================
-// Update Workspace
-// ==============================================
-
 export async function updateWorkspace(id: string, data: { name?: string; description?: string }, userId: string) {
-    // Check ownership
     const isOwner = await workspaceRepository.isOwner(id, userId);
-    if (!isOwner) {
-        throw new Error("Workspace tidak ditemukan atau tidak memiliki akses");
-    }
+    if (!isOwner) throw new AppError("Workspace tidak ditemukan atau tidak memiliki akses", 404);
 
     return workspaceRepository.update(id, data);
 }
 
-// ==============================================
-// Delete Workspace
-// ==============================================
-
 export async function deleteWorkspace(id: string, userId: string) {
-    // Check ownership
     const isOwner = await workspaceRepository.isOwner(id, userId);
-    if (!isOwner) {
-        throw new Error("Workspace tidak ditemukan atau tidak memiliki akses");
-    }
+    if (!isOwner) throw new AppError("Workspace tidak ditemukan atau tidak memiliki akses", 404);
 
     return workspaceRepository.remove(id);
 }
 
-// ==============================================
-// Get Analytics
-// ==============================================
-
 export async function getWorkspaceAnalytics(id: string, userId: string) {
-    // Check ownership
     const isOwner = await workspaceRepository.isOwner(id, userId);
-    if (!isOwner) {
-        throw new Error("Workspace tidak ditemukan atau tidak memiliki akses");
-    }
+    if (!isOwner) throw new AppError("Workspace tidak ditemukan atau tidak memiliki akses", 404);
 
     return workspaceRepository.getAnalytics(id);
 }
