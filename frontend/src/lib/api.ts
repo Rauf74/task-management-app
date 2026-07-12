@@ -70,10 +70,16 @@ export const workspaceApi = {
         ),
 
     update: (id: string, data: { name?: string; description?: string }) =>
-        fetcher(`/api/workspaces/${id}`, { method: "PUT", body: data }),
+        fetcher<{ success: boolean; data: { workspace: Workspace } }>(
+            `/api/workspaces/${id}`,
+            { method: "PUT", body: data }
+        ),
 
     delete: (id: string) =>
-        fetcher(`/api/workspaces/${id}`, { method: "DELETE" }),
+        fetcher<{ success: boolean; data: { workspace: Workspace } }>(
+            `/api/workspaces/${id}`,
+            { method: "DELETE" }
+        ),
 };
 
 // ==============================================
@@ -93,10 +99,16 @@ export const boardApi = {
         ),
 
     update: (id: string, data: { name?: string; description?: string }) =>
-        fetcher(`/api/boards/${id}`, { method: "PUT", body: data }),
+        fetcher<{ success: boolean; data: { board: Board } }>(
+            `/api/boards/${id}`,
+            { method: "PUT", body: data }
+        ),
 
     delete: (id: string) =>
-        fetcher(`/api/boards/${id}`, { method: "DELETE" }),
+        fetcher<{ success: boolean; data: { board: Board } }>(
+            `/api/boards/${id}`,
+            { method: "DELETE" }
+        ),
 };
 
 // ==============================================
@@ -111,10 +123,16 @@ export const columnApi = {
         ),
 
     update: (id: string, data: { title?: string }) =>
-        fetcher(`/api/columns/${id}`, { method: "PUT", body: data }),
+        fetcher<{ success: boolean; data: { column: Column } }>(
+            `/api/columns/${id}`,
+            { method: "PUT", body: data }
+        ),
 
     delete: (id: string) =>
-        fetcher(`/api/columns/${id}`, { method: "DELETE" }),
+        fetcher<{ success: boolean; data: { column: Column } }>(
+            `/api/columns/${id}`,
+            { method: "DELETE" }
+        ),
 
     reorder: (columnIds: string[]) =>
         fetcher("/api/columns/reorder", { method: "PATCH", body: { columnIds } }),
@@ -135,7 +153,7 @@ export const taskApi = {
         fetcher<{ success: boolean; data: { task: Task } }>(`/api/tasks/${id}`, { method: "PUT", body: data }),
 
     delete: (id: string) =>
-        fetcher(`/api/tasks/${id}`, { method: "DELETE" }),
+        fetcher<{ success: boolean; data: { task: Task } }>(`/api/tasks/${id}`, { method: "DELETE" }),
 
     move: (id: string, data: { columnId: string; order: number }) =>
         fetcher(`/api/tasks/${id}/move`, { method: "PATCH", body: data }),
@@ -156,7 +174,7 @@ export const labelApi = {
         ),
 
     delete: (id: string) =>
-        fetcher(`/api/workspaces/labels/${id}`, { method: "DELETE" }),
+        fetcher<{ success: boolean; data: { label: Label } }>(`/api/workspaces/labels/${id}`, { method: "DELETE" }),
 };
 
 // ==============================================

@@ -23,7 +23,7 @@ import {
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { toast } from "sonner";
 import { AnalyticsWidget } from "@/components/dashboard/analytics-widget";
-import { ArrowRight, KanbanSquare, Plus, Trash2 } from "lucide-react";
+import { ArrowRight, KanbanSquare, Plus, Trash2, Pencil } from "lucide-react";
 
 const WS_COLORS = ["#059669", "#7C3AED", "#F97316", "#0EA5E9", "#EC4899", "#F59E0B"];
 function colorFor(id: string) {
@@ -43,6 +43,9 @@ export default function WorkspaceDetailPage() {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [newBoard, setNewBoard] = useState({ name: "", description: "" });
     const [deleteWorkspaceDialog, setDeleteWorkspaceDialog] = useState(false);
+    const [editWorkspaceDialog, setEditWorkspaceDialog] = useState(false);
+    const [editWorkspace, setEditWorkspace] = useState({ name: "", description: "" });
+    const [isUpdating, setIsUpdating] = useState(false);
 
     useEffect(() => {
         loadWorkspace();
@@ -93,6 +96,35 @@ export default function WorkspaceDetailPage() {
             toast.error("Gagal menghapus workspace");
         } finally {
             setDeleteWorkspaceDialog(false);
+        }
+    }
+
+    function openEditWorkspace() {
+        if (!workspace) return;
+        setEditWorkspace({ name: workspace.name, description: workspace.description || "" });
+        setEditWorkspaceDialog(true);
+    }
+
+    async function handleUpdateWorkspace(e: React.FormEvent) {
+        e.preventDefault();
+        if (!editWorkspace.name.trim()) return;
+        setIsUpdating(true);
+        try {
+            const response = await workspaceApi.update(workspaceId, {
+                name: editWorkspace.name.trim(),
+                description: editWorkspace.description.trim(),
+            });
+            if (response?.data?.workspace) {
+                setWorkspace((prev) =>
+                    prev ? { ...prev, name: response.data.workspace.name, description: response.data.workspace.description } : prev
+                );
+            }
+            setEditWorkspaceDialog(false);
+            toast.success("Workspace berhasil diperbarui");
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : "Gagal memperbarui workspace");
+        } finally {
+            setIsUpdating(false);
         }
     }
 
@@ -205,6 +237,50 @@ export default function WorkspaceDetailPage() {
                                 </form>
                             </DialogContent>
                         </Dialog>
+                        <Dialog open={editWorkspaceDialog} onOpenChange={setEditWorkspaceDialog}>
+                            <DialogContent className="bg-card border-border">
+                                <form onSubmit={handleUpdateWorkspace}>
+                                    <DialogHeader>
+                                        <DialogTitle className="text-foreground">Edit Workspace</DialogTitle>
+                                        <DialogDescription className="text-muted-foreground">
+                                            Perbarui nama dan deskripsi workspace.
+                                        </DialogDescription>
+                                    </DialogHeader>
+                                    <div className="space-y-4 py-4">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="edit-ws-name" className="text-foreground">Nama Workspace</Label>
+                                            <Input
+                                                id="edit-ws-name"
+                                                placeholder="Nama workspace"
+                                                value={editWorkspace.name}
+                                                onChange={(e) => setEditWorkspace({ ...editWorkspace, name: e.target.value })}
+                                                required
+                                                className="bg-background border-input text-foreground"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="edit-ws-desc" className="text-foreground">Deskripsi (opsional)</Label>
+                                            <Input
+                                                id="edit-ws-desc"
+                                                placeholder="Deskripsi singkat..."
+                                                value={editWorkspace.description}
+                                                onChange={(e) => setEditWorkspace({ ...editWorkspace, description: e.target.value })}
+                                                className="bg-background border-input text-foreground"
+                                            />
+                                        </div>
+                                    </div>
+                                    <DialogFooter>
+                                        <Button type="button" variant="ghost" onClick={() => setEditWorkspaceDialog(false)}>Batal</Button>
+                                        <Button type="submit" variant="brand" disabled={isUpdating}>
+                                            {isUpdating ? "Menyimpan..." : "Simpan"}
+                                        </Button>
+                                    </DialogFooter>
+                                </form>
+                            </DialogContent>
+                        </Dialog>
+                        <Button size="sm" variant="outline" onClick={openEditWorkspace}>
+                            <Pencil className="h-4 w-4" /> Edit
+                        </Button>
                         <Button size="sm" variant="ghost" className="text-muted-foreground hover:text-destructive hover:bg-destructive/10" onClick={() => setDeleteWorkspaceDialog(true)}>
                             <Trash2 className="h-4 w-4" /> Hapus
                         </Button>
