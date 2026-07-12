@@ -433,7 +433,7 @@ export default function BoardViewPage() {
                                             style={{ width: `${progress}%` }}
                                         />
                                     </span>
-                                    <span className="tabular-nums font-medium text-foreground">{progress}%</span>
+                                    <span className="tabular-nums font-medium text-foreground">{progress}% selesai</span>
                                 </span>
                             )}
                         </div>
