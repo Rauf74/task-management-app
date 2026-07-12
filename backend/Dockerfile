@@ -24,6 +24,7 @@ ENV NODE_ENV=production
 
 # Copy package files
 COPY package*.json ./
+COPY prisma.config.ts ./
 COPY prisma ./prisma/
 
 # Install only production dependencies
@@ -34,4 +35,4 @@ COPY --from=builder /app/dist ./dist
 
 EXPOSE 4000
 
-CMD ["node", "dist/index.js"]
+CMD ["sh", "-c", "npx prisma db push --accept-data-loss --skip-generate && node dist/index.js"]
