@@ -28,6 +28,7 @@ import { Label } from "@/components/ui/label";
 import {
     Dialog,
     DialogContent,
+    DialogDescription,
     DialogFooter,
     DialogHeader,
     DialogTitle,
@@ -47,6 +48,7 @@ import { EditTaskDialog } from "@/components/board/edit-task-dialog";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { LabelSelector } from "@/components/board/label-selector";
 import { DatePicker } from "@/components/board/date-picker";
+import { Pencil, Trash2 } from "lucide-react";
 
 export default function BoardViewPage() {
     const params = useParams();
@@ -85,6 +87,12 @@ export default function BoardViewPage() {
     const [deletingColumnId, setDeletingColumnId] = useState<string | null>(null);
     const [deleteTaskDialog, setDeleteTaskDialog] = useState(false);
     const [deletingTaskId, setDeletingTaskId] = useState<string | null>(null);
+
+    // Edit/Delete board state
+    const [editBoardDialog, setEditBoardDialog] = useState(false);
+    const [editBoard, setEditBoard] = useState({ name: "", description: "" });
+    const [isUpdatingBoard, setIsUpdatingBoard] = useState(false);
+    const [deleteBoardDialog, setDeleteBoardDialog] = useState(false);
 
     // DnD sensors (PointerSensor for desktop, TouchSensor for mobile)
     const sensors = useSensors(
@@ -347,6 +355,47 @@ export default function BoardViewPage() {
         }
     }
 
+    function openEditBoard() {
+        if (!board) return;
+        setEditBoard({ name: board.name, description: board.description || "" });
+        setEditBoardDialog(true);
+    }
+
+    async function handleUpdateBoard(e: React.FormEvent) {
+        e.preventDefault();
+        if (!editBoard.name.trim()) return;
+        setIsUpdatingBoard(true);
+        try {
+            const response = await boardApi.update(boardId, {
+                name: editBoard.name.trim(),
+                description: editBoard.description.trim(),
+            });
+            if (response?.data?.board) {
+                setBoard((prev) =>
+                    prev ? { ...prev, name: response.data.board.name, description: response.data.board.description } : prev
+                );
+            }
+            setEditBoardDialog(false);
+            toast.success("Board berhasil diperbarui");
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : "Gagal memperbarui board");
+        } finally {
+            setIsUpdatingBoard(false);
+        }
+    }
+
+    async function handleDeleteBoard() {
+        try {
+            await boardApi.delete(boardId);
+            toast.success("Board berhasil dihapus");
+            router.push("/");
+        } catch {
+            toast.error("Gagal menghapus board");
+        } finally {
+            setDeleteBoardDialog(false);
+        }
+    }
+
     function openTaskDialog(columnId: string) {
         setSelectedColumnId(columnId);
         setTaskDialogOpen(true);
@@ -468,6 +517,14 @@ export default function BoardViewPage() {
                         </form>
                     </DialogContent>
                 </Dialog>
+                <div className="flex items-center gap-2 shrink-0">
+                    <Button size="sm" variant="outline" onClick={openEditBoard}>
+                        <Pencil className="h-4 w-4" /> Edit
+                    </Button>
+                    <Button size="sm" variant="ghost" className="text-muted-foreground hover:text-destructive hover:bg-destructive/10" onClick={() => setDeleteBoardDialog(true)}>
+                        <Trash2 className="h-4 w-4" /> Hapus
+                    </Button>
+                </div>
                 </div>
             </div>
 
@@ -620,6 +677,58 @@ export default function BoardViewPage() {
                 title="Hapus Task"
                 description="Yakin ingin menghapus task ini?"
                 onConfirm={handleDeleteTask}
+            />
+
+            {/* Edit Board Dialog */}
+            <Dialog open={editBoardDialog} onOpenChange={setEditBoardDialog}>
+                <DialogContent className="bg-card border-border">
+                    <form onSubmit={handleUpdateBoard}>
+                        <DialogHeader>
+                            <DialogTitle className="text-foreground">Edit Board</DialogTitle>
+                            <DialogDescription className="text-muted-foreground">
+                                Perbarui nama dan deskripsi board.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-4 py-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="edit-board-name" className="text-foreground">Nama Board</Label>
+                                <Input
+                                    id="edit-board-name"
+                                    placeholder="Nama board"
+                                    value={editBoard.name}
+                                    onChange={(e) => setEditBoard({ ...editBoard, name: e.target.value })}
+                                    required
+                                    className="bg-background border-input text-foreground"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="edit-board-desc" className="text-foreground">Deskripsi (opsional)</Label>
+                                <Input
+                                    id="edit-board-desc"
+                                    placeholder="Deskripsi singkat..."
+                                    value={editBoard.description}
+                                    onChange={(e) => setEditBoard({ ...editBoard, description: e.target.value })}
+                                    className="bg-background border-input text-foreground"
+                                />
+                            </div>
+                        </div>
+                        <DialogFooter>
+                            <Button type="button" variant="ghost" onClick={() => setEditBoardDialog(false)}>Batal</Button>
+                            <Button type="submit" variant="brand" disabled={isUpdatingBoard}>
+                                {isUpdatingBoard ? "Menyimpan..." : "Simpan"}
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
+
+            {/* Delete Board Confirmation */}
+            <ConfirmDialog
+                open={deleteBoardDialog}
+                onOpenChange={setDeleteBoardDialog}
+                title="Hapus Board"
+                description="Yakin ingin menghapus board ini? Semua column dan task di dalamnya juga akan terhapus."
+                onConfirm={handleDeleteBoard}
             />
         </div>
     );
