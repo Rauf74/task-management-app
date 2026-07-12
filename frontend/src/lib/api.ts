@@ -38,14 +38,21 @@ async function fetcher<T>(endpoint: string, options: FetchOptions = {}): Promise
 // Auth API
 // ==============================================
 
+interface AuthResponse {
+    success: boolean;
+    data?: { user: User };
+    message?: string;
+    error?: string;
+}
+
 export const authApi = {
     register: (data: { name: string; email: string; password: string }) =>
-        fetcher("/api/auth/register", { method: "POST", body: data }),
+        fetcher<AuthResponse>("/api/auth/register", { method: "POST", body: data }),
 
     login: (data: { email: string; password: string }) =>
-        fetcher("/api/auth/login", { method: "POST", body: data }),
+        fetcher<AuthResponse>("/api/auth/login", { method: "POST", body: data }),
 
-    logout: () => fetcher("/api/auth/logout", { method: "POST" }),
+    logout: () => fetcher<{ success: boolean; message?: string }>("/api/auth/logout", { method: "POST" }),
 
     me: () => fetcher<{ success: boolean; data: { user: User } }>("/api/auth/me"),
 

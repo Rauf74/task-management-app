@@ -1,9 +1,5 @@
 "use client";
 
-// ==============================================
-// Auth Context Provider
-// ==============================================
-
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { authApi, User } from "@/lib/api";
 
@@ -21,7 +17,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    // Check if user is logged in on mount
     useEffect(() => {
         checkAuth();
     }, []);
@@ -37,16 +32,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     }
 
-    async function login(identifier: string, password: string) {
-        const response = await authApi.login({ email: identifier, password });
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        setUser((response as any).data.user);
+    async function login(email: string, password: string) {
+        const response = await authApi.login({ email, password });
+        if (response.data?.user) {
+            setUser(response.data.user);
+        }
     }
 
     async function register(name: string, email: string, password: string) {
         const response = await authApi.register({ name, email, password });
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        setUser((response as any).data.user);
+        if (response.data?.user) {
+            setUser(response.data.user);
+        }
     }
 
     async function logout() {

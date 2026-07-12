@@ -22,15 +22,7 @@ import {
 } from "@/components/ui/dialog";
 import { ArrowRight, FolderKanban } from "lucide-react";
 import { toast } from "sonner";
-
-const WS_COLORS = [
-    "#059669", "#7C3AED", "#F97316", "#0EA5E9", "#EC4899", "#F59E0B",
-];
-function colorFor(id: string) {
-    let h = 0;
-    for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
-    return WS_COLORS[h % WS_COLORS.length];
-}
+import { colorFor } from "@/lib/utils";
 
 export default function DashboardPage() {
     const { user } = useAuth();

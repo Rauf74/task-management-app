@@ -9,7 +9,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { workspaceApi, Workspace } from "@/lib/api";
-import { cn } from "@/lib/utils";
+import { cn, colorFor } from "@/lib/utils";
 import {
     LayoutDashboard,
     FolderKanban,
@@ -24,16 +24,6 @@ interface SidebarNavProps {
     collapsed?: boolean;
     onToggleCollapse?: () => void;
     onNavigate?: () => void;
-}
-
-const WS_COLORS = [
-    "#059669", "#7C3AED", "#F97316", "#0EA5E9", "#EC4899", "#F59E0B",
-];
-
-function colorFor(id: string) {
-    let h = 0;
-    for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
-    return WS_COLORS[h % WS_COLORS.length];
 }
 
 export function SidebarNav({ collapsed = false, onToggleCollapse, onNavigate }: SidebarNavProps) {
