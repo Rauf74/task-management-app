@@ -16,6 +16,7 @@ const connectionString = process.env.DATABASE_URL || "";
 
 // Parse mysql://user:pass@host:port/db into PoolConfig object
 const url = new URL(connectionString);
+const sslParam = url.searchParams.get("sslmode");
 const adapter = new PrismaMariaDb({
     host: url.hostname,
     port: Number(url.port) || 3306,
@@ -23,6 +24,7 @@ const adapter = new PrismaMariaDb({
     password: decodeURIComponent(url.password),
     database: url.pathname.replace(/^\//, ""),
     connectionLimit: 5,
+    ssl: sslParam ? { rejectUnauthorized: false } : false,
 });
 
 // Singleton pattern for development
