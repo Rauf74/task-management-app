@@ -16,7 +16,7 @@ const connectionString = process.env.DATABASE_URL || "";
 
 // Parse mysql://user:pass@host:port/db into PoolConfig object
 const url = new URL(connectionString);
-const sslParam = url.searchParams.get("sslmode");
+const sslParam = url.searchParams.get("sslmode") || url.searchParams.get("ssl-mode");
 const adapter = new PrismaMariaDb({
     host: url.hostname,
     port: Number(url.port) || 3306,
