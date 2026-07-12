@@ -4,8 +4,9 @@
 // Dashboard Home - Workspace List
 // ==============================================
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams, useRouter } from "next/navigation";
 import { workspaceApi, Workspace } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
@@ -95,6 +96,9 @@ export default function DashboardPage() {
 
     return (
         <div className="space-y-8">
+            <Suspense fallback={null}>
+                <QueryParamManager onOpenDialog={() => setDialogOpen(true)} />
+            </Suspense>
             <DashboardHero
                 userName={user?.name || ""}
                 workspaces={workspaces}
@@ -218,4 +222,21 @@ export default function DashboardPage() {
 
 function LayoutDot() {
     return <span className="h-1.5 w-1.5 rounded-full bg-primary" />;
+}
+
+function QueryParamManager({ onOpenDialog }: { onOpenDialog: () => void }) {
+    const searchParams = useSearchParams();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (searchParams.get("new-workspace") === "true") {
+            onOpenDialog();
+            const params = new URLSearchParams(searchParams.toString());
+            params.delete("new-workspace");
+            const newSearch = params.toString();
+            router.replace(newSearch ? `?${newSearch}` : "/");
+        }
+    }, [searchParams, router, onOpenDialog]);
+
+    return null;
 }

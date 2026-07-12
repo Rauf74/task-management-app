@@ -181,7 +181,7 @@ export function SidebarNav({ collapsed = false, onToggleCollapse, onNavigate }: 
                     </button>
                 ) : (
                     <Link
-                        href="/"
+                        href="/?new-workspace=true"
                         onClick={onNavigate}
                         className="flex items-center gap-2 rounded-lg border border-dashed border-border px-3 py-2 text-sm text-muted-foreground transition-colors hover:border-primary/50 hover:text-primary"
                     >
