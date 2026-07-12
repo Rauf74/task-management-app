@@ -17,9 +17,13 @@ import { createClient } from "redis";
 let io: SocketServer;
 
 export async function initializeSocket(httpServer: HttpServer) {
+    const allowedOrigins = process.env.FRONTEND_URL
+        ? process.env.FRONTEND_URL.split(",").map(o => o.trim())
+        : "http://localhost:3000";
+
     io = new SocketServer(httpServer, {
         cors: {
-            origin: process.env.FRONTEND_URL || "http://localhost:3000",
+            origin: allowedOrigins,
             credentials: true,
         },
     });

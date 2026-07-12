@@ -43,9 +43,13 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// CORS: Izinkan request dari frontend
+// CORS: Izinkan request dari frontend (bisa koma-terpisah untuk multiple origins)
+const allowedOrigins = process.env.FRONTEND_URL
+    ? process.env.FRONTEND_URL.split(",").map(o => o.trim())
+    : "http://localhost:3000";
+
 app.use(cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    origin: allowedOrigins,
     credentials: true, // Izinkan cookies
 }));
 
