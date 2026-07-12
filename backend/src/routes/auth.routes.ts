@@ -7,12 +7,14 @@
 // POST /api/auth/login    - Login
 // POST /api/auth/logout   - Logout
 // GET  /api/auth/me       - Get current user
+// PATCH /api/auth/me      - Update profile (name)
+// POST /api/auth/change-password - Change password
 //
 // ==============================================
 
 import { Router } from "express";
 import * as authController from "../controllers/auth.controller.js";
-import { validate, registerSchema, loginSchema } from "../middleware/validation.js";
+import { validate, registerSchema, loginSchema, updateMeSchema, changePasswordSchema } from "../middleware/validation.js";
 import { requireAuth } from "../middleware/auth.middleware.js";
 
 const router = Router();
@@ -137,5 +139,9 @@ router.post("/logout", authController.logout);
  *         description: Unauthorized - token tidak valid atau tidak ada
  */
 router.get("/me", requireAuth, authController.me);
+
+router.patch("/me", requireAuth, validate(updateMeSchema), authController.updateMe);
+
+router.post("/change-password", requireAuth, validate(changePasswordSchema), authController.changePassword);
 
 export default router;

@@ -37,6 +37,15 @@ export interface LoginRequest {
     password: string;
 }
 
+export interface UpdateMeRequest {
+    name: string;
+}
+
+export interface ChangePasswordRequest {
+    currentPassword: string;
+    newPassword: string;
+}
+
 export interface AuthResponse {
     user: User;
     message: string;

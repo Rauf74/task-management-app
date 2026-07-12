@@ -13,7 +13,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import * as authRepository from "../repositories/auth.repository.js";
-import { RegisterRequest, LoginRequest, User, JWTPayload } from "../types/index.js";
+import { RegisterRequest, LoginRequest, UpdateMeRequest, ChangePasswordRequest, User, JWTPayload } from "../types/index.js";
 
 // ==============================================
 // Constants
@@ -114,4 +114,43 @@ export function verifyToken(token: string): JWTPayload {
 
 export async function getUserById(id: string): Promise<User | null> {
     return authRepository.findById(id);
+}
+
+// ==============================================
+// Update Profile (name)
+// ==============================================
+
+export async function updateProfile(userId: string, data: UpdateMeRequest): Promise<User> {
+    const trimmedName = data.name.trim();
+
+    if (trimmedName.length < 2) {
+        throw new Error("Nama minimal 2 karakter");
+    }
+
+    return authRepository.updateUser(userId, { name: trimmedName });
+}
+
+// ==============================================
+// Change Password
+// ==============================================
+
+export async function changePassword(userId: string, data: ChangePasswordRequest): Promise<void> {
+    const user = await authRepository.findByIdWithPassword(userId);
+
+    if (!user) {
+        throw new Error("User tidak ditemukan");
+    }
+
+    const isCurrentValid = await bcrypt.compare(data.currentPassword, user.password);
+
+    if (!isCurrentValid) {
+        throw new Error("Password saat ini salah");
+    }
+
+    if (data.newPassword.length < 6) {
+        throw new Error("Password baru minimal 6 karakter");
+    }
+
+    const hashedPassword = await bcrypt.hash(data.newPassword, SALT_ROUNDS);
+    await authRepository.updatePassword(userId, hashedPassword);
 }

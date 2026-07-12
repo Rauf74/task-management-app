@@ -60,9 +60,44 @@ export async function findById(id: string): Promise<User | null> {
     return user;
 }
 
+// Find User by ID WITH password (for password verification)
+export async function findByIdWithPassword(id: string): Promise<UserWithPassword | null> {
+    return prisma.user.findUnique({
+        where: { id },
+    });
+}
+
 // ==============================================
-// Create User
+// Update User (Profile)
 // ==============================================
+
+export async function updateUser(id: string, data: { name?: string }): Promise<User> {
+    const user = await prisma.user.update({
+        where: { id },
+        data,
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            image: true,
+            createdAt: true,
+            updatedAt: true,
+        },
+    });
+
+    return user;
+}
+
+// ==============================================
+// Update User Password
+// ==============================================
+
+export async function updatePassword(id: string, hashedPassword: string): Promise<void> {
+    await prisma.user.update({
+        where: { id },
+        data: { password: hashedPassword },
+    });
+}
 
 export async function create(data: RegisterRequest & { password: string }): Promise<User> {
     const user = await prisma.user.create({

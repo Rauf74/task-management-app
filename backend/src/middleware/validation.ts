@@ -39,6 +39,21 @@ export const loginSchema = z.object({
         .min(1, "Password wajib diisi"),
 });
 
+export const updateMeSchema = z.object({
+    name: z
+        .string()
+        .min(2, "Nama minimal 2 karakter")
+        .max(100, "Nama maksimal 100 karakter"),
+});
+
+export const changePasswordSchema = z.object({
+    currentPassword: z.string().min(1, "Password saat ini wajib diisi"),
+    newPassword: z
+        .string()
+        .min(6, "Password baru minimal 6 karakter")
+        .max(100, "Password maksimal 100 karakter"),
+});
+
 // ==============================================
 // Workspace Schemas
 // ==============================================

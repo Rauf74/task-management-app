@@ -145,3 +145,50 @@ export async function me(req: AuthenticatedRequest, res: Response): Promise<void
         res.status(500).json(response);
     }
 }
+
+// ==============================================
+// Update Profile (Me)
+// ==============================================
+
+export async function updateMe(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+        if (!req.user) {
+            res.status(401).json({ success: false, error: "Unauthorized" });
+            return;
+        }
+
+        const user = await authService.updateProfile(req.user.userId, req.body);
+
+        res.status(200).json({
+            success: true,
+            data: { user },
+            message: "Profil berhasil diperbarui",
+        });
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "Terjadi kesalahan";
+        res.status(400).json({ success: false, error: message });
+    }
+}
+
+// ==============================================
+// Change Password
+// ==============================================
+
+export async function changePassword(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+        if (!req.user) {
+            res.status(401).json({ success: false, error: "Unauthorized" });
+            return;
+        }
+
+        await authService.changePassword(req.user.userId, req.body);
+
+        res.status(200).json({
+            success: true,
+            message: "Password berhasil diubah",
+        });
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "Terjadi kesalahan";
+        res.status(400).json({ success: false, error: message });
+    }
+}
