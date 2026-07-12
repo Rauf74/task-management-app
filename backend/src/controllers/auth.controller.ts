@@ -6,7 +6,7 @@ import { asyncHandler } from "../middleware/async-handler.js";
 const COOKIE_OPTIONS = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "lax" as const,
+    sameSite: process.env.NODE_ENV === "production" ? ("none" as const) : ("lax" as const),
     maxAge: 7 * 24 * 60 * 60 * 1000,
     path: "/",
 };
@@ -36,7 +36,11 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export const logout = asyncHandler(async (_req: Request, res: Response) => {
-    res.clearCookie("token", { path: "/" });
+    res.clearCookie("token", {
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    });
 
     res.status(200).json({
         success: true,
