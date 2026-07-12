@@ -17,6 +17,7 @@ import {
     Sparkles,
     PanelLeftClose,
     PanelLeftOpen,
+    Settings,
 } from "lucide-react";
 
 interface SidebarNavProps {
@@ -104,6 +105,21 @@ export function SidebarNav({ collapsed = false, onToggleCollapse, onNavigate }: 
                 >
                     <LayoutDashboard className="h-4 w-4 shrink-0" />
                     {!collapsed && "Dashboard"}
+                </Link>
+                <Link
+                    href="/settings"
+                    onClick={onNavigate}
+                    title="Pengaturan"
+                    className={cn(
+                        "flex items-center gap-3 rounded-lg transition-colors",
+                        collapsed ? "justify-center px-0 py-2.5" : "px-3 py-2 text-sm font-medium",
+                        isActive("/settings")
+                            ? "bg-primary/10 text-primary"
+                            : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    )}
+                >
+                    <Settings className="h-4 w-4 shrink-0" />
+                    {!collapsed && "Pengaturan"}
                 </Link>
             </div>
 

@@ -25,7 +25,8 @@ import {
 import { ThemeToggle } from "@/components/theme-toggle";
 import { SidebarNav } from "@/components/layout/sidebar-nav";
 import { ActivityMenu } from "@/components/layout/activity-menu";
-import { Menu } from "lucide-react";
+import { Menu, Settings } from "lucide-react";
+import Link from "next/link";
 
 const COLLAPSE_KEY = "taskscale:sidebar-collapsed";
 
@@ -136,6 +137,12 @@ export default function DashboardLayout({
                                         </div>
                                     </div>
                                     <Separator className="bg-border" />
+                                    <DropdownMenuItem asChild className="cursor-pointer">
+                                        <Link href="/settings">
+                                            <Settings className="h-4 w-4" />
+                                            Pengaturan
+                                        </Link>
+                                    </DropdownMenuItem>
                                     <DropdownMenuItem
                                         onClick={handleLogout}
                                         className="text-destructive cursor-pointer focus:text-destructive focus:bg-accent"
