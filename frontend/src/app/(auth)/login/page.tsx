@@ -1,7 +1,7 @@
 "use client";
 
 // ==============================================
-// Login Page - Split layout (brand panel + form)
+// Login Page - Modern Card (renders inside AuthLayout)
 // ==============================================
 
 import { useState } from "react";
@@ -11,15 +11,10 @@ import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { toast } from "sonner";
-import { Mail, Lock, Loader2, Sparkles, Check, LayoutGrid, Users } from "lucide-react";
-
-const FEATURES = [
-    { icon: LayoutGrid, text: "Board Kanban untuk tiap project" },
-    { icon: Users, text: "Workspace kolaboratif untuk tim" },
-    { icon: Check, text: "Lacak progress task secara real-time" },
-];
+import { Mail, Lock, Loader2 } from "lucide-react";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -42,70 +37,41 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="min-h-screen bg-background lg:grid lg:grid-cols-2">
-            {/* Brand panel (desktop) */}
-            <div className="relative hidden overflow-hidden bg-gradient-to-br from-primary via-emerald-600 to-teal-600 lg:flex lg:flex-col lg:justify-between lg:p-12 xl:p-16">
-                <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-white/10 blur-3xl" />
-                <div className="pointer-events-none absolute -bottom-32 -left-20 h-96 w-96 rounded-full bg-black/10 blur-3xl" />
-
-                <div className="relative flex items-center gap-3 text-white">
-                    <span className="grid h-11 w-11 place-items-center rounded-xl bg-white/15 backdrop-blur">
-                        <Sparkles className="h-6 w-6" />
-                    </span>
-                    <span className="text-2xl font-bold tracking-tight">TaskScale</span>
+        <>
+            {/* Mobile Logo */}
+            <div className="lg:hidden flex justify-center mb-6">
+                <div className="w-20 h-20 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center shadow-lg ring-1 ring-white/30">
+                    <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h3a3 3 0 013 3v1" />
+                    </svg>
                 </div>
-
-                <div className="relative space-y-8">
-                    <div>
-                        <h1 className="text-4xl font-bold leading-tight text-white xl:text-5xl">
-                            Kelola tugas,<br />nyelesaiin lebih cepat.
-                        </h1>
-                        <p className="mt-4 max-w-md text-base text-white/80">
-                            Satu tempat untuk merencanakan, melacak, dan menyelesaikan semua pekerjaan tim kamu.
-                        </p>
-                    </div>
-                    <ul className="space-y-3">
-                        {FEATURES.map((f) => (
-                            <li key={f.text} className="flex items-center gap-3 text-white/90">
-                                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-white/15 backdrop-blur">
-                                    <f.icon className="h-4 w-4" />
-                                </span>
-                                <span className="text-sm">{f.text}</span>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-
-                <p className="relative text-sm text-white/60">© {new Date().getFullYear()} TaskScale</p>
             </div>
 
-            {/* Form side */}
-            <div className="relative flex min-h-screen flex-col items-center justify-center px-4 py-10 sm:px-6">
-                <div className="absolute right-4 top-4">
+            <Card className="w-full max-w-[460px] mx-auto border-0 shadow-2xl bg-white/95 dark:bg-card/95 backdrop-blur-sm">
+                {/* Theme Toggle */}
+                <div className="absolute top-4 right-4 z-10">
                     <ThemeToggle />
                 </div>
 
-                {/* Mobile logo */}
-                <div className="mb-8 flex items-center gap-2 lg:hidden">
-                    <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary text-primary-foreground">
-                        <Sparkles className="h-5 w-5" />
-                    </span>
-                    <span className="text-xl font-bold tracking-tight text-foreground">TaskScale</span>
-                </div>
-
-                <div className="w-full max-w-[400px]">
-                    <div className="mb-6 text-center lg:text-left">
-                        <h2 className="text-2xl font-bold tracking-tight text-foreground">Selamat Datang!</h2>
-                        <p className="mt-1.5 text-sm text-muted-foreground">
-                            Masuk ke akun TaskScale kamu
-                        </p>
+                <CardHeader className="space-y-1 text-center pt-8 pb-4">
+                    {/* Desktop Logo */}
+                    <div className="hidden lg:flex mx-auto mb-4 w-14 h-14 bg-primary/10 rounded-xl items-center justify-center">
+                        <svg className="w-7 h-7 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h3a3 3 0 013 3v1" />
+                        </svg>
                     </div>
+                    <CardTitle className="text-2xl font-bold tracking-tight">Selamat Datang!</CardTitle>
+                    <CardDescription className="text-sm">
+                        Masuk ke akun TaskScale kamu
+                    </CardDescription>
+                </CardHeader>
 
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit}>
+                    <CardContent className="space-y-4 px-6">
                         <div className="space-y-2">
                             <Label htmlFor="identifier" className="text-sm font-medium">Email atau Username</Label>
                             <div className="relative">
-                                <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                 <Input
                                     id="identifier"
                                     type="text"
@@ -113,7 +79,7 @@ export default function LoginPage() {
                                     value={formData.identifier}
                                     onChange={(e) => setFormData({ ...formData, identifier: e.target.value })}
                                     required
-                                    className="h-11 pl-10"
+                                    className="pl-10 h-11"
                                 />
                             </div>
                         </div>
@@ -123,7 +89,7 @@ export default function LoginPage() {
                                 <Label htmlFor="password" className="text-sm font-medium">Password</Label>
                             </div>
                             <div className="relative">
-                                <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                 <Input
                                     id="password"
                                     type="password"
@@ -131,12 +97,14 @@ export default function LoginPage() {
                                     value={formData.password}
                                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                     required
-                                    className="h-11 pl-10"
+                                    className="pl-10 h-11"
                                 />
                             </div>
                         </div>
+                    </CardContent>
 
-                        <Button type="submit" className="h-11 w-full shadow-lg shadow-primary/20" disabled={isLoading}>
+                    <CardFooter className="flex flex-col space-y-4 px-6 pb-6">
+                        <Button type="submit" className="w-full h-11 shadow-lg shadow-primary/20" disabled={isLoading}>
                             {isLoading ? (
                                 <span className="flex items-center gap-2">
                                     <Loader2 className="h-4 w-4 animate-spin" /> Loading...
@@ -145,16 +113,27 @@ export default function LoginPage() {
                                 "Masuk"
                             )}
                         </Button>
-                    </form>
 
-                    <p className="mt-6 text-center text-sm text-muted-foreground">
-                        Belum punya akun?{" "}
-                        <Link href="/register" className="font-medium text-primary hover:underline">
-                            Daftar Sekarang
-                        </Link>
-                    </p>
-                </div>
-            </div>
-        </div>
+                        <div className="relative w-full">
+                            <div className="absolute inset-0 flex items-center">
+                                <span className="w-full border-t" />
+                            </div>
+                            <div className="relative flex justify-center text-xs uppercase">
+                                <span className="bg-white dark:bg-card px-2 text-muted-foreground">
+                                    atau
+                                </span>
+                            </div>
+                        </div>
+
+                        <p className="text-sm text-muted-foreground text-center">
+                            Belum punya akun?{" "}
+                            <Link href="/register" className="font-medium text-primary hover:underline">
+                                Daftar Sekarang
+                            </Link>
+                        </p>
+                    </CardFooter>
+                </form>
+            </Card>
+        </>
     );
 }
