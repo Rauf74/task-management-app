@@ -326,6 +326,19 @@ export default function BoardViewPage() {
         }
     }
 
+    async function handleUpdateColumn(columnId: string, title: string) {
+        try {
+            await columnApi.update(columnId, { title });
+            setBoard((prev) =>
+                prev
+                    ? { ...prev, columns: prev.columns.map((c) => (c.id === columnId ? { ...c, title } : c)) }
+                    : prev
+            );
+        } catch {
+            toast.error("Gagal mengubah nama column");
+        }
+    }
+
     function confirmDeleteTask(taskId: string) {
         setDeletingTaskId(taskId);
         setDeleteTaskDialog(true);
@@ -560,6 +573,7 @@ export default function BoardViewPage() {
                                 onDeleteColumn={confirmDeleteColumn}
                                 onDeleteTask={confirmDeleteTask}
                                 onAddTask={openTaskDialog}
+                                onEditColumn={handleUpdateColumn}
                                 onEditTask={openEditDialog}
                             />
                         ))
