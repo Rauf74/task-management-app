@@ -48,6 +48,18 @@ export const authApi = {
     logout: () => fetcher("/api/auth/logout", { method: "POST" }),
 
     me: () => fetcher<{ success: boolean; data: { user: User } }>("/api/auth/me"),
+
+    updateMe: (data: { name: string }) =>
+        fetcher<{ success: boolean; data: { user: User } }>("/api/auth/me", {
+            method: "PATCH",
+            body: data,
+        }),
+
+    changePassword: (data: { currentPassword: string; newPassword: string }) =>
+        fetcher<{ success: boolean; message: string }>("/api/auth/change-password", {
+            method: "POST",
+            body: data,
+        }),
 };
 
 // ==============================================
