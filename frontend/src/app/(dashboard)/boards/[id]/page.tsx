@@ -500,44 +500,44 @@ export default function BoardViewPage() {
                             )}
                         </div>
                     </div>
-                    <Dialog open={columnDialogOpen} onOpenChange={setColumnDialogOpen}>
-                        <DialogTrigger asChild>
-                            <Button variant="brand" size="sm" className="shrink-0 w-fit">+ Tambah Column</Button>
-                        </DialogTrigger>
-                    <DialogContent className="bg-card border-border">
-                        <form onSubmit={handleCreateColumn}>
-                            <DialogHeader>
-                                <DialogTitle className="text-foreground">Tambah Column</DialogTitle>
-                            </DialogHeader>
-                            <div className="space-y-4 py-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="title" className="text-foreground">Nama Column</Label>
-                                    <Input
-                                        id="title"
-                                        placeholder="Contoh: To Do, In Progress, Done"
-                                        value={newColumn.title}
-                                        onChange={(e) => setNewColumn({ title: e.target.value })}
-                                        required
-                                        className="bg-background border-input text-foreground"
-                                    />
-                                </div>
-                            </div>
-                            <DialogFooter>
-                                <Button type="submit" disabled={isCreating}>
-                                    {isCreating ? "Membuat..." : "Buat Column"}
-                                </Button>
-                            </DialogFooter>
-                        </form>
-                    </DialogContent>
-                </Dialog>
-                <div className="flex items-center gap-2 shrink-0">
-                    <Button size="sm" variant="outline" onClick={openEditBoard}>
-                        <Pencil className="h-4 w-4" /> Edit
-                    </Button>
-                    <Button size="sm" variant="ghost" className="text-muted-foreground hover:text-destructive hover:bg-destructive/10" onClick={() => setDeleteBoardDialog(true)}>
-                        <Trash2 className="h-4 w-4" /> Hapus
-                    </Button>
-                </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                        <Dialog open={columnDialogOpen} onOpenChange={setColumnDialogOpen}>
+                            <DialogTrigger asChild>
+                                <Button variant="brand" size="sm" className="shrink-0 w-fit">+ Tambah Column</Button>
+                            </DialogTrigger>
+                            <DialogContent className="bg-card border-border">
+                                <form onSubmit={handleCreateColumn}>
+                                    <DialogHeader>
+                                        <DialogTitle className="text-foreground">Tambah Column</DialogTitle>
+                                    </DialogHeader>
+                                    <div className="space-y-4 py-4">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="title" className="text-foreground">Nama Column</Label>
+                                            <Input
+                                                id="title"
+                                                placeholder="Contoh: To Do, In Progress, Done"
+                                                value={newColumn.title}
+                                                onChange={(e) => setNewColumn({ title: e.target.value })}
+                                                required
+                                                className="bg-background border-input text-foreground"
+                                            />
+                                        </div>
+                                    </div>
+                                    <DialogFooter>
+                                        <Button type="submit" disabled={isCreating}>
+                                            {isCreating ? "Membuat..." : "Buat Column"}
+                                        </Button>
+                                    </DialogFooter>
+                                </form>
+                            </DialogContent>
+                        </Dialog>
+                        <Button size="sm" variant="outline" onClick={openEditBoard}>
+                            <Pencil className="h-4 w-4" /> Edit
+                        </Button>
+                        <Button size="sm" variant="ghost" className="text-muted-foreground hover:text-destructive hover:bg-destructive/10" onClick={() => setDeleteBoardDialog(true)}>
+                            <Trash2 className="h-4 w-4" /> Hapus
+                        </Button>
+                    </div>
                 </div>
             </div>
 
