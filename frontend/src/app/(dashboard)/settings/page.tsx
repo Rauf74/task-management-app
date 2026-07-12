@@ -11,8 +11,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { useAuth } from "@/lib/auth-context";
 
 export default function SettingsPage() {
+    const { updateUser } = useAuth();
     const [user, setUser] = useState<User | null>(null);
     const [name, setName] = useState("");
     const [isSavingProfile, setIsSavingProfile] = useState(false);
@@ -37,7 +39,7 @@ export default function SettingsPage() {
     async function handleSaveProfile(e: React.FormEvent) {
         e.preventDefault();
         if (!name.trim() || name.trim().length < 2) {
-            toast.error("Nama minimal 2 karakter");
+            toast.error("Username minimal 2 karakter");
             return;
         }
         setIsSavingProfile(true);
@@ -46,6 +48,7 @@ export default function SettingsPage() {
             if (res?.data?.user) {
                 setUser(res.data.user);
                 setName(res.data.user.name);
+                updateUser(res.data.user);
             }
             toast.success("Profil berhasil diperbarui");
         } catch (error) {
@@ -94,13 +97,13 @@ export default function SettingsPage() {
                 <CardHeader>
                     <CardTitle className="text-foreground">Profil</CardTitle>
                     <CardDescription className="text-muted-foreground">
-                        Perbarui nama yang ditampilkan di akun Anda.
+                        Perbarui username di akun Anda.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSaveProfile} className="space-y-4">
                         <div className="space-y-2">
-                            <Label htmlFor="name" className="text-foreground">Nama</Label>
+                            <Label htmlFor="name" className="text-foreground">Username</Label>
                             <Input
                                 id="name"
                                 value={name}
