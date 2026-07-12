@@ -6,7 +6,7 @@ dist/
 
 # Environment
 .env
-.env.local
+.env.*
 
 # Logs
 *.log
