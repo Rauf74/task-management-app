@@ -37,8 +37,9 @@ export function ActivityMenu() {
                         });
                         if (!res.ok) return [];
                         const json = await res.json();
-                        const wsName = json.data?.[0]?.workspaceName;
-                        return (json.data || []).map((a: ActivityLog) => ({
+                        const activitiesList = json.data?.activities || [];
+                        const wsName = activitiesList[0]?.workspaceName;
+                        return activitiesList.map((a: ActivityLog) => ({
                             ...a,
                             workspaceName: wsName,
                         }));
