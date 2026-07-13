@@ -4,7 +4,6 @@
 // Shared Activity Item - timeline row (used by Terkini + Global)
 // ==============================================
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistanceToNow } from "date-fns";
 import { id as idLocale } from "date-fns/locale";
 import {

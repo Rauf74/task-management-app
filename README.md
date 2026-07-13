@@ -26,7 +26,7 @@ Aplikasi manajemen tugas bergaya Kanban dengan fitur kolaborasi real-time, dark 
 - **Clean Architecture** - Layered architecture (routes → controllers → services → repositories)
 - **Socket.io** - Kolaborasi real-time
 - **Prisma 7** - ORM type-safe dengan driver adapter
-- **PostgreSQL** - Database (Supabase)
+- **MySQL/MariaDB** - Database production (Aiven-compatible)
 - **JWT** - Autentikasi dengan HttpOnly cookies
 - **Zod** - Validasi input
 - **Swagger** - API documentation
@@ -35,9 +35,9 @@ Aplikasi manajemen tugas bergaya Kanban dengan fitur kolaborasi real-time, dark 
 
 ### DevOps
 - **Docker** - Containerization
-- **Nginx** - Reverse proxy + HTTPS
-- **AWS EC2** - Cloud hosting
-- **Let's Encrypt** - SSL certificates
+- **Vercel** - Frontend hosting + HTTPS
+- **Render** - Docker backend hosting
+- **Aiven** - Managed MySQL/MariaDB
 - **GitHub Actions** - CI/CD pipeline
 
 ## 📁 Struktur Proyek
@@ -140,7 +140,7 @@ task-management/
 
 ### Prasyarat
 - Node.js 20+
-- Database PostgreSQL (Supabase/Neon)
+- Database MySQL/MariaDB (Aiven atau provider setara)
 - Docker (optional)
 
 ### Dengan Docker (Recommended)
@@ -186,7 +186,7 @@ Frontend: http://localhost:3000
 |---------|--------|
 | Express.js + TypeScript + Socket.io | ✅ |
 | Clean Architecture | ✅ |
-| Prisma 7 + Supabase PostgreSQL | ✅ |
+| Prisma 7 + Aiven MySQL/MariaDB | ✅ |
 | JWT Authentication | ✅ |
 | Login with Email/Username | ✅ |
 | Swagger API documentation | ✅ |
@@ -218,11 +218,12 @@ Frontend: http://localhost:3000
 | Dockerfile frontend | ✅ |
 | Dockerfile backend | ✅ |
 | docker-compose.yml | ✅ |
-| Nginx reverse proxy | ✅ |
+| Deploy frontend ke Vercel | ✅ |
+| Deploy backend Docker ke Render | ✅ |
+| Aiven MySQL/MariaDB | ✅ |
 | GitHub Actions CI/CD | ✅ |
 | E2E Testing (Playwright) | ✅ |
-| Deploy ke AWS EC2 | ✅ |
-| HTTPS (Let's Encrypt) | ✅ |
+| HTTPS managed oleh Vercel | ✅ |
 | Custom Domain | ✅ |
 
 ## 👤 Creator

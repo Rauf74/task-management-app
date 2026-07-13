@@ -5,7 +5,7 @@ import { Label, labelApi } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Check, Plus, Tag, X } from "lucide-react";
+import { Check, Plus, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 
@@ -29,19 +29,19 @@ export function LabelSelector({ workspaceId, selectedLabelIds, onSelect, onDesel
     const [newLabel, setNewLabel] = useState({ name: "", color: PRESET_COLORS[0] });
 
     useEffect(() => {
-        loadLabels();
-    }, [workspaceId]);
-
-    async function loadLabels() {
-        try {
-            const response = await labelApi.list(workspaceId);
-            if (response.success) {
-                setLabels(response.data.labels);
+        async function loadLabels() {
+            try {
+                const response = await labelApi.list(workspaceId);
+                if (response.success) {
+                    setLabels(response.data.labels);
+                }
+            } catch (error) {
+                console.error("Failed to load labels", error);
             }
-        } catch (err) {
-            console.error("Failed to load labels", err);
         }
-    }
+
+        void loadLabels();
+    }, [workspaceId]);
 
     async function handleCreateLabel() {
         if (!newLabel.name.trim()) return;
@@ -54,7 +54,7 @@ export function LabelSelector({ workspaceId, selectedLabelIds, onSelect, onDesel
                 setIsCreating(false);
                 toast.success("Label dibuat");
             }
-        } catch (err) {
+        } catch {
             toast.error("Gagal membuat label");
         } finally {
             setIsLoading(false);
@@ -67,7 +67,7 @@ export function LabelSelector({ workspaceId, selectedLabelIds, onSelect, onDesel
             setLabels(labels.filter(l => l.id !== id));
             onDeselect(id);
             toast.success("Label dihapus");
-        } catch (err) {
+        } catch {
             toast.error("Gagal menghapus label");
         }
     }

@@ -1,14 +1,20 @@
-# Deployment Task Management App
+# Deployment TaskScale
 
 ## Arsitektur
 
 ```
-Frontend (Next.js) → Vercel (free, no sleep)
-Backend (Express)  → Render (free, sleep 15min)
-Database (MySQL)   → Aiven (free, 1GB)
+Frontend (Next.js) → Vercel
+Backend (Express)  → Render (Docker Web Service)
+Database (MariaDB) → Aiven MySQL
 ```
 
-## 1. Database — Aiven MySQL
+## Prasyarat produksi
+
+- Tambahkan custom domain `taskscale.site` dan/atau `www.taskscale.site` di Vercel.
+- Gunakan URL Render untuk `NEXT_PUBLIC_API_URL`; Vercel tidak meneruskan request `/api/*` ke backend secara otomatis.
+- Gunakan secret baru yang dibuat di secret manager atau environment platform; jangan pernah menaruh nilainya di dokumentasi atau repository.
+
+## 1. Database — Aiven MySQL/MariaDB
 
 ### Setup
 - Bikin akun di https://console.aiven.io
@@ -40,15 +46,15 @@ mysql://avnadmin:PASSWORD@HOST:PORT/defaultdb?ssl-mode=REQUIRED
 | Key | Value |
 |-----|-------|
 | `DATABASE_URL` | `mysql://avnadmin:pass@host:11426/defaultdb?ssl-mode=REQUIRED` |
-| `JWT_SECRET` | `aMlW2MQyNdNiwlgcw0Zblb9azyxBZouzvIqwNtxlfVjxH8hl52bWeE2qEFEUu3c3` |
+| `JWT_SECRET` | String acak minimal 32 karakter, dibuat di dashboard platform |
 | `JWT_EXPIRES_IN` | `7d` |
-| `FRONTEND_URL` | `https://task-scale-frontend.vercel.app` (isi setelah frontend jadi) |
+| `FRONTEND_URL` | `https://www.taskscale.site,https://taskscale.site` (gunakan hostname yang benar-benar aktif) |
 | `PORT` | `4000` |
 
 ### Catatan Penting
 - `prisma.ts` pake `@prisma/adapter-mariadb` dengan manual URL parsing. Query parameter `ssl-mode=REQUIRED` HARUS di-handle manual di kode (tambahan `ssl: { rejectUnauthorized: false }` ke adapter config).
 - `prisma.config.ts` pake `DATABASE_URL` (bukan `DIRECT_URL`) untuk Prisma CLI.
-- Redis error `ECONNREFUSED :::6379` aman diabaikan — app fallback ke memory adapter.
+- Jika Redis tidak tersedia, aplikasi memakai memory adapter; untuk multi-instance gunakan Redis managed.
 - `health check` endpoint: `/api/health`
 
 ### Migrasi Database
@@ -86,7 +92,7 @@ node dist/index.js
 ## 4. CORS
 
 ### Backend
-`app.ts` pake `FRONTEND_URL` env var untuk CORS origin. Update setelah frontend jadi:
+`app.ts` memakai `FRONTEND_URL` untuk CORS origin. Nilai di Docker Compose dan backend harus menggunakan nama variabel yang sama:
 ```env
 FRONTEND_URL=https://task-scale-frontend.vercel.app
 ```
@@ -106,14 +112,13 @@ Juga pake `FRONTEND_URL` untuk CORS socket. Sama, tanpa trailing slash.
 | `frontend/next.config.ts` | `output: 'standalone'` untuk Next.js |
 | `frontend/Dockerfile` | Multi-stage build dengan arg `NEXT_PUBLIC_API_URL` |
 
-## 6. Status Final
+## 6. Checklist rilis
 
-| Komponen | Platform | URL | Status |
-|----------|----------|-----|--------|
-| Frontend | Vercel | `https://task-scale-frontend.vercel.app` | ✅ Running |
-| Backend | Render | `https://task-scale-backend.onrender.com` | ✅ Running |
-| Database | Aiven | `mysql-taskscale` | ✅ Running (tabel belum dibuat) |
-| Custom domain | - | - | ⏳ Belum setup |
+- [ ] `https://task-scale-backend.onrender.com/api/health` merespons `200`.
+- [ ] `https://task-scale-backend.onrender.com/api/docs` dapat dibuka.
+- [ ] Register, login, dan logout berfungsi dari domain publik.
+- [ ] Socket.io berhasil tersambung setelah login.
+- [ ] Domain Vercel memakai HTTPS valid dan `FRONTEND_URL` di Render tanpa trailing slash.
 
 ## 7. Masalah yang Udah Kejadian & Fix
 
@@ -136,5 +141,5 @@ Aiven MySQL default `ON`. Prisma gagal bikin tabel. Solusi: disable via Aiven Da
 
 - [x] Matiin `sql_require_primary_key` di Aiven dashboard (Terbukti aman/sudah nonaktif)
 - [x] Jalanin `prisma db push` sekali buat bikin tabel (Sudah sukses dijalankan via lokal)
-- [ ] Set `FRONTEND_URL` di Render backend ke Vercel URL
-- [ ] Setup custom domain (optional)
+- [ ] Set `FRONTEND_URL` ke hostname publik yang dipakai frontend.
+- [ ] Set `NEXT_PUBLIC_API_URL` di Vercel ke URL backend Render, lalu redeploy frontend.

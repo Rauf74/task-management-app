@@ -12,7 +12,6 @@ import { workspaceApi, Workspace } from "@/lib/api";
 import { cn, colorFor } from "@/lib/utils";
 import {
     LayoutDashboard,
-    FolderKanban,
     Plus,
     Sparkles,
     PanelLeftClose,

@@ -6,17 +6,9 @@
 
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { formatDistanceToNow } from "date-fns";
-import { id as idLocale } from "date-fns/locale";
 import {
     Activity,
-    FilePlus,
-    Trash2,
-    ArrowRight,
-    Layout,
-    Columns,
     MoreHorizontal,
     ChevronDown,
     ChevronUp,

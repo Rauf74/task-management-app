@@ -32,7 +32,7 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - JWT_SECRET=${JWT_SECRET}
       - REDIS_URL=redis://redis:6379
-      - CORS_ORIGIN=${CORS_ORIGIN:-http://localhost}
+      - FRONTEND_URL=${FRONTEND_URL:-http://localhost}
     depends_on:
       - redis
     restart: unless-stopped
