@@ -30,9 +30,8 @@ const app = express();
 // Middleware
 // ==============================================
 
-// Security Headers (Helmet) - CSP dinonaktifkan agar Swagger UI bisa berjalan sepenuhnya
-// Semua header keamanan lain (HSTS, X-Frame-Options, CORS, dll) tetap aktif
-app.use(helmet({ contentSecurityPolicy: false }));
+// Security Headers (Helmet)
+app.use(helmet());
 
 // Rate Limiting
 const limiter = rateLimit({
