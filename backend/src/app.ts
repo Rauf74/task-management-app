@@ -27,17 +27,19 @@ import { setupSwagger } from "./lib/swagger.js";
 const app = express();
 
 // ==============================================
-// Swagger Documentation
-// ==============================================
-// Harus di-mount sebelum Helmet agar asset JS/CSS Swagger tidak terblokir oleh CSP (Content Security Policy)
-setupSwagger(app);
-
-// ==============================================
 // Middleware
 // ==============================================
 
 // Security Headers (Helmet)
 app.use(helmet());
+
+// Bypass Helmet CSP khusus untuk Swagger UI Docs agar interaksi dasbor (expand/collapse) tidak terblokir oleh browser
+app.use("/api/docs", (req, res, next) => {
+    res.removeHeader("Content-Security-Policy");
+    res.removeHeader("X-Content-Security-Policy");
+    res.removeHeader("X-WebKit-CSP");
+    next();
+});
 
 // Rate Limiting
 const limiter = rateLimit({
@@ -96,6 +98,9 @@ app.use("/api/boards", boardRoutes);
 app.use("/api/columns", columnRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/workspaces", labelRoutes);
+
+// Swagger documentation
+setupSwagger(app);
 
 // ==============================================
 // Error Handling
