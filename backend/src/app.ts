@@ -30,16 +30,9 @@ const app = express();
 // Middleware
 // ==============================================
 
-// Security Headers (Helmet)
-app.use(helmet());
-
-// Bypass Helmet CSP khusus untuk Swagger UI Docs agar interaksi dasbor (expand/collapse) tidak terblokir oleh browser
-app.use("/api/docs", (req, res, next) => {
-    res.removeHeader("Content-Security-Policy");
-    res.removeHeader("X-Content-Security-Policy");
-    res.removeHeader("X-WebKit-CSP");
-    next();
-});
+// Security Headers (Helmet) - CSP dinonaktifkan agar Swagger UI bisa berjalan sepenuhnya
+// Semua header keamanan lain (HSTS, X-Frame-Options, CORS, dll) tetap aktif
+app.use(helmet({ contentSecurityPolicy: false }));
 
 // Rate Limiting
 const limiter = rateLimit({
