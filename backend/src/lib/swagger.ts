@@ -25,8 +25,10 @@ const options: swaggerJsdoc.Options = {
         },
         servers: [
             {
-                url: "http://localhost:4000",
-                description: "Development server",
+                url: process.env.NODE_ENV === "production"
+                    ? "https://task-scale-backend.onrender.com"
+                    : "http://localhost:4000",
+                description: process.env.NODE_ENV === "production" ? "Production server" : "Development server",
             },
         ],
         components: {
@@ -88,7 +90,14 @@ const options: swaggerJsdoc.Options = {
             { name: "Health", description: "Server health status checks" },
         ],
     },
-    apis: ["./src/routes/*.ts", "./src/app.ts"],
+    // Di production hanya ada dist/ (compiled JS), di development ada src/ (TypeScript)
+    // swagger-jsdoc tetap dapat membaca JSDoc comment dari compiled JS output
+    apis: [
+        "./src/routes/*.ts",
+        "./src/app.ts",
+        "./dist/routes/*.js",
+        "./dist/app.js",
+    ],
 };
 
 const swaggerSpec = swaggerJsdoc(options);
