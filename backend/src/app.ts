@@ -63,6 +63,17 @@ app.use(cookieParser());
 // Routes
 // ==============================================
 
+// Root endpoint
+app.get("/", (_req, res) => {
+    res.json({
+        name: "TaskScale API",
+        version: "1.0.0",
+        status: "healthy",
+        description: "RESTful API untuk Task Management App dengan fitur real-time collaboration.",
+        documentation: "/api/docs"
+    });
+});
+
 // Health check endpoint
 app.get("/api/health", (_req, res) => {
     res.json({
