@@ -27,6 +27,12 @@ import { setupSwagger } from "./lib/swagger.js";
 const app = express();
 
 // ==============================================
+// Swagger Documentation
+// ==============================================
+// Harus di-mount sebelum Helmet agar asset JS/CSS Swagger tidak terblokir oleh CSP (Content Security Policy)
+setupSwagger(app);
+
+// ==============================================
 // Middleware
 // ==============================================
 
@@ -90,9 +96,6 @@ app.use("/api/boards", boardRoutes);
 app.use("/api/columns", columnRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/workspaces", labelRoutes);
-
-// Swagger documentation
-setupSwagger(app);
 
 // ==============================================
 // Error Handling
