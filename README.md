@@ -66,7 +66,7 @@ task-management/
 │       ├── routes/               # Pemetaan endpoint API
 │       ├── middleware/           # Validasi Zod & verifikasi Auth
 │       └── socket/               # Handler WebSocket
-├── DEPLOY.md                     # Catatan teknis & checklist rilis
+├── docker-compose.yml            # Multi-container setup lokal
 └── README.md
 ```
 
@@ -81,88 +81,6 @@ task-management/
 - **Manajemen Label**: Pemberian tag warna (misal: Bug, Feature) pada setiap tugas.
 - **Secure Authentication**: Kredensial JWT disimpan di cookie browser dengan flag `HttpOnly`, `Secure`, dan `SameSite=None` untuk mencegah serangan XSS.
 - **Swagger Documentation**: Dokumentasi OpenAPI 3.0 interaktif lengkap untuk seluruh endpoint API.
-
----
-
-## 📡 Daftar Lengkap API Endpoints
-
-Semua endpoint dilindungi oleh middleware autentikasi (cookie JWT), kecuali endpoint publik (register, login, dan root).
-
-### 🔐 Autentikasi & Profil (`/api/auth`)
-| Method | Endpoint | Deskripsi | Status Akses |
-|--------|----------|-----------|--------------|
-| POST | `/api/auth/register` | Mendaftarkan akun baru (langsung login) | Publik |
-| POST | `/api/auth/login` | Masuk menggunakan Email atau Username | Publik |
-| POST | `/api/auth/logout` | Menghapus session cookie JWT | Terproteksi |
-| GET | `/api/auth/me` | Mengambil info profil pengguna yang aktif | Terproteksi |
-| PATCH | `/api/auth/me` | Memperbarui nama/username profil | Terproteksi |
-| POST | `/api/auth/change-password` | Mengganti password pengguna | Terproteksi |
-
-### 📁 Workspace (`/api/workspaces`)
-| Method | Endpoint | Deskripsi |
-|--------|----------|-----------|
-| GET | `/api/workspaces` | Mengambil seluruh daftar workspace pengguna |
-| POST | `/api/workspaces` | Membuat workspace baru |
-| GET | `/api/workspaces/:id` | Mengambil info detail workspace beserta board di dalamnya |
-| PUT | `/api/workspaces/:id` | Memperbarui info nama/deskripsi workspace |
-| DELETE | `/api/workspaces/:id` | Menghapus workspace beserta isinya |
-| GET | `/api/workspaces/:id/analytics` | Mengambil data statistik/analitik workspace |
-| GET | `/api/workspaces/:id/activities` | Mengambil daftar riwayat aktivitas workspace |
-
-### 📋 Papan Kanban (`/api/boards`)
-| Method | Endpoint | Deskripsi |
-|--------|----------|-----------|
-| POST | `/api/workspaces/:workspaceId/boards` | Membuat papan board baru di dalam workspace |
-| GET | `/api/boards/:id` | Memuat data detail papan beserta kolom dan kartu tugas |
-| PUT | `/api/boards/:id` | Mengubah nama/deskripsi papan board |
-| DELETE | `/api/boards/:id` | Menghapus papan board |
-| POST | `/api/boards/:boardId/columns` | Membuat kolom baru di dalam papan board |
-
-### 📑 Kolom Papan (`/api/columns`)
-| Method | Endpoint | Deskripsi |
-|--------|----------|-----------|
-| PUT | `/api/columns/:id` | Mengubah nama/judul kolom papan |
-| DELETE | `/api/columns/:id` | Menghapus kolom beserta tugas di dalamnya |
-| PATCH | `/api/columns/reorder` | Menyimpan urutan baru susunan kolom papan |
-| POST | `/api/columns/:columnId/tasks` | Membuat kartu tugas baru di dalam kolom |
-
-### 📌 Kartu Tugas (`/api/tasks`)
-| Method | Endpoint | Deskripsi |
-|--------|----------|-----------|
-| PUT | `/api/tasks/:id` | Memperbarui isi tugas (judul, prioritas, deadline, label) |
-| DELETE | `/api/tasks/:id` | Menghapus kartu tugas |
-| PATCH | `/api/tasks/:id/move` | Memindahkan kartu tugas ke kolom lain/posisi lain |
-
-### 🏷️ Label / Tag (`/api/workspaces`)
-| Method | Endpoint | Deskripsi |
-|--------|----------|-----------|
-| GET | `/api/workspaces/:workspaceId/labels` | Mengambil daftar label di dalam workspace |
-| POST | `/api/workspaces/:workspaceId/labels` | Membuat label baru di dalam workspace |
-| DELETE | `/api/workspaces/labels/:id` | Menghapus label berdasarkan ID |
-
----
-
-## 🛠️ Pembelajaran Penting & Troubleshooting (Studi Kasus Proyek)
-
-Bagian ini merangkum masalah nyata yang dihadapi selama pengembangan dan bagaimana solusinya, sangat berguna untuk bahan belajar kamu nantinya:
-
-### 1. Masalah Cookie Cross-Origin (CORS Auth) di Production
-- **Masalah**: Setelah rilis, pengguna tidak bisa login karena cookie JWT diblokir browser saat frontend (Vercel) mengirim request ke backend (Render).
-- **Pembelajaran**: Karena domain frontend dan backend berbeda, cookie JWT wajib menggunakan konfigurasi `sameSite: "none"` dan `secure: true`. Hal ini membutuhkan koneksi HTTPS penuh dan pemetaan parameter CORS `allowedOrigins` yang presisi tanpa menyisipkan *trailing slash* (`/`) di akhir domain.
-
-### 2. Isu `sql_require_primary_key` pada Database Aiven MySQL
-- **Masalah**: Saat menjalankan migrasi skema tabel database melalui Prisma CLI, database Aiven menolak pembuatan tabel.
-- **Pembelajaran**: Platform cloud terkelola seperti Aiven MySQL mewajibkan setiap tabel memiliki Primary Key secara default demi keamanan replikasi. Karena tabel perantara Prisma (seperti tabel relasi banyak-ke-banyak implicit) sering kali tidak mendefinisikannya secara langsung, opsi `sql_require_primary_key` harus dinonaktifkan (`OFF`) pada dashboard konfigurasi lanjut Aiven.
-
-### 3. File Config pada Engine Prisma 7 & Docker Container
-- **Masalah**: Aplikasi crash di Docker production dengan pesan error bahwa engine Prisma tidak menemukan database datasource.
-- **Pembelajaran**: Pada Prisma 7.x, pemetaan connection string menggunakan berkas konfigurasi baru bernama `prisma.config.ts`. Pada Dockerfile *Multi-stage build*, file ini wajib disalin ke kontainer tahap akhir (`Stage 2: runner`), bukan hanya file skema `.prisma` saja.
-
-### 4. Halaman Swagger UI Kosong/Beku di Production
-- **Masalah**: Dokumentasi Swagger dapat dibuka namun accordion API-nya kosong dan tidak merespon saat diklik.
-- **Pembelajaran**: 
-  1. **Aset Hilang**: Kontainer Docker production hanya menyalin folder `dist/` (compiled JS). `swagger-jsdoc` sebelumnya diarahkan ke file TypeScript di `src/routes/*.ts` yang tidak ada di production. Solusinya adalah mengarahkan pencarian JSDoc ke file JS kompilasi (`dist/routes/*.js`).
-  2. **Interferensi Helmet CSP**: Kebijakan keamanan default dari Helmet memblokir eksekusi *inline script* Swagger. Solusinya adalah menonaktifkan Content Security Policy khusus (`contentSecurityPolicy: false`) pada opsi inisialisasi Helmet agar komponen interaktif Swagger diizinkan berjalan oleh browser.
 
 ---
 
