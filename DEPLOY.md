@@ -114,11 +114,11 @@ Juga pake `FRONTEND_URL` untuk CORS socket. Sama, tanpa trailing slash.
 
 ## 6. Checklist rilis
 
-- [ ] `https://task-scale-backend.onrender.com/api/health` merespons `200`.
-- [ ] `https://task-scale-backend.onrender.com/api/docs` dapat dibuka.
-- [ ] Register, login, dan logout berfungsi dari domain publik.
-- [ ] Socket.io berhasil tersambung setelah login.
-- [ ] Domain Vercel memakai HTTPS valid dan `FRONTEND_URL` di Render tanpa trailing slash.
+- [x] `https://task-scale-backend.onrender.com/api/health` merespons `200`.
+- [x] `https://task-scale-backend.onrender.com/api/docs` dapat dibuka.
+- [x] Register, login, dan logout berfungsi dari domain publik.
+- [x] Socket.io berhasil tersambung setelah login.
+- [x] Domain Vercel memakai HTTPS valid dan `FRONTEND_URL` di Render tanpa trailing slash.
 
 ## 7. Masalah yang Udah Kejadian & Fix
 
@@ -141,5 +141,5 @@ Aiven MySQL default `ON`. Prisma gagal bikin tabel. Solusi: disable via Aiven Da
 
 - [x] Matiin `sql_require_primary_key` di Aiven dashboard (Terbukti aman/sudah nonaktif)
 - [x] Jalanin `prisma db push` sekali buat bikin tabel (Sudah sukses dijalankan via lokal)
-- [ ] Set `FRONTEND_URL` ke hostname publik yang dipakai frontend.
-- [ ] Set `NEXT_PUBLIC_API_URL` di Vercel ke URL backend Render, lalu redeploy frontend.
+- [x] Set `FRONTEND_URL` ke hostname publik yang dipakai frontend (Sudah diatur ke domain custom).
+- [x] Set `NEXT_PUBLIC_API_URL` di Vercel ke URL backend Render, lalu redeploy frontend (Sudah dikonfigurasi).
