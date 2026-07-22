@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { DemoLoginModal } from "@/components/auth/demo-login-modal";
 import { toast } from "sonner";
 import { Mail, Lock, Loader2 } from "lucide-react";
 
@@ -113,6 +114,8 @@ export default function LoginPage() {
                                 "Masuk"
                             )}
                         </Button>
+
+                        <DemoLoginModal />
 
                         <div className="relative w-full">
                             <div className="absolute inset-0 flex items-center">
