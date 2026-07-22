@@ -82,3 +82,20 @@ export const changePassword = asyncHandler(async (req: AuthenticatedRequest, res
         message: "Password berhasil diubah",
     });
 });
+
+export const quickDemo = asyncHandler(async (_req: Request, res: Response) => {
+    const { user, token, credentials } = await authService.createDemoUser();
+
+    res.cookie("token", token, COOKIE_OPTIONS);
+
+    res.status(200).json({
+        success: true,
+        data: {
+            user,
+            credentials,
+            redirectUrl: "/",
+        },
+        message: "Akun demo berhasil dibuat",
+    });
+});
+

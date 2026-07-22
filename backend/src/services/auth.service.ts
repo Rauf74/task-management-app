@@ -66,3 +66,35 @@ export async function changePassword(userId: string, data: ChangePasswordRequest
     const hashedPassword = await bcrypt.hash(data.newPassword, SALT_ROUNDS);
     await authRepository.updatePassword(userId, hashedPassword);
 }
+
+export async function createDemoUser(): Promise<{
+    user: User;
+    token: string;
+    credentials: { username: string; password: string };
+}> {
+    const randomCode = Math.floor(1000 + Math.random() * 9000);
+    const rawUsername = `demo_user_${randomCode}`;
+    const rawEmail = `demo_${randomCode}@taskscale.site`;
+    const rawPassword = `pass${randomCode}`;
+
+    const hashedPassword = await bcrypt.hash(rawPassword, SALT_ROUNDS);
+
+    const user = await authRepository.createDemoUserWithData({
+        name: `Demo Reviewer #${randomCode}`,
+        email: rawEmail,
+        password: hashedPassword,
+    });
+
+    const payload: JWTPayload = { userId: user.id, email: user.email };
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN } as jwt.SignOptions);
+
+    return {
+        user,
+        token,
+        credentials: {
+            username: rawUsername,
+            password: rawPassword,
+        },
+    };
+}
+

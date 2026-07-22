@@ -109,6 +109,48 @@ router.post("/login", validate(loginSchema), authController.login);
  */
 router.post("/logout", authController.logout);
 
+/**
+ * @swagger
+ * /api/auth/demo:
+ *   post:
+ *     tags: [Auth]
+ *     summary: Quick Login Demo User Generation
+ *     description: Membuat user demo acak secara otomatis beserta data sampel (Workspace, Board, Tasks), menerbitkan cookie JWT, dan mengembalikan kredensial acak
+ *     responses:
+ *       200:
+ *         description: Akun demo berhasil dibuat dan terautentikasi
+ *         headers:
+ *           Set-Cookie:
+ *             description: JWT token dalam HttpOnly cookie
+ *             schema:
+ *               type: string
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     user:
+ *                       $ref: '#/components/schemas/User'
+ *                     credentials:
+ *                       type: object
+ *                       properties:
+ *                         username:
+ *                           type: string
+ *                         password:
+ *                           type: string
+ *                     redirectUrl:
+ *                       type: string
+ *                 message:
+ *                   type: string
+ */
+router.post("/demo", authController.quickDemo);
+router.post("/quick-demo", authController.quickDemo);
+
 // ==============================================
 // Protected Routes
 // ==============================================
