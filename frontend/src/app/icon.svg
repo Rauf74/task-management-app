@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <linearGradient id="taskscale-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4F46E5"/>
+      <stop offset="100%" stop-color="#7C3AED"/>
+    </linearGradient>
+  </defs>
+  <!-- Rounded Square Background -->
+  <rect x="0" y="0" width="32" height="32" rx="8" fill="url(#taskscale-grad)"/>
+  <!-- Sparkles Icon (White) -->
+  <path d="M16 6C16 11 11 16 6 16C11 16 16 21 16 26C16 21 21 16 26 16C21 16 16 11 16 6Z" fill="#FFFFFF"/>
+  <path d="M24 7C24 9.5 21.5 12 19 12C21.5 12 24 14.5 24 17C24 14.5 26.5 12 29 12C26.5 12 24 9.5 24 7Z" fill="#FFFFFF" opacity="0.8"/>
+</svg>
