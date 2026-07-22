@@ -10,6 +10,7 @@ interface AuthContextType {
     register: (name: string, email: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
     updateUser: (updatedUser: User) => void;
+    quickDemo: () => Promise<{ username: string; password: string; redirectUrl: string }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -56,8 +57,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(updatedUser);
     }
 
+    async function quickDemo() {
+        const response = await authApi.quickDemo();
+        if (response.data?.user) {
+            setUser(response.data.user);
+        }
+        return {
+            username: response.data.credentials.username,
+            password: response.data.credentials.password,
+            redirectUrl: response.data.redirectUrl || "/",
+        };
+    }
+
     return (
-        <AuthContext.Provider value={{ user, isLoading, login, register, logout, updateUser }}>
+        <AuthContext.Provider value={{ user, isLoading, login, register, logout, updateUser, quickDemo }}>
             {children}
         </AuthContext.Provider>
     );

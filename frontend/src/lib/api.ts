@@ -67,6 +67,17 @@ export const authApi = {
             method: "POST",
             body: data,
         }),
+
+    quickDemo: () =>
+        fetcher<{
+            success: boolean;
+            data: {
+                user: User;
+                credentials: { username: string; password: string };
+                redirectUrl: string;
+            };
+            message: string;
+        }>("/api/auth/demo", { method: "POST" }),
 };
 
 // ==============================================
