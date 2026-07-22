@@ -236,6 +236,9 @@ export async function createDemoUserWithData(data: {
         });
 
         return user;
+    }, {
+        maxWait: 10000,
+        timeout: 25000,
     });
 }
 
