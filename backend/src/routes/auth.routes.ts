@@ -16,6 +16,7 @@ import { Router } from "express";
 import * as authController from "../controllers/auth.controller.js";
 import { validate, registerSchema, loginSchema, updateMeSchema, changePasswordSchema } from "../middleware/validation.js";
 import { requireAuth } from "../middleware/auth.middleware.js";
+import { demoLimiter } from "../middleware/rate-limiter.js";
 
 const router = Router();
 
@@ -148,8 +149,8 @@ router.post("/logout", authController.logout);
  *                 message:
  *                   type: string
  */
-router.post("/demo", authController.quickDemo);
-router.post("/quick-demo", authController.quickDemo);
+router.post("/demo", demoLimiter, authController.quickDemo);
+router.post("/quick-demo", demoLimiter, authController.quickDemo);
 
 // ==============================================
 // Protected Routes
